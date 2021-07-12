@@ -1,0 +1,38 @@
+version: "3.3"
+services:
+  db:
+    image: mysql:8.0.25
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - backend
+    environment:
+      MYSQL_DATABASE: alethia
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_ROOT_PASSWORD: 
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_USER: zeus
+      MYSQL_PASSWORD: kingOfGods
+  api:
+    build:
+      context: ./api
+    networks:
+      - backend
+    ports:
+      - "7000:3000"
+    depends_on:
+      - db
+    environment:
+      DB_USERNAME: zeus
+      DB_PASSWORD: kingOfGods
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_NAME: alethia
+    restart: on-failure
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  db_data:
