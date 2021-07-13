@@ -2,10 +2,15 @@ version: "3.3"
 services:
   db:
     image: mysql:8.0.25
+    cap_add:
+      - SYS_NICE  # CAP_SYS_NICE
     volumes:
       - db_data:/var/lib/mysql
+      - ./api/Database/init_schema.sql:/docker-entrypoint-initdb.d/init_schema.sql:ro
     networks:
       - backend
+    ports:
+      - "3306:3306"
     environment:
       MYSQL_DATABASE: alethia
       MYSQL_ROOT_HOST: "%"
