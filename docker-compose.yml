@@ -16,13 +16,28 @@ services:
       MYSQL_ROOT_HOST: "%"
       MYSQL_ROOT_PASSWORD: 
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
-      MYSQL_USER: zeus
+      MYSQL_USER: zeuCOPY . .s
       MYSQL_PASSWORD: kingOfGods
+  frontend:
+    build:
+      context: ./front
+    networks:
+      - frontend
+    volumes:
+      - ./front:/app
+      - /app/node_modules
+    ports:
+      - "7001:8080"
+    depends_on:
+        - api
+    environment:
+      API_URL: api:3000
   api:
     build:
       context: ./api
     networks:
       - backend
+      - frontend
     ports:
       - "7000:3000"
     depends_on:
@@ -37,6 +52,8 @@ services:
 
 networks:
   backend:
+    driver: bridge
+  frontend:
     driver: bridge
 
 volumes:
