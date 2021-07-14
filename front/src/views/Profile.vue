@@ -43,8 +43,8 @@
         </v-card>
       </v-col>
       <v-col cols="12">
-        <v-card>
-          <v-card-title>
+        <v-card color="grey lighten-2">
+          <v-card-title style="background-color: white">
             <h2>
               Featured Posts
             </h2>

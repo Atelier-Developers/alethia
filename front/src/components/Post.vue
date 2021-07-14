@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card v-bind:flat="child">
     <v-card-title>
       <v-row>
         <v-col cols="12" v-if="username !== ''">
@@ -38,7 +38,11 @@ export default {
     username: {
       type: String,
       default: ''
-    }
+    },
+    child: {
+      type: Boolean,
+      default: false
+    },
   },
 }
 </script>

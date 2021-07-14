@@ -49,7 +49,7 @@
     </div>
 
     <v-main class="mt-16">
-      <v-container v-if="true">
+      <v-container v-if="false">
         <v-row >
           <v-col cols="3"></v-col>
           <v-col cols="6">
