@@ -1,7 +1,6 @@
 package interfaces
 
 import (
-	"fmt"
 	"github.com/Atelier-Developers/alethia/domain/entity"
 	"github.com/Atelier-Developers/alethia/domain/repository"
 	"github.com/Atelier-Developers/alethia/infrastructure/auth"
@@ -19,7 +18,7 @@ type UserHandler struct {
 }
 
 // TODO: AUTH AND TOKEN
-func NewUserHandler(userRepository repository.UserRepository, authInterface  auth.AuthInterface, tokenInterface auth.TokenInterface) UserHandler {
+func NewUserHandler(userRepository repository.UserRepository, authInterface auth.AuthInterface, tokenInterface auth.TokenInterface) UserHandler {
 	return UserHandler{
 		userRepository: userRepository,
 		authInterface:  authInterface,
@@ -59,6 +58,14 @@ func (userHandler *UserHandler) SaveUser(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
+
+	var tmp entity.User
+	err = userHandler.userRepository.GetUserByUsername(user.Username, &tmp)
+	if err == nil {
+		c.JSON(http.StatusConflict, err)
+		return
+	}
+
 	err = userHandler.userRepository.SaveUser(&user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
@@ -83,21 +90,19 @@ func (userHandler *UserHandler) Login(c *gin.Context) {
 	//}
 
 	var user entity.User
-	u, userErr := userHandler.userRepository.GetUserByUsernameAndPassword(userRequestBody.Username, userRequestBody.Password, &user)
-
-	fmt.Println(user, userErr)
+	userErr := userHandler.userRepository.GetUserByUsernameAndPassword(userRequestBody.Username, userRequestBody.Password, &user)
 
 	if userErr != nil {
 		c.JSON(http.StatusInternalServerError, userErr)
 		return
 	}
-	ts, tErr := userHandler.tokenInterface.CreateToken(u.ID)
+	ts, tErr := userHandler.tokenInterface.CreateToken(user.ID)
 	if tErr != nil {
 		tokenErr["token_error"] = tErr.Error()
 		c.JSON(http.StatusUnprocessableEntity, tErr.Error())
 		return
 	}
-	saveErr := userHandler.authInterface.CreateAuth(u.ID, ts)
+	saveErr := userHandler.authInterface.CreateAuth(user.ID, ts)
 	if saveErr != nil {
 		c.JSON(http.StatusInternalServerError, saveErr.Error())
 		return
@@ -105,9 +110,9 @@ func (userHandler *UserHandler) Login(c *gin.Context) {
 	userData := make(map[string]interface{})
 	userData["access_token"] = ts.AccessToken
 	userData["refresh_token"] = ts.RefreshToken
-	userData["id"] = u.ID
-	userData["first_name"] = u.FirstName
-	userData["last_name"] = u.LastName
+	userData["id"] = user.ID
+	userData["first_name"] = user.FirstName
+	userData["last_name"] = user.LastName
 
 	c.JSON(http.StatusOK, userData)
 }

@@ -42,6 +42,7 @@ func main() {
 	postHandler := interfaces.NewPostHandler(postRepo)
 
 	router := gin.Default()
+	router.Use(gin.Recovery())
 
 	router.POST("/login", userHandler.Login)
 	userGroup := router.Group("/users")
