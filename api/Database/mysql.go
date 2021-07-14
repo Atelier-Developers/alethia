@@ -7,9 +7,13 @@ import (
 	"os"
 )
 
-var db *sql.DB
 
-func Init() error {
+type MySQLDB struct {
+	db *sql.DB
+}
+
+
+func (dbClient *MySQLDB) Init() error {
 	DbUsername := os.Getenv("DB_USERNAME")
 	DbPassword := os.Getenv("DB_PASSWORD")
 	DbHost := os.Getenv("DB_HOST")
@@ -17,11 +21,11 @@ func Init() error {
 	DbName := os.Getenv("DB_NAME")
 	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", DbUsername, DbPassword, DbHost, DbPort, DbName)
 	var err error
-	db, err = sql.Open("mysql", connectionString)
+	dbClient.db, err = sql.Open("mysql", connectionString)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	err = db.Ping()
+	err = dbClient.db.Ping()
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -29,6 +33,10 @@ func Init() error {
 	return nil
 }
 
-func GetDB() *sql.DB {
-	return db
+func (dbClient *MySQLDB) Close() error {
+	return dbClient.db.Close()
+}
+
+func (dbClient *MySQLDB) GetDB() *sql.DB {
+	return dbClient.db
 }

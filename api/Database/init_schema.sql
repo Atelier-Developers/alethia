@@ -6,7 +6,7 @@ CREATE TABLE USER
     first_name             VARCHAR(100)       NOT NULL,
     last_name              VARCHAR(100)       NOT NULL,
     username               VARCHAR(50)        NOT NULL,
-    password               VARCHAR(50)        NOT NULL,
+    password               BINARY(60)        NOT NULL,
     intro                  TEXT(255)          NOT NULL,
     about                  TEXT(1024)         NOT NULL,
     accomplishments        TEXT(1024)         NOT NULL,

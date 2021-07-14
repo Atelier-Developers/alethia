@@ -1,8 +1,13 @@
 # build stage
-FROM node:lts-alpine
+FROM node:14-alpine as build-stage
 WORKDIR /app
 COPY package*.json ./
 RUN npm install -s
 COPY . .
-EXPOSE 8080
-CMD ["npm", "run", "--silent", "serve"]
+RUN npm run --silent build
+
+# production stage
+FROM nginx:1.20-alpine as production-stage
+COPY --from=build-stage /app/dist /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
