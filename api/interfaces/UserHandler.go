@@ -5,8 +5,10 @@ import (
 	"github.com/Atelier-Developers/alethia/domain/entity"
 	"github.com/Atelier-Developers/alethia/domain/repository"
 	"github.com/Atelier-Developers/alethia/infrastructure/security"
+	"github.com/Atelier-Developers/alethia/interfaces/bodyTemplates"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"time"
 )
 
 type UserHandler struct {
@@ -25,27 +27,46 @@ func NewUserHandler(userRepository repository.UserRepository) UserHandler {
 }
 
 func (userHandler *UserHandler) SaveUser(c *gin.Context) {
-	var user entity.User
+	var userRequestBody bodyTemplates.UserRequestBody
 	fmt.Println(c.Request.Body)
-	if err := c.ShouldBindJSON(&user); err != nil {
+	if err := c.ShouldBindJSON(&userRequestBody); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{
 			"invalid_json": "invalid json",
 		})
 		return
 	}
 
+	fmt.Println(userRequestBody)
+	fmt.Println(userRequestBody.JoinDate)
+
+	user := entity.User{
+		Username:        userRequestBody.Username,
+		FirstName:       userRequestBody.FirstName,
+		LastName:        userRequestBody.LastName,
+		Intro:           userRequestBody.Intro,
+		About:           userRequestBody.About,
+		Accomplishments: userRequestBody.Accomplishments,
+		AdditionalInfo:  userRequestBody.AdditionalInfo,
+		JoinDate:        userRequestBody.JoinDate,
+		BirthDate:       userRequestBody.BirthDate,
+	}
+
+	fmt.Println(user)
+
+	if time.Time.IsZero(user.JoinDate) {
+		user.JoinDate = time.Now()
+	}
+
 	fmt.Println(user)
 
 	var err error
-	var userPassword []byte
 
-	userPassword, err = security.Hash(user.Password)
+	user.Password, err = security.Hash(userRequestBody.Password)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
-	user.Password = string(userPassword[:])
 	err = userHandler.userRepository.SaveUser(&user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)

@@ -18,6 +18,7 @@ func (userRepo *UserRepository) SaveUser(user *entity.User) error {
 	db := userRepo.dbClient.GetDB()
 	stmt, err := db.Prepare("INSERT INTO USER (first_name, last_name, username, password, intro, about, accomplishments, additional_information, join_date, birthdate) VALUES  (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
 	if err != nil {
+
 		log.Fatal(err)
 	}
 	defer stmt.Close()
