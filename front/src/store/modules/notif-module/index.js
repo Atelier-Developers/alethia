@@ -79,6 +79,7 @@ const actions = {
                     text: 'to ba in rezome kirit afqanestanam nemiri guzu',
                 },
                 reply:{
+                    username: "mamad",
                     text: 'to ba in rezome kirit afqanestanam nemiri guzu',
                 },
             },

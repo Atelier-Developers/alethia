@@ -48,32 +48,35 @@
       </v-app-bar>
     </div>
 
-    <v-main class="mt-10">
-      <v-container>
+    <v-main class="mt-16">
+      <v-container v-if="false">
         <v-row >
           <v-col cols="3"></v-col>
           <v-col cols="6">
             <Home/>
           </v-col>
           <v-col cols="3">
-            <Notif style="position: fixed;"/>
+            <Notifs style="position: fixed;"/>
           </v-col>
         </v-row>
       </v-container>
+      <Profile/>
     </v-main>
 
   </v-app>
 </template>
 
 <script>
-import Home from "@/components/Home";
-import Notif from "@/components/Notif";
+import Home from "@/views/Home";
+import Notifs from "@/views/Notifs";
+import Profile from "./views/Profile";
 
 export default {
   name: 'App',
 
   components: {
-    Notif,
+    Profile,
+    Notifs,
     Home
   },
 
