@@ -41,7 +41,6 @@ type TokenDetails struct {
 	RefreshTokenExpires int64
 }
 
-//Save token metadata to Redis
 func (tk *ClientData) CreateAuth(userid uint64, td *TokenDetails) error {
 	at := time.Unix(td.AccessTokenExpires, 0) //converting Unix to UTC(to Time object)
 	rt := time.Unix(td.RefreshTokenExpires, 0)

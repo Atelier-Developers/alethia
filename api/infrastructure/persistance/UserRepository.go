@@ -31,3 +31,24 @@ func (userRepo *UserRepository) SaveUser(user *entity.User) error {
 
 	return nil
 }
+
+func (userRepo *UserRepository) GetUserByUsernameAndPassword(username string, password string) (*entity.User, error) {
+	db := userRepo.dbClient.GetDB()
+	stmt, err := db.Prepare("SELECT * FROM USER WHERE username=?")
+	if err != nil {
+
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	row := stmt.QueryRow(username)
+
+
+	var user *entity.User
+	err = row.Scan(user)
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}

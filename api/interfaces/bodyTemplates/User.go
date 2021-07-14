@@ -15,5 +15,9 @@ type UserRequestBody struct {
 	BirthDate		time.Time	  `json:"birth-date" binding:"required"`
 }
 
+type UserLoginRequestBody struct {
+	Username  string	  `json:"username" binding:"required"`
+	Password  string     `json:"password" binding:"required"`
+}
 
 
