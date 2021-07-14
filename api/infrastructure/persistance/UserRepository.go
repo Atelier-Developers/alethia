@@ -1,9 +1,9 @@
 package persistance
 
 import (
-	"fmt"
 	"github.com/Atelier-Developers/alethia/Database"
 	"github.com/Atelier-Developers/alethia/domain/entity"
+	"github.com/Atelier-Developers/alethia/infrastructure/security"
 	"log"
 )
 
@@ -33,7 +33,7 @@ func (userRepo *UserRepository) SaveUser(user *entity.User) error {
 	return nil
 }
 
-func (userRepo *UserRepository) GetUserByUsernameAndPassword(username string, password string) (*entity.User, error) {
+func (userRepo *UserRepository) GetUserByUsernameAndPassword(username string, password string, user *entity.User) (*entity.User, error) {
 	db := userRepo.dbClient.GetDB()
 	stmt, err := db.Prepare("SELECT * FROM USER WHERE username=?")
 	if err != nil {
@@ -44,17 +44,15 @@ func (userRepo *UserRepository) GetUserByUsernameAndPassword(username string, pa
 
 	row := stmt.QueryRow(username)
 
-	var user entity.User
 	err = row.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Username, &user.Password, &user.Intro, &user.About, &user.Accomplishments, &user.AdditionalInfo, &user.JoinDate, &user.BirthDate)
-	fmt.Println(user)
 	if err != nil {
 		return nil, err
 	}
 
-	//err = security.VerifyPassword(user.Password, password)
-	//if err != nil {
-	//	return nil, err
-	//}
+	err = security.VerifyPassword(string(user.Password), password)
+	if err != nil {
+		return nil, err
+	}
 
-	return &user, nil
+	return user, nil
 }

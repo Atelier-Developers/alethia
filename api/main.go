@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"github.com/Atelier-Developers/alethia/Database"
 	"github.com/Atelier-Developers/alethia/infrastructure/auth"
 	"github.com/Atelier-Developers/alethia/infrastructure/persistance"
@@ -22,7 +23,6 @@ func main() {
 		log.Fatalln(err.Error())
 	}
 
-
 	userRepo := persistance.NewUserRepository(&db)
 	postRepo := persistance.NewPostRepository(&db)
 
@@ -30,14 +30,13 @@ func main() {
 	redisPort := os.Getenv("REDIS_PORT")
 	redisPassword := os.Getenv("REDIS_PASSWORD")
 
-	redisService, err := auth.NewRedisDB(redisHost, redisPort, redisPassword)
-	if err != nil {
-		log.Fatal(err)
+	var error error
+	redisService, error := auth.NewRedisDB(redisHost, redisPort, redisPassword, context.Background())
+	if error != nil {
+		log.Fatal(error)
 	}
 
 	token := auth.NewToken()
-
-	//authenticate := auth.NewAuth(userRepo, redisService.Auth, token)
 
 	userHandler := interfaces.NewUserHandler(userRepo, redisService.Auth, token)
 	postHandler := interfaces.NewPostHandler(postRepo)

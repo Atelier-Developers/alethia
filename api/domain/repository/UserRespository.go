@@ -6,5 +6,5 @@ import (
 
 type UserRepository interface {
 	SaveUser(user *entity.User) error
-	GetUserByUsernameAndPassword(username string, password string) (*entity.User, error)
+	GetUserByUsernameAndPassword(username string, password string, user *entity.User) (*entity.User, error)
 }

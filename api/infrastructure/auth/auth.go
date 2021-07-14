@@ -23,8 +23,8 @@ type ClientData struct {
 
 var _ AuthInterface = &ClientData{}
 
-func NewAuth(client *redis.Client) *ClientData {
-	return &ClientData{client: client, ctx: context.Background()}
+func NewAuth(client *redis.Client, ctx context.Context) *ClientData {
+	return &ClientData{client: client, ctx: ctx}
 }
 
 type AccessDetails struct {

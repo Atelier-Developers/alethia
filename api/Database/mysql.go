@@ -19,7 +19,7 @@ func (dbClient *MySQLDB) Init() error {
 	DbHost := os.Getenv("DB_HOST")
 	DbPort := os.Getenv("DB_PORT")
 	DbName := os.Getenv("DB_NAME")
-	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", DbUsername, DbPassword, DbHost, DbPort, DbName)
+	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", DbUsername, DbPassword, DbHost, DbPort, DbName)
 	var err error
 	dbClient.db, err = sql.Open("mysql", connectionString)
 	if err != nil {

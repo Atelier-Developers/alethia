@@ -81,9 +81,11 @@ func (userHandler *UserHandler) Login(c *gin.Context) {
 	//	c.JSON(http.StatusUnprocessableEntity, validateUser)
 	//	return
 	//}
-	u, userErr := userHandler.userRepository.GetUserByUsernameAndPassword(userRequestBody.Username, userRequestBody.Password)
 
-	fmt.Println(u)
+	var user entity.User
+	u, userErr := userHandler.userRepository.GetUserByUsernameAndPassword(userRequestBody.Username, userRequestBody.Password, &user)
+
+	fmt.Println(user, userErr)
 
 	if userErr != nil {
 		c.JSON(http.StatusInternalServerError, userErr)
