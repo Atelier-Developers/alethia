@@ -3,7 +3,7 @@ services:
   db:
     image: mysql:8.0.25
     cap_add:
-      - SYS_NICE  # CAP_SYS_NICE
+      - SYS_NICE # CAP_SYS_NICE
     volumes:
       - db_data:/var/lib/mysql
       - ./api/Database/init_schema.sql:/docker-entrypoint-initdb.d/init_schema.sql:ro
@@ -14,10 +14,16 @@ services:
     environment:
       MYSQL_DATABASE: alethia
       MYSQL_ROOT_HOST: "%"
-      MYSQL_ROOT_PASSWORD: 
+      MYSQL_ROOT_PASSWORD:
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
       MYSQL_USER: zeus
       MYSQL_PASSWORD: kingOfGods
+  redis_db:
+    image: redis:6.2.4-alpine
+    volumes:
+      - redis_data:/data
+    networks:
+      - backend
   frontend:
     build:
       context: ./front
@@ -29,9 +35,10 @@ services:
     ports:
       - "7001:8080"
     depends_on:
-        - api
+      - api
     environment:
       API_URL: api:3000
+    restart: on-failure
   api:
     build:
       context: ./api
@@ -42,12 +49,16 @@ services:
       - "7000:3000"
     depends_on:
       - db
+      - redis_db
     environment:
       DB_USERNAME: zeus
       DB_PASSWORD: kingOfGods
       DB_HOST: db
       DB_PORT: 3306
       DB_NAME: alethia
+      REDIS_HOST: redis_db,
+      REDIS_PORT: 6379
+      REDIS_PASSWORD:
     restart: on-failure
 
 networks:
@@ -58,3 +69,4 @@ networks:
 
 volumes:
   db_data:
+  redis_data:
