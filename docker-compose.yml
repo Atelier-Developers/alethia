@@ -25,21 +25,22 @@ services:
     networks:
       - backend
   frontend:
+    image: alethia_frontend:v0.01
     build:
       context: ./front
     networks:
       - frontend
     volumes:
-      - ./front:/app
       - /app/node_modules
     ports:
-      - "7001:8080"
+      - "7001:80"
     depends_on:
       - api
     environment:
       API_URL: api:3000
     restart: on-failure
   api:
+    image: alethia_api:v0.01
     build:
       context: ./api
     networks:
