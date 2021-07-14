@@ -2,11 +2,13 @@ package main
 
 import (
 	"github.com/Atelier-Developers/alethia/Database"
+	"github.com/Atelier-Developers/alethia/infrastructure/auth"
 	"github.com/Atelier-Developers/alethia/infrastructure/persistance"
 	"github.com/Atelier-Developers/alethia/interfaces"
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 	"log"
+	"os"
 )
 
 func main() {
@@ -20,27 +22,29 @@ func main() {
 		log.Fatalln(err.Error())
 	}
 
+
 	userRepo := persistance.NewUserRepository(&db)
 	postRepo := persistance.NewPostRepository(&db)
 
-	//redis_host := os.Getenv("REDIS_HOST")
-	//redis_port := os.Getenv("REDIS_PORT")
-	//redis_password := os.Getenv("REDIS_PASSWORD")
-	//
-	//redisService, err := auth.NewRedisDB(redis_host, redis_port, redis_password)
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-	//
-	//token := auth.NewToken()
-	//
-	//authenticate := auth.NewAuth(services.User, redisService.Auth, tk)
+	redisHost := os.Getenv("REDIS_HOST")
+	redisPort := os.Getenv("REDIS_PORT")
+	redisPassword := os.Getenv("REDIS_PASSWORD")
 
-	userHandler := interfaces.NewUserHandler(userRepo)
+	redisService, err := auth.NewRedisDB(redisHost, redisPort, redisPassword)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	token := auth.NewToken()
+
+	//authenticate := auth.NewAuth(userRepo, redisService.Auth, token)
+
+	userHandler := interfaces.NewUserHandler(userRepo, redisService.Auth, token)
 	postHandler := interfaces.NewPostHandler(postRepo)
 
 	router := gin.Default()
 
+	router.POST("/login", userHandler.Login)
 	userGroup := router.Group("/users")
 	{
 		userGroup.POST("", userHandler.SaveUser)

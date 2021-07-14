@@ -1,6 +1,7 @@
 package persistance
 
 import (
+	"fmt"
 	"github.com/Atelier-Developers/alethia/Database"
 	"github.com/Atelier-Developers/alethia/domain/entity"
 	"log"
@@ -43,12 +44,17 @@ func (userRepo *UserRepository) GetUserByUsernameAndPassword(username string, pa
 
 	row := stmt.QueryRow(username)
 
-
-	var user *entity.User
-	err = row.Scan(user)
+	var user entity.User
+	err = row.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Username, &user.Password, &user.Intro, &user.About, &user.Accomplishments, &user.AdditionalInfo, &user.JoinDate, &user.BirthDate)
+	fmt.Println(user)
 	if err != nil {
 		return nil, err
 	}
 
-	return user, nil
+	//err = security.VerifyPassword(user.Password, password)
+	//if err != nil {
+	//	return nil, err
+	//}
+
+	return &user, nil
 }
