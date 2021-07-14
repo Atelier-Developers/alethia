@@ -10,6 +10,10 @@ type UserRepository struct {
 	dbClient *Database.MySQLDB
 }
 
+func NewUserRepository(dbClient *Database.MySQLDB) *UserRepository {
+	return &UserRepository{dbClient: dbClient}
+}
+
 func (userRepo *UserRepository) SaveUser(user *entity.User) error {
 	db := userRepo.dbClient.GetDB()
 	stmt, err := db.Prepare("INSERT INTO USER (first_name, last_name, username, password, intro, about, accomplishments, additional_information, join_date, birthdate) VALUES  (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
