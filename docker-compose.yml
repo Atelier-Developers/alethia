@@ -31,7 +31,7 @@ services:
     networks:
       - frontend
     volumes:
-      - /app/node_modules
+      - ./front:/app
     ports:
       - "7001:80"
     depends_on:
@@ -57,7 +57,7 @@ services:
       DB_HOST: db
       DB_PORT: 3306
       DB_NAME: alethia
-      REDIS_HOST: redis_db,
+      REDIS_HOST: redis_db
       REDIS_PORT: 6379
       REDIS_PASSWORD:
     restart: on-failure
