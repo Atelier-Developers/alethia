@@ -21,6 +21,7 @@ func main() {
 	}
 
 	userRepo := persistance.NewUserRepository(&db)
+	postRepo := persistance.NewPostRepository(&db)
 
 	//redis_host := os.Getenv("REDIS_HOST")
 	//redis_port := os.Getenv("REDIS_PORT")
@@ -36,11 +37,19 @@ func main() {
 	//authenticate := auth.NewAuth(services.User, redisService.Auth, tk)
 
 	userHandler := interfaces.NewUserHandler(userRepo)
+	postHandler := interfaces.NewPostHandler(postRepo)
 
 	router := gin.Default()
 
 	userGroup := router.Group("/users")
-	userGroup.POST("", userHandler.SaveUser)
+	{
+		userGroup.POST("", userHandler.SaveUser)
+	}
+
+	postGroup := router.Group("/post")
+	{
+		postGroup.POST("", postHandler.SavePost)
+	}
 
 	router.Run(":3000")
 }

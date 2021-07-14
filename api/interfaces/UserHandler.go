@@ -1,7 +1,6 @@
 package interfaces
 
 import (
-	"fmt"
 	"github.com/Atelier-Developers/alethia/domain/entity"
 	"github.com/Atelier-Developers/alethia/domain/repository"
 	"github.com/Atelier-Developers/alethia/infrastructure/security"
@@ -28,16 +27,12 @@ func NewUserHandler(userRepository repository.UserRepository) UserHandler {
 
 func (userHandler *UserHandler) SaveUser(c *gin.Context) {
 	var userRequestBody bodyTemplates.UserRequestBody
-	fmt.Println(c.Request.Body)
 	if err := c.ShouldBindJSON(&userRequestBody); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{
 			"invalid_json": "invalid json",
 		})
 		return
 	}
-
-	fmt.Println(userRequestBody)
-	fmt.Println(userRequestBody.JoinDate)
 
 	user := entity.User{
 		Username:        userRequestBody.Username,
@@ -51,14 +46,9 @@ func (userHandler *UserHandler) SaveUser(c *gin.Context) {
 		BirthDate:       userRequestBody.BirthDate,
 	}
 
-	fmt.Println(user)
-
 	if time.Time.IsZero(user.JoinDate) {
 		user.JoinDate = time.Now()
 	}
-
-	fmt.Println(user)
-
 	var err error
 
 	user.Password, err = security.Hash(userRequestBody.Password)

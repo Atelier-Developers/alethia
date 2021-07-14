@@ -7,13 +7,11 @@ import (
 )
 
 type PostRepository struct {
-	dbClient	*Database.MySQLDB
+	dbClient *Database.MySQLDB
 }
 
-
-func (postRepo *PostRepository) Init(dbClient *Database.MySQLDB) error {
-	postRepo.dbClient = dbClient
-	return nil
+func NewPostRepository(dbClient *Database.MySQLDB) *PostRepository {
+	return &PostRepository{dbClient: dbClient}
 }
 
 func (postRepo *PostRepository) SavePost(post *entity.Post) error {
@@ -32,4 +30,3 @@ func (postRepo *PostRepository) SavePost(post *entity.Post) error {
 
 	return nil
 }
-
