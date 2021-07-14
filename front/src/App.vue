@@ -48,8 +48,8 @@
       </v-app-bar>
     </div>
 
-    <v-main class="mt-10">
-      <v-container>
+    <v-main class="mt-16">
+      <v-container v-if="true">
         <v-row >
           <v-col cols="3"></v-col>
           <v-col cols="6">
@@ -60,6 +60,7 @@
           </v-col>
         </v-row>
       </v-container>
+      <Profile/>
     </v-main>
 
   </v-app>
@@ -68,11 +69,13 @@
 <script>
 import Home from "@/views/Home";
 import Notifs from "@/views/Notifs";
+import Profile from "./views/Profile";
 
 export default {
   name: 'App',
 
   components: {
+    Profile,
     Notifs,
     Home
   },
