@@ -56,7 +56,7 @@
             <Home/>
           </v-col>
           <v-col cols="3">
-            <Notif style="position: fixed;"/>
+            <Notifs style="position: fixed;"/>
           </v-col>
         </v-row>
       </v-container>
@@ -66,14 +66,14 @@
 </template>
 
 <script>
-import Home from "@/components/Home";
-import Notif from "@/components/Notif";
+import Home from "@/views/Home";
+import Notifs from "@/views/Notifs";
 
 export default {
   name: 'App',
 
   components: {
-    Notif,
+    Notifs,
     Home
   },
 
