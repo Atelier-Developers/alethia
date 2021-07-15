@@ -62,7 +62,7 @@ func main() {
 	{
 		userGroup.PUT("", userHandler.EditUser)
 
-		languageGroup := router.Group("/language", middleware.AuthMiddleware(redisService.Auth))
+		languageGroup := userGroup.Group("/language", middleware.AuthMiddleware(redisService.Auth))
 		{
 			languageGroup.POST("", userLanguageHandler.AddUserLanguage)
 			languageGroup.DELETE("", userLanguageHandler.DeleteUserLanguage)

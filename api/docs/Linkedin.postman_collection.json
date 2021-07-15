@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "494ba581-40a1-4ff5-9ba8-f629278292e7",
+		"_postman_id": "cb071123-d445-46f7-b7da-74dbcebdbcd9",
 		"name": "Linkedin",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -86,30 +86,167 @@
 					]
 				},
 				{
-					"name": "Register",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"username\" : \"amir79\",\n    \"first_name\": \"amir\",\n    \"last_name\": \"tavakkoli\",\n    \"password\": \"amir1234\",\n    \"intro\": \"Not much to say\",\n    \"about\": \"CE Student\",\n    \"accomplishments\": \"A simple loser in my life\",\n    \"additional-info\": \"nothing to say\",\n    \"birth-date\" : \"2000-07-14T17:55:50+00:00\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+					"name": "Language",
+					"item": [
+						{
+							"name": "Create User Language",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"language_id\": 2\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{path}}/users/language",
+									"host": [
+										"{{path}}"
+									],
+									"path": [
+										"users",
+										"language"
+									]
 								}
-							}
+							},
+							"response": []
 						},
-						"url": {
-							"raw": "{{path}}/register",
-							"host": [
-								"{{path}}"
-							],
-							"path": [
-								"register"
-							]
+						{
+							"name": "Delete User Language",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"language_id\": 2\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{path}}/users/language",
+									"host": [
+										"{{path}}"
+									],
+									"path": [
+										"users",
+										"language"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get User Languages",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{path}}/users/language",
+									"host": [
+										"{{path}}"
+									],
+									"path": [
+										"users",
+										"language"
+									]
+								}
+							},
+							"response": []
 						}
-					},
-					"response": []
+					]
+				},
+				{
+					"name": "Background History",
+					"item": [
+						{
+							"name": "Create User Background History",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"start_date\" : \"2000-07-14T17:55:50+00:00\",\n    \"end_date\" : \"2001-07-14T17:55:50+00:00\",\n    \"category\": \"work_experience\",\n    \"title\": \"CEO\",\n    \"description\": \"I'm the CEO.\",\n    \"location\" : \"Amazon Inc.\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{path}}/users/background",
+									"host": [
+										"{{path}}"
+									],
+									"path": [
+										"users",
+										"background"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Edit User Background History",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\" : 1,\n    \"start_date\" : \"2000-07-14T17:55:50+00:00\",\n    \"end_date\" : \"2001-07-14T17:55:50+00:00\",\n    \"category\": \"work_experience\",\n    \"title\": \"CEO\",\n    \"description\": \"I'm the CTO.\",\n    \"location\" : \"Apple Inc.\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{path}}/users/background",
+									"host": [
+										"{{path}}"
+									],
+									"path": [
+										"users",
+										"background"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete User Background History",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\" : 2\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{path}}/users/background",
+									"host": [
+										"{{path}}"
+									],
+									"path": [
+										"users",
+										"background"
+									]
+								}
+							},
+							"response": []
+						}
+					]
 				},
 				{
 					"name": "Login",
@@ -132,6 +269,32 @@
 							],
 							"path": [
 								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\" : \"amir79\",\n    \"first_name\": \"amir\",\n    \"last_name\": \"tavakkoli\",\n    \"password\": \"amir1234\",\n    \"intro\": \"Not much to say\",\n    \"about\": \"CE Student\",\n    \"accomplishments\": \"A simple loser in my life\",\n    \"additional-info\": \"nothing to say\",\n    \"birth-date\" : \"2000-07-14T17:55:50+00:00\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{path}}/register",
+							"host": [
+								"{{path}}"
+							],
+							"path": [
+								"register"
 							]
 						}
 					},
@@ -317,7 +480,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6ImU0MWQwNDYxLWYxOWYtNGFmNi1hZjgzLWM5MTNmNTc2OTQyNiIsImF1dGhvcml6ZWQiOnRydWUsImV4cCI6MTYyNjM1NDYxNCwidXNlcl9pZCI6IjEifQ.7CQ1AGS2ampGFukxW_Uns9zOZR3UrDuQ-7yXk4foT_Q",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6IjAzZTNhYmUwLThlMTgtNGEwYS05YzcwLTljZTMwNTJkOWEzNiIsImF1dGhvcml6ZWQiOnRydWUsImV4cCI6MTYyNjM1NjY0OSwidXNlcl9pZCI6IjEifQ.aPCkICeUOd5kOFuepZWINqMGLB-wrvEkDSrKbFaPb78",
 				"type": "string"
 			}
 		]
