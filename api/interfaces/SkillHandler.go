@@ -46,7 +46,7 @@ func (skillHandler *SkillHandler) EndorseSkill(c *gin.Context) {
 		UserSkillUserId:  endorseSkillRequestBody.UserId,
 		UserSkillSkillId: endorseSkillRequestBody.SkillId,
 		Notification: notification.Notification{
-			ReceiverId: userId.(uint64),
+			ReceiverId: endorseSkillRequestBody.UserId,
 		},
 	}
 	err = skillHandler.notificationRepository.CreateEndorseSkillNotification(&n)

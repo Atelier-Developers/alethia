@@ -58,6 +58,7 @@ func (userBackgroundHistoryHandler *UserBackgroundHistoryHandler) AddBackgroundH
 		return
 	}
 
+	//TODO WRONG
 	n := notification.ChangeWork{
 		UserHistoryId: backgroundHistory.ID,
 		Type:          "add",

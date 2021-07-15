@@ -77,15 +77,11 @@ func (commentHandler *CommentHandler) LikeComment(c *gin.Context) {
 		log.Fatal("User Id does not exist!")
 	}
 
-	var tmp entity.Comment
-	err := commentHandler.commentRepository.GetCommentByID(commentLikeRequestBody.CommentId, &tmp)
+	var comment entity.Comment
+	err := commentHandler.commentRepository.GetCommentByID(commentLikeRequestBody.CommentId, &comment)
 	if err != nil {
 		c.JSON(http.StatusConflict, err)
 		return
-	}
-
-	comment := entity.Comment{
-		Id: commentLikeRequestBody.CommentId,
 	}
 
 	err = commentHandler.commentRepository.LikeComment(&comment, userId.(uint64))
@@ -93,6 +89,20 @@ func (commentHandler *CommentHandler) LikeComment(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
+
+	n := notification.LikeComment{
+		UserId:    userId.(uint64),
+		CommentId: commentLikeRequestBody.CommentId,
+		Notification: notification.Notification{
+			ReceiverId: comment.CommenterId,
+		},
+	}
+	err = commentHandler.notificationRepository.CreateLikeCommentNotification(&n)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+
 	c.JSON(http.StatusOK, nil)
 }
 
