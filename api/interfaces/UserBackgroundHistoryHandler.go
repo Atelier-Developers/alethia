@@ -121,3 +121,20 @@ func (userBackgroundHistoryHandler *UserBackgroundHistoryHandler) DeleteBackgrou
 
 	c.JSON(http.StatusCreated, nil)
 }
+
+func (userBackgroundHistoryHandler *UserBackgroundHistoryHandler) GetUserBackgroundHistories(c *gin.Context) {
+	userId, exists := c.Get("user_id")
+
+	if !exists {
+		log.Fatal("User Id does not exist!")
+	}
+
+	backgrounds, err := userBackgroundHistoryHandler.backgroundHistoryRepository.GetUserBackgroundHistory(userId.(uint64))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.JSON(http.StatusCreated, backgrounds)
+}
+
