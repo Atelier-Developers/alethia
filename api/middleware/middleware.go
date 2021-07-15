@@ -6,9 +6,9 @@ import (
 	"net/http"
 )
 
-func AuthMiddleware() gin.HandlerFunc {
+func AuthMiddleware(authInterface auth.AuthInterface) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		userId, err := auth.TokenValid(c.Request)
+		userId, err := auth.TokenValid(c.Request, authInterface)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{
 				"status": http.StatusUnauthorized,

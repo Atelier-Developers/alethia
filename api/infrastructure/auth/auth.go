@@ -60,7 +60,6 @@ func (tk *ClientData) CreateAuth(userid uint64, td *TokenDetails) error {
 	return nil
 }
 
-//Check the metadata saved
 func (tk *ClientData) FetchAuth(tokenUuid string) (uint64, error) {
 	userid, err := tk.client.Get(tk.ctx, tokenUuid).Result()
 	if err != nil {
@@ -70,10 +69,10 @@ func (tk *ClientData) FetchAuth(tokenUuid string) (uint64, error) {
 	return userID, nil
 }
 
-//Once a user row in the token table
 func (tk *ClientData) DeleteTokens(authD *AccessDetails) error {
 	//get the refresh uuid
 	refreshUuid := fmt.Sprintf("%s++%d", authD.TokenUuid, authD.UserId)
+	fmt.Println(authD)
 	//delete access token
 	deletedAt, err := tk.client.Del(tk.ctx, authD.TokenUuid).Result()
 	if err != nil {
@@ -84,6 +83,7 @@ func (tk *ClientData) DeleteTokens(authD *AccessDetails) error {
 	if err != nil {
 		return err
 	}
+	fmt.Println(deletedAt, deletedRt)
 	//When the record is deleted, the return value is 1
 	if deletedAt != 1 || deletedRt != 1 {
 		return errors.New("something went wrong")

@@ -1,6 +1,7 @@
 package interfaces
 
 import (
+	"fmt"
 	"github.com/Atelier-Developers/alethia/domain/entity"
 	"github.com/Atelier-Developers/alethia/domain/repository"
 	"github.com/Atelier-Developers/alethia/infrastructure/auth"
@@ -17,7 +18,6 @@ type UserHandler struct {
 	tokenInterface auth.TokenInterface
 }
 
-// TODO: AUTH AND TOKEN
 func NewUserHandler(userRepository repository.UserRepository, authInterface auth.AuthInterface, tokenInterface auth.TokenInterface) UserHandler {
 	return UserHandler{
 		userRepository: userRepository,
@@ -82,18 +82,12 @@ func (userHandler *UserHandler) Login(c *gin.Context) {
 		c.JSON(http.StatusUnprocessableEntity, "Invalid json provided")
 		return
 	}
-	////validate request:
-	//validateUser := user.Validate("login")
-	//if len(validateUser) > 0 {
-	//	c.JSON(http.StatusUnprocessableEntity, validateUser)
-	//	return
-	//}
 
 	var user entity.User
 	userErr := userHandler.userRepository.GetUserByUsernameAndPassword(userRequestBody.Username, userRequestBody.Password, &user)
 
 	if userErr != nil {
-		c.JSON(http.StatusInternalServerError, userErr)
+		c.JSON(http.StatusBadRequest, userErr)
 		return
 	}
 	ts, tErr := userHandler.tokenInterface.CreateToken(user.ID)
@@ -116,3 +110,21 @@ func (userHandler *UserHandler) Login(c *gin.Context) {
 
 	c.JSON(http.StatusOK, userData)
 }
+
+func (userHandler *UserHandler) Logout(c *gin.Context) {
+	//check is the user is authenticated first
+	metadata, err := userHandler.tokenInterface.ExtractTokenMetadata(c.Request)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, "Unauthorized")
+		return
+	}
+	//if the access token exist and it is still valid, then delete both the access token and the refresh token
+	deleteErr := userHandler.authInterface.DeleteTokens(metadata)
+	if deleteErr != nil {
+		fmt.Println(err)
+		c.JSON(http.StatusUnauthorized, deleteErr.Error())
+		return
+	}
+	c.JSON(http.StatusOK, "Successfully logged out")
+}
+

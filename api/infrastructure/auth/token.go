@@ -28,7 +28,7 @@ func (t *Token) CreateToken(userid uint64) (*TokenDetails, error) {
 	td.TokenUuid = uuid.NewV4().String()
 
 	td.RefreshTokenExpires = time.Now().Add(time.Hour * 24 * 7).Unix()
-	td.RefreshUuid = fmt.Sprintf("%s++%d", td.TokenUuid, strconv.Itoa(int(userid)))
+	td.RefreshUuid = td.TokenUuid + "++" + strconv.Itoa(int(userid))
 
 	var err error
 	//Creating Access Token
@@ -55,8 +55,7 @@ func (t *Token) CreateToken(userid uint64) (*TokenDetails, error) {
 	return td, nil
 }
 
-
-func TokenValid(r *http.Request) (uint64, error) {
+func TokenValid(r *http.Request, authInterface AuthInterface) (uint64, error) {
 	token, err := VerifyToken(r)
 	if err != nil {
 		return 0, err
@@ -66,7 +65,10 @@ func TokenValid(r *http.Request) (uint64, error) {
 		return 0, err
 	}
 
-	fmt.Println(claim, claim["user_id"])
+	_, err = authInterface.FetchAuth(claim["access_uuid"].(string))
+	if err != nil {
+		return 0, err
+	}
 
 	tmp, err := strconv.Atoi(claim["user_id"].(string))
 	if err != nil {
@@ -112,7 +114,7 @@ func (t *Token) ExtractTokenMetadata(r *http.Request) (*AccessDetails, error) {
 		if !ok {
 			return nil, err
 		}
-		userId, err := strconv.ParseUint(fmt.Sprintf("%.f", claims["user_id"]), 10, 64)
+		userId, err := strconv.ParseUint(claims["user_id"].(string), 10, 64)
 		if err != nil {
 			return nil, err
 		}
