@@ -14,16 +14,16 @@ import (
 )
 
 type UserHandler struct {
-	userRepository              repository.UserRepository
-	authInterface               auth.AuthInterface
-	tokenInterface              auth.TokenInterface
+	userRepository repository.UserRepository
+	authInterface  auth.AuthInterface
+	tokenInterface auth.TokenInterface
 }
 
 func NewUserHandler(userRepository repository.UserRepository, authInterface auth.AuthInterface, tokenInterface auth.TokenInterface) UserHandler {
 	return UserHandler{
-		userRepository:              userRepository,
-		authInterface:               authInterface,
-		tokenInterface:              tokenInterface,
+		userRepository: userRepository,
+		authInterface:  authInterface,
+		tokenInterface: tokenInterface,
 	}
 }
 
@@ -73,6 +73,64 @@ func (userHandler *UserHandler) SaveUser(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusCreated, nil)
+}
+
+func (userHandler *UserHandler) GetUser(c *gin.Context) {
+	userId, exists := c.Get("user_id")
+
+	if !exists {
+		log.Fatal("User Id does not exist!")
+	}
+
+	var user entity.User
+	err := userHandler.userRepository.GetUserByID(userId.(uint64), &user)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	response := bodyTemplates.UserGetResponseBody{
+		Username:        user.Username,
+		FirstName:       user.FirstName,
+		LastName:        user.LastName,
+		Intro:           user.Intro,
+		About:           user.About,
+		Accomplishments: user.Accomplishments,
+		AdditionalInfo:  user.AdditionalInfo,
+		BirthDate:       user.BirthDate,
+		JoinDate:        user.JoinDate,
+	}
+	c.JSON(http.StatusCreated, response)
+}
+
+func (userHandler *UserHandler) GetUserById(c *gin.Context) {
+	var userRequestBody bodyTemplates.UserGetRequestBody
+	if err := c.ShouldBindJSON(&userRequestBody); err != nil {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"invalid_json": "invalid json",
+		})
+		return
+	}
+
+	var user entity.User
+	err := userHandler.userRepository.GetUserByID(userRequestBody.Id, &user)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	response := bodyTemplates.UserGetResponseBody{
+		Username:        user.Username,
+		FirstName:       user.FirstName,
+		LastName:        user.LastName,
+		Intro:           user.Intro,
+		About:           user.About,
+		Accomplishments: user.Accomplishments,
+		AdditionalInfo:  user.AdditionalInfo,
+		BirthDate:       user.BirthDate,
+		JoinDate:        user.JoinDate,
+	}
+	c.JSON(http.StatusCreated, response)
 }
 
 func (userHandler *UserHandler) Login(c *gin.Context) {
@@ -160,8 +218,5 @@ func (userHandler *UserHandler) EditUser(c *gin.Context) {
 	}
 	c.JSON(http.StatusCreated, nil)
 }
-
-
-
 
 //TODO: GET USER (USER + BACKGROUND HISTORIES)

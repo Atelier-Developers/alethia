@@ -16,7 +16,7 @@ func NewConversationRepository(dbClient *Database.MySQLDB) *ConversationReposito
 
 func (conversationRepo ConversationRepository) ConversationExists(userId1 uint64, userId2 uint64) (bool, error) {
 	db := conversationRepo.dbClient.GetDB()
-	stmt, err := db.Prepare("SELECT Count(*) FROM CONVERSATION WHERE (user1_id=? AND user2_id=?) OR (user1_id=? AND user2_id=?)")
+	stmt, err := db.Prepare("SELECT Count(*) FROM USER WHERE (user1_id=? AND user2_id=?) OR (user1_id=? AND user2_id=?)")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -29,6 +29,26 @@ func (conversationRepo ConversationRepository) ConversationExists(userId1 uint64
 		log.Fatal(err)
 	}
 	return count > 0, nil
+}
+
+func (conversationRepo *ConversationRepository) DoesConversationBelongToUser(conversationId uint64, userId uint64) (bool, error) {
+	db := conversationRepo.dbClient.GetDB()
+	stmt, err := db.Prepare("SELECT user_id FROM USER_CONVERSATION WHERE userId AND (user1_id = ? OR user2_id = ?)")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	row := stmt.QueryRow(conversationId, userId, userId)
+
+	var cId uint64
+	err = row.Scan(&cId)
+
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
 }
 
 func (conversationRepo *ConversationRepository) SaveConversation(conversation *entity.Conversation) error {

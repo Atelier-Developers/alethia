@@ -124,26 +124,33 @@ CREATE TABLE COMMENT_LIKE
 
 CREATE TABLE CONVERSATION
 (
-    id          INT AUTO_INCREMENT NOT NULL,
-    user1_id    INT                NOT NULL,
-    user2_id    INT                NOT NULL,
-    is_archived BOOLEAN            NOT NULL,
-    is_deleted  BOOLEAN            NOT NULL,
-    is_read     BOOLEAN            NOT NULL,
-    PRIMARY KEY (id),
-    CONSTRAINT FK_user1_conversation FOREIGN KEY (user1_id) REFERENCES USER (id),
-    CONSTRAINT FK_user2_conversation FOREIGN KEY (user2_id) REFERENCES USER (id)
+    id INT AUTO_INCREMENT NOT NULL,
+    PRIMARY KEY (id)
 );
+
+CREATE TABLE USER_CONVERSATION
+(
+    user_id         INT     NOT NULL,
+    conversation_id INT     NOT NULL,
+    is_archived     BOOLEAN NOT NULL,
+    is_deleted      BOOLEAN NOT NULL,
+    is_read         BOOLEAN NOT NULL,
+    PRIMARY KEY (user_id, conversation_id),
+    CONSTRAINT FK_user_user_conversation FOREIGN KEY (user_id) REFERENCES USER (id),
+    CONSTRAINT FK_conversation_user_conversation FOREIGN KEY (conversation_id) REFERENCES CONVERSATION (id)
+)
 
 CREATE TABLE MESSAGE
 (
     id              INT AUTO_INCREMENT NOT NULL,
+    user_id         INT                NOT NULL,
     reply_id        INT                NOT NULL,
     conversation_id INT                NOT NULL,
     body            TEXT(1024)         NOT NULL,
     created         DATETIME DEFAULT CURRENT_TIMESTAMP,
 
     PRIMARY KEY (id),
+    CONSTRAINT FK_user_message FOREIGN KEY (user_id) REFERENCES USER (id),
     CONSTRAINT FK_reply_message FOREIGN KEY (reply_id) REFERENCES MESSAGE (id),
     CONSTRAINT FK_conversation_message FOREIGN KEY (conversation_id) REFERENCES CONVERSATION (id)
 );

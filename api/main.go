@@ -65,6 +65,8 @@ func main() {
 	userGroup := router.Group("/users", middleware.AuthMiddleware(redisService.Auth))
 	{
 		userGroup.PUT("", userHandler.EditUser)
+		userGroup.GET("", userHandler.GetUser)
+		userGroup.POST("", userHandler.GetUserById)
 
 		languageGroup := userGroup.Group("/language", middleware.AuthMiddleware(redisService.Auth))
 		{
@@ -97,6 +99,11 @@ func main() {
 	conversationGroup := router.Group("/conversation", middleware.AuthMiddleware(redisService.Auth))
 	{
 		conversationGroup.POST("", conversationHandler.AddConversation)
+		conversationGroup.PUT("", conversationHandler.UpdateConversation)
+		conversationGroup.DELETE("", conversationHandler.DeleteConversation)
+		conversationGroup.GET("", conversationHandler.GetUserConversations)
+		// TODO: Naming should be different
+		conversationGroup.GET("/singleConversation", conversationHandler.GetConversation)
 	}
 
 	postGroup := router.Group("/post", middleware.AuthMiddleware(redisService.Auth))

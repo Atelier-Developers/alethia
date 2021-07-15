@@ -60,3 +60,121 @@ func (conversationHandler ConversationHandler) AddConversation(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, nil)
 }
+
+func (conversationHandler ConversationHandler) UpdateConversation(c *gin.Context) {
+	var userRequestBody bodyTemplates.ConversationUpdateRequestBody
+	if err := c.ShouldBindJSON(&userRequestBody); err != nil {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"invalid_json": "invalid json",
+		})
+		return
+	}
+
+	userId, exists := c.Get("user_id")
+
+	if !exists {
+		log.Fatal("User Id does not exist!")
+	}
+
+	conversationBelongToUser, err := conversationHandler.conversationRepository.DoesConversationBelongToUser(userRequestBody.Id, userId.(uint64))
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if !conversationBelongToUser {
+		log.Fatal("This is not this user's conversation.")
+	}
+
+	conversation := entity.Conversation{Id: userRequestBody.Id, IsArchived: *userRequestBody.IsArchived, IsDeleted: *userRequestBody.IsDeleted, IsRead: *userRequestBody.IsRead}
+
+	err = conversationHandler.conversationRepository.UpdateConversation(conversation)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.JSON(http.StatusCreated, nil)
+
+}
+
+func (conversationHandler ConversationHandler) DeleteConversation(c *gin.Context) {
+	var userRequestBody bodyTemplates.ConversationDeleteRequestBody
+	if err := c.ShouldBindJSON(&userRequestBody); err != nil {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"invalid_json": "invalid json",
+		})
+		return
+	}
+
+	userId, exists := c.Get("user_id")
+
+	if !exists {
+		log.Fatal("User Id does not exist!")
+	}
+
+	conversationBelongToUser, err := conversationHandler.conversationRepository.DoesConversationBelongToUser(userRequestBody.Id, userId.(uint64))
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if !conversationBelongToUser {
+		log.Fatal("This is not this user's conversation.")
+	}
+
+	conversation := entity.Conversation{Id: userRequestBody.Id}
+
+	err = conversationHandler.conversationRepository.DeleteConversation(conversation)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.JSON(http.StatusCreated, nil)
+
+}
+
+func (conversationHandler ConversationHandler) GetConversation(c *gin.Context) {
+	var userRequestBody bodyTemplates.ConversationGetRequestBody
+	if err := c.ShouldBindJSON(&userRequestBody); err != nil {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"invalid_json": "invalid json",
+		})
+		return
+	}
+
+	userId, exists := c.Get("user_id")
+
+	if !exists {
+		log.Fatal("User Id does not exist!")
+	}
+
+	if userId != userRequestBody.UserId1 && userId != userRequestBody.UserId2 {
+		log.Fatal("This user doesn't have access to this conversation!")
+	}
+
+	conversation, err := conversationHandler.conversationRepository.GetConversation(userRequestBody.UserId1, userRequestBody.UserId2)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.JSON(http.StatusCreated, conversation)
+}
+
+func (conversationHandler ConversationHandler) GetUserConversations(c *gin.Context) {
+	userId, exists := c.Get("user_id")
+
+	if !exists {
+		log.Fatal("User Id does not exist!")
+	}
+
+	conversations, err := conversationHandler.conversationRepository.GetUserConversations(userId.(uint64))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.JSON(http.StatusCreated, conversations)
+}
