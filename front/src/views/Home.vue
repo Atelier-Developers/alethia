@@ -5,6 +5,8 @@
         <Post :post="post"></Post>
       </v-col>
     </v-row>
+    KIR
+
   </v-container>
 </template>
 
