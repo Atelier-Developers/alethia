@@ -6,7 +6,7 @@ CREATE TABLE USER
     first_name             VARCHAR(100)       NOT NULL,
     last_name              VARCHAR(100)       NOT NULL,
     username               VARCHAR(50)        NOT NULL,
-    password               BINARY(60)        NOT NULL,
+    password               BINARY(60)         NOT NULL,
     intro                  TEXT(255)          NOT NULL,
     about                  TEXT(1024)         NOT NULL,
     accomplishments        TEXT(1024)         NOT NULL,
@@ -40,15 +40,22 @@ CREATE TABLE POST
     description TEXT(1024)         NOT NULL,
     # MEDIA
     created     DATETIME DEFAULT CURRENT_TIMESTAMP,
-    repost_id   INT                NOT NULL,
     poster_id   INT                NOT NULL,
     PRIMARY KEY (id),
     CONSTRAINT FK_user_post FOREIGN KEY (poster_id) REFERENCES USER (id)
 );
 
-ALTER TABLE POST
-    ADD CONSTRAINT FK_repost_post
-        FOREIGN KEY (repost_id) REFERENCES POST (id);
+
+CREATE TABLE REPOST
+(
+    post_id   INT NOT NULL,
+    repost_id INT NOT NULL,
+
+    PRIMARY KEY (post_id, repost_id),
+
+    CONSTRAINT FK_repost_post FOREIGN KEY (repost_id) REFERENCES POST (id),
+    CONSTRAINT FK_post_post FOREIGN KEY (post_id) REFERENCES POST (id)
+);
 
 
 CREATE TABLE COMMENT
@@ -264,10 +271,10 @@ CREATE TABLE NOTIFICATION_REPLY
 
 CREATE TABLE NOTIFICATION_ENDORSE
 (
-    notif_id   INT NOT NULL,
+    notif_id            INT NOT NULL,
     user_skill_skill_id INT NOT NULL,
     user_skill_user_id  INT NOT NULL,
-    user_id    INT NOT NULL,
+    user_id             INT NOT NULL,
 
     CONSTRAINT FK_notification_notification_endorse FOREIGN KEY (notif_id) REFERENCES NOTIFICATION (id),
     CONSTRAINT FK_user_skill_notification_endorse FOREIGN KEY (user_skill_skill_id, user_skill_user_id) REFERENCES USER_SKILL (skill_id, user_id),

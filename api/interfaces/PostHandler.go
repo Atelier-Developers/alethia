@@ -5,6 +5,7 @@ import (
 	"github.com/Atelier-Developers/alethia/domain/repository"
 	"github.com/Atelier-Developers/alethia/interfaces/bodyTemplates"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 	"time"
 )
@@ -29,12 +30,19 @@ func (postHandler *PostHandler) SavePost(c *gin.Context) {
 	}
 	//TODO Check validity repost ID
 
+	userId, exists := c.Get("user_id")
+
+	if !exists {
+		log.Fatal("User Id does not exist!")
+	}
+
+
 	post := entity.Post{
-		IsFeatured:  postCreateRequestBody.IsFeatured,
+		IsFeatured:  false,
 		Description: postCreateRequestBody.Description,
 		Created:     time.Now(),
 		RepostId:    postCreateRequestBody.RepostId,
-		PosterId:    1,
+		PosterId:    userId.(uint64),
 	}
 
 	err := postHandler.postRepository.SavePost(&post)

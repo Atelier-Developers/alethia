@@ -6,6 +6,7 @@ import (
 	"github.com/Atelier-Developers/alethia/infrastructure/auth"
 	"github.com/Atelier-Developers/alethia/infrastructure/persistance"
 	"github.com/Atelier-Developers/alethia/interfaces"
+	"github.com/Atelier-Developers/alethia/middleware"
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 	"log"
@@ -43,6 +44,7 @@ func main() {
 
 	router := gin.Default()
 	router.Use(gin.Recovery())
+	router.Use(middleware.CORSMiddleware())
 
 	router.POST("/login", userHandler.Login)
 	userGroup := router.Group("/users")
@@ -50,7 +52,7 @@ func main() {
 		userGroup.POST("", userHandler.SaveUser)
 	}
 
-	postGroup := router.Group("/post")
+	postGroup := router.Group("/post", middleware.AuthMiddleware())
 	{
 		postGroup.POST("", postHandler.SavePost)
 	}

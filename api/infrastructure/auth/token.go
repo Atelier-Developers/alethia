@@ -35,7 +35,7 @@ func (t *Token) CreateToken(userid uint64) (*TokenDetails, error) {
 	atClaims := jwt.MapClaims{}
 	atClaims["authorized"] = true
 	atClaims["access_uuid"] = td.TokenUuid
-	atClaims["user_id"] = userid
+	atClaims["user_id"] = strconv.Itoa(int(userid))
 	atClaims["exp"] = td.AccessTokenExpires
 	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
 	td.AccessToken, err = at.SignedString([]byte(os.Getenv("ACCESS_SECRET")))
@@ -45,7 +45,7 @@ func (t *Token) CreateToken(userid uint64) (*TokenDetails, error) {
 	//Creating Refresh Token
 	rtClaims := jwt.MapClaims{}
 	rtClaims["refresh_uuid"] = td.RefreshUuid
-	rtClaims["user_id"] = userid
+	rtClaims["user_id"] = strconv.Itoa(int(userid))
 	rtClaims["exp"] = td.RefreshTokenExpires
 	rt := jwt.NewWithClaims(jwt.SigningMethodHS256, rtClaims)
 	td.RefreshToken, err = rt.SignedString([]byte(os.Getenv("REFRESH_SECRET")))
@@ -55,15 +55,24 @@ func (t *Token) CreateToken(userid uint64) (*TokenDetails, error) {
 	return td, nil
 }
 
-func TokenValid(r *http.Request) error {
+
+func TokenValid(r *http.Request) (uint64, error) {
 	token, err := VerifyToken(r)
 	if err != nil {
-		return err
+		return 0, err
 	}
-	if _, ok := token.Claims.(jwt.Claims); !ok && !token.Valid {
-		return err
+	claim, ok := token.Claims.(jwt.MapClaims)
+	if !ok && !token.Valid {
+		return 0, err
 	}
-	return nil
+
+	fmt.Println(claim, claim["user_id"])
+
+	tmp, err := strconv.Atoi(claim["user_id"].(string))
+	if err != nil {
+		return 0, nil
+	}
+	return uint64(tmp), nil
 }
 
 func VerifyToken(r *http.Request) (*jwt.Token, error) {
