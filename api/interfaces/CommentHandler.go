@@ -10,12 +10,14 @@ import (
 )
 
 type CommentHandler struct {
-	commentRepository repository.CommentRepository
+	commentRepository      repository.CommentRepository
+	notificationRepository repository.NotificationRepository
 }
 
-func NewCommentHandler(commentRepository repository.CommentRepository) CommentHandler {
+func NewCommentHandler(commentRepository repository.CommentRepository, notificationRepository repository.NotificationRepository, ) CommentHandler {
 	return CommentHandler{
-		commentRepository: commentRepository,
+		commentRepository:      commentRepository,
+		notificationRepository: notificationRepository,
 	}
 }
 
@@ -45,6 +47,11 @@ func (commentHandler *CommentHandler) SaveComment(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
+	//err = commentHandler.notificationRepository.CreateCommentNotification(&comment)
+	//if err != nil {
+	//	c.JSON(http.StatusInternalServerError, err)
+	//	return
+	//}
 	c.JSON(http.StatusCreated, nil)
 }
 
