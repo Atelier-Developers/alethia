@@ -9,6 +9,83 @@
 			"name": "User",
 			"item": [
 				{
+					"name": "Skill",
+					"item": [
+						{
+							"name": "Delete Skill",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"skill_id\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{path}}/users/skill",
+									"host": [
+										"{{path}}"
+									],
+									"path": [
+										"users",
+										"skill"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add Skill Copy",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"skill_id\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{path}}/users/skill",
+									"host": [
+										"{{path}}"
+									],
+									"path": [
+										"users",
+										"skill"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get User Skills",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{path}}/users/skill",
+									"host": [
+										"{{path}}"
+									],
+									"path": [
+										"users",
+										"skill"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
 					"name": "Register",
 					"request": {
 						"method": "POST",
@@ -23,12 +100,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{path}}/users",
+							"raw": "{{path}}/register",
 							"host": [
 								"{{path}}"
 							],
 							"path": [
-								"users"
+								"register"
 							]
 						}
 					},
@@ -66,6 +143,94 @@
 			"name": "Post",
 			"item": [
 				{
+					"name": "Comment",
+					"item": [
+						{
+							"name": "Create Comment",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"text\": \"Commen ghashangam\",\n    \"post_id\": 2\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{path}}/post/comment",
+									"host": [
+										"{{path}}"
+									],
+									"path": [
+										"post",
+										"comment"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Comment Reply",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"text\": \"Commen ghashangam\",\n    \"post_id\": 2,\n    \"replied_comment_id\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{path}}/post/comment/reply",
+									"host": [
+										"{{path}}"
+									],
+									"path": [
+										"post",
+										"comment",
+										"reply"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Like Comment",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"comment_id\": 2\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{path}}/post/comment/like",
+									"host": [
+										"{{path}}"
+									],
+									"path": [
+										"post",
+										"comment",
+										"like"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
 					"name": "Create Post with repost",
 					"request": {
 						"method": "POST",
@@ -92,7 +257,34 @@
 					"response": []
 				},
 				{
-					"name": "Create Post Copy",
+					"name": "Like Post",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"post_id\": 2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{path}}/post/like",
+							"host": [
+								"{{path}}"
+							],
+							"path": [
+								"post",
+								"like"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Post",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -125,7 +317,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6Ijk2ZDMxMTY5LTc2YzYtNDMyZi1hNGM2LTYzZGRlNzY3MjBhMCIsImF1dGhvcml6ZWQiOnRydWUsImV4cCI6MTYyNjMzNDg2MSwidXNlcl9pZCI6IjEifQ.GTxVdDquPy1V6OOtrXlC-TeUxtb94_CgoY9ftR-U8O0",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6ImU0MWQwNDYxLWYxOWYtNGFmNi1hZjgzLWM5MTNmNTc2OTQyNiIsImF1dGhvcml6ZWQiOnRydWUsImV4cCI6MTYyNjM1NDYxNCwidXNlcl9pZCI6IjEifQ.7CQ1AGS2ampGFukxW_Uns9zOZR3UrDuQ-7yXk4foT_Q",
 				"type": "string"
 			}
 		]
