@@ -214,3 +214,28 @@ func (notificationRepository *NotificationRepository) GetLikeCommentNotification
 	}
 	return notifs, nil
 }
+
+func (notificationRepository *NotificationRepository) CreateLikePostNotification(likePost *notification.LikePost) error {
+	return nil
+}
+func (notificationRepository *NotificationRepository) GetLikePostNotification(userId uint64) ([]notification.LikePost, error) {
+	return nil, nil
+}
+func (notificationRepository *NotificationRepository) CreateReplyCommentNotification(likeComment *notification.ReplyComment) error {
+	return nil
+}
+func (notificationRepository *NotificationRepository) GetReplyCommentNotification(userId uint64) ([]notification.ReplyComment, error) {
+	return nil, nil
+}
+func (notificationRepository *NotificationRepository) CreateViewProfileNotification(likeComment *notification.ViewProfile) error {
+	return nil
+}
+func (notificationRepository *NotificationRepository) GetViewProfileNotification(userId uint64) ([]notification.ViewProfile, error) {
+	return nil, nil
+}
+func (notificationRepository *NotificationRepository) CreateBirthdayNotification(likeComment *notification.Birthday) error {
+	return nil
+}
+func (notificationRepository *NotificationRepository) GetBirthdayNotification(userId uint64) ([]notification.Birthday, error) {
+	return nil, nil
+}
