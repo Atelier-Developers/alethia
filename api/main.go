@@ -48,9 +48,9 @@ func main() {
 	userLanguageHandler := interfaces.NewUserLanguageHandler(languageRepo, redisService.Auth, token)
 	userHandler := interfaces.NewUserHandler(userRepo, redisService.Auth, token)
 	postHandler := interfaces.NewPostHandler(postRepo)
-	commentHandler := interfaces.NewCommentHandler(commentRepo)
-	skillHandler := interfaces.NewSkillHandler(skillRepo)
 	notificationHandler := interfaces.NewNotificationHandler(notificationRepo)
+	commentHandler := interfaces.NewCommentHandler(commentRepo, notificationRepo)
+	skillHandler := interfaces.NewSkillHandler(skillRepo)
 
 	router := gin.Default()
 	router.Use(gin.Recovery())
