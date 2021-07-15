@@ -59,18 +59,13 @@ func (languageRepo *LanguageRepository) UserLanguageExists(userId uint64, langua
 	}
 	defer stmt.Close()
 
+	var count uint64
 	row := stmt.QueryRow(userId, languageId)
-
-	var (
-		count int
-	)
-
 	err = row.Scan(&count)
 	if err != nil {
-		return false, err
+		log.Fatal(err)
 	}
-
-	return true, nil
+	return count > 0, nil
 }
 
 func (languageRepo *LanguageRepository) GetUserLanguages(userId uint64) ([]entity.Language, error) {

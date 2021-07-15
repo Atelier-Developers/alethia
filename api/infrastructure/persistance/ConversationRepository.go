@@ -16,24 +16,19 @@ func NewConversationRepository(dbClient *Database.MySQLDB) *ConversationReposito
 
 func (conversationRepo ConversationRepository) ConversationExists(userId1 uint64, userId2 uint64) (bool, error) {
 	db := conversationRepo.dbClient.GetDB()
-	stmt, err := db.Prepare("SELECT Count(*) FROM CONVERSATION WHERE user1_id=? AND user2_id=?")
+	stmt, err := db.Prepare("SELECT Count(*) FROM CONVERSATION WHERE (user1_id=? AND user2_id=?) OR (user1_id=? AND user2_id=?)")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer stmt.Close()
 
-	row := stmt.QueryRow(userId1, userId2)
-
-	var (
-		count int
-	)
-
+	var count uint64
+	row := stmt.QueryRow(userId1, userId2, userId2, userId1)
 	err = row.Scan(&count)
 	if err != nil {
-		return false, err
+		log.Fatal(err)
 	}
-
-	return true, nil
+	return count > 0, nil
 }
 
 func (conversationRepo *ConversationRepository) SaveConversation(conversation *entity.Conversation) error {

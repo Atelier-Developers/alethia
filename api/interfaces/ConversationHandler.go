@@ -50,7 +50,7 @@ func (conversationHandler ConversationHandler) AddConversation(c *gin.Context) {
 		return
 	}
 
-	conversation := entity.Conversation{UserId1: userId.(uint64), UserId2: userRequestBody.UserId2, IsArchived: userRequestBody.IsArchived, IsDeleted: userRequestBody.IsDeleted, IsRead: userRequestBody.IsRead}
+	conversation := entity.Conversation{UserId1: userId.(uint64), UserId2: userRequestBody.UserId2, IsArchived: *userRequestBody.IsArchived, IsDeleted: *userRequestBody.IsDeleted, IsRead: *userRequestBody.IsRead}
 
 	err = conversationHandler.conversationRepository.SaveConversation(&conversation)
 	if err != nil {
