@@ -25,11 +25,11 @@ const routes = [
         name: 'Login',
         component: () => import("@/views/Login"),
     },
-    // {
-    //     path: '/signup',
-    //     name: 'Signup',
-    //     component: () => import("@/views/SignUp"),
-    // },
+    {
+        path: '/signup',
+        name: 'Signup',
+        component: () => import("@/views/Signup"),
+    },
     // {
     //     path: '*',
     //     name: 'Error404',

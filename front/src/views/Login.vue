@@ -1,8 +1,11 @@
 <template>
   <v-container>
-    <v-row>
+    <v-row justify="center">
       <v-col cols="4">
         <v-card>
+          <v-card-title>
+            Login
+          </v-card-title>
           <v-container>
             <v-row>
               <v-col cols="12">

@@ -48,7 +48,7 @@
       </v-app-bar>
     </div>
 
-    <v-main>
+    <v-main class="pt-16">
       <router-view class="fill-height"></router-view>
     </v-main>
     <!--    <v-main class="mt-16">-->
