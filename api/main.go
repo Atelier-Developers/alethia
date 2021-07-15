@@ -70,9 +70,9 @@ func main() {
 		}
 		backgroundGroup := userGroup.Group("/background")
 		{
-			backgroundGroup.POST("", userHandler.AddBackgroundHistory)
-			backgroundGroup.PUT("", userHandler.EditBackgroundHistory)
-			backgroundGroup.DELETE("", userHandler.DeleteBackgroundHistory)
+			backgroundGroup.POST("", userBackgroundHistoryHandler.AddBackgroundHistory)
+			backgroundGroup.PUT("", userBackgroundHistoryHandler.EditBackgroundHistory)
+			backgroundGroup.DELETE("", userBackgroundHistoryHandler.DeleteBackgroundHistory)
 		}
 
 		userSkillGroup := userGroup.Group("/skill")
