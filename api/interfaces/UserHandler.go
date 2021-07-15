@@ -15,15 +15,13 @@ import (
 
 type UserHandler struct {
 	userRepository              repository.UserRepository
-	backgroundHistoryRepository repository.BackgroundHistoryRepository
 	authInterface               auth.AuthInterface
 	tokenInterface              auth.TokenInterface
 }
 
-func NewUserHandler(userRepository repository.UserRepository, backgroundHistoryRepository repository.BackgroundHistoryRepository, authInterface auth.AuthInterface, tokenInterface auth.TokenInterface) UserHandler {
+func NewUserHandler(userRepository repository.UserRepository, authInterface auth.AuthInterface, tokenInterface auth.TokenInterface) UserHandler {
 	return UserHandler{
 		userRepository:              userRepository,
-		backgroundHistoryRepository: backgroundHistoryRepository,
 		authInterface:               authInterface,
 		tokenInterface:              tokenInterface,
 	}
@@ -164,103 +162,6 @@ func (userHandler *UserHandler) EditUser(c *gin.Context) {
 }
 
 
-func (userHandler *UserHandler) AddBackgroundHistory(c *gin.Context) {
-	var userRequestBody bodyTemplates.UserBackgroundHistoryCreateRequestBody
-	if err := c.ShouldBindJSON(&userRequestBody); err != nil {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			"invalid_json": "invalid json",
-		})
-		return
-	}
 
-	userId, exists := c.Get("user_id")
-
-	if !exists {
-		log.Fatal("User Id does not exist!")
-	}
-
-	backgroundHistory := entity.BackgroundHistory{
-		UserID:      userId.(uint64),
-		StartDate:   userRequestBody.StartDate,
-		EndDate:     userRequestBody.EndDate,
-		Category:    userRequestBody.Category,
-		Title:       userRequestBody.Title,
-		Description: userRequestBody.Description,
-		Location:    userRequestBody.Location,
-	}
-
-	err := userHandler.backgroundHistoryRepository.SaveBackgroundHistory(&backgroundHistory)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, err)
-		return
-	}
-
-	//TODO: CREATE NOTIF TOO?
-	c.JSON(http.StatusCreated, nil)
-}
-
-func (userHandler *UserHandler) EditBackgroundHistory(c *gin.Context) {
-	var userRequestBody bodyTemplates.UserBackgroundHistoryUpdateRequestBody
-	if err := c.ShouldBindJSON(&userRequestBody); err != nil {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			"invalid_json": "invalid json",
-		})
-		return
-	}
-
-	_, exists := c.Get("user_id")
-
-	if !exists {
-		log.Fatal("User Id does not exist!")
-	}
-
-	backgroundHistory := entity.BackgroundHistory{
-		ID:          userRequestBody.ID,
-		StartDate:   userRequestBody.StartDate,
-		EndDate:     userRequestBody.EndDate,
-		Category:    userRequestBody.Category,
-		Title:       userRequestBody.Title,
-		Description: userRequestBody.Description,
-		Location:    userRequestBody.Location,
-	}
-
-	err := userHandler.backgroundHistoryRepository.UpdateBackgroundHistory(&backgroundHistory)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, err)
-		return
-	}
-
-	// TODO CREATE NOTIF TOO? (ONLY EDIT END DATE NULL BACKGROUNDS + NOTIF CHANGE WORK ON END DATE NULL + GET ENDING DATE FOR ENDING BACKGROUND HISTORY)
-	c.JSON(http.StatusCreated, nil)
-}
-
-
-func (userHandler *UserHandler) DeleteBackgroundHistory(c *gin.Context) {
-	var userRequestBody bodyTemplates.UserBackgroundHistoryDeleteRequestBody
-	if err := c.ShouldBindJSON(&userRequestBody); err != nil {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			"invalid_json": "invalid json",
-		})
-		return
-	}
-
-	_, exists := c.Get("user_id")
-
-	if !exists {
-		log.Fatal("User Id does not exist!")
-	}
-
-	backgroundHistory := entity.BackgroundHistory{
-		ID:          userRequestBody.ID,
-	}
-
-	err := userHandler.backgroundHistoryRepository.DeleteBackgroundHistory(&backgroundHistory)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, err)
-		return
-	}
-
-	c.JSON(http.StatusCreated, nil)
-}
 
 //TODO: GET USER (USER + BACKGROUND HISTORIES)

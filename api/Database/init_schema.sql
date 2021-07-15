@@ -33,6 +33,25 @@ CREATE TABLE USER_HISTORY
 
 );
 
+
+CREATE TABLE LANGUAGE
+(
+    id       INT AUTO_INCREMENT,
+    language varchar(50) NOT NULL,
+
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE USER_LANGUAGE
+(
+    user_id     INT NOT NULL,
+    language_id INT NOT NULL,
+
+    PRIMARY KEY (user_id, language_id),
+    CONSTRAINT FK_user_user_language FOREIGN KEY (user_id) REFERENCES USER (id),
+    CONSTRAINT FK_language_user_language FOREIGN KEY (language_id) REFERENCES LANGUAGE (id)
+);
+
 CREATE TABLE POST
 (
     id          INT AUTO_INCREMENT NOT NULL,
@@ -290,9 +309,9 @@ CREATE TABLE NOTIFICATION_ENDORSE
 
 CREATE TABLE NOTIFICATION_CHANGE_WORK
 (
-    notif_id INT NOT NULL,
+    notif_id        INT NOT NULL,
     user_history_id INT NOT NULL,
-    type        ENUM('add', 'update'),
+    type            ENUM ('add', 'update'),
 
     CONSTRAINT FK_user_history_notification_change_work FOREIGN KEY (user_history_id) REFERENCES USER_HISTORY (id),
     CONSTRAINT FK_notification_notification_change_work FOREIGN KEY (notif_id) REFERENCES NOTIFICATION (id),
