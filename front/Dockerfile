@@ -8,7 +8,6 @@ RUN npm run --silent build
 
 # production stage
 FROM nginx:1.20-alpine as production-stage
-COPY nginx_config/nginx.conf /etc/nginx/nginx.conf
 COPY nginx_config/default.conf /etc/nginx/conf.d/default.conf
 COPY --from=build-stage /app/dist /usr/share/nginx/html
 EXPOSE 80
