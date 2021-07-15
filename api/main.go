@@ -24,6 +24,7 @@ func main() {
 		log.Fatalln(err.Error())
 	}
 
+	languageRepo := persistance.NewLanguageRepository(&db)
 	backgroundHistoryRepo := persistance.NewBackgroundHistoryRepository(&db)
 	userRepo := persistance.NewUserRepository(&db)
 	postRepo := persistance.NewPostRepository(&db)
@@ -41,7 +42,9 @@ func main() {
 
 	token := auth.NewToken()
 
-	userHandler := interfaces.NewUserHandler(userRepo, backgroundHistoryRepo, redisService.Auth, token)
+	userBackgroundHistoryHandler := interfaces.NewUserBackgroundHistoryHandler(backgroundHistoryRepo, redisService.Auth, token)
+	userLanguageHandler := interfaces.NewUserLanguageHandler(languageRepo, redisService.Auth, token)
+	userHandler := interfaces.NewUserHandler(userRepo, redisService.Auth, token)
 	postHandler := interfaces.NewPostHandler(postRepo)
 	commentHandler := interfaces.NewCommentHandler(commentRepo)
 
@@ -56,10 +59,18 @@ func main() {
 	userGroup := router.Group("/users", middleware.AuthMiddleware(redisService.Auth))
 	{
 		userGroup.PUT("", userHandler.EditUser)
-		userGroup.POST("/background", userHandler.AddBackgroundHistory)
-		userGroup.PUT("/background", userHandler.EditBackgroundHistory)
-		userGroup.DELETE("/background", userHandler.DeleteBackgroundHistory)
+		userGroup.POST("/background", userBackgroundHistoryHandler.AddBackgroundHistory)
+		userGroup.PUT("/background", userBackgroundHistoryHandler.EditBackgroundHistory)
+		userGroup.DELETE("/background", userBackgroundHistoryHandler.DeleteBackgroundHistory)
+
+		languageGroup := router.Group("/language", middleware.AuthMiddleware(redisService.Auth))
+		{
+			languageGroup.POST("", userLanguageHandler.AddUserLanguage)
+			languageGroup.DELETE("", userLanguageHandler.DeleteUserLanguage)
+			languageGroup.GET("", userLanguageHandler.GetUserLanguages)
+		}
 	}
+
 
 	postGroup := router.Group("/post", middleware.AuthMiddleware(redisService.Auth))
 	{
