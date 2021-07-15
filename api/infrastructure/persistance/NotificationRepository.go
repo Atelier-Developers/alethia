@@ -36,22 +36,6 @@ func (notificationRepository *NotificationRepository) creatNotification(notifica
 	return nil
 }
 
-func (notificationRepository *NotificationRepository) getNotification(notificationId uint64) (notification.Notification, error) {
-	db := notificationRepository.dbClient.GetDB()
-	stmt, err := db.Prepare("SELECT * FROM NOTIFICATION WHERE id = ?")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer stmt.Close()
-
-	row := stmt.QueryRow(notificationId)
-	var notif notification.Notification
-	err = row.Scan(&notif.Id, &notif.ReceiverId, &notif.Created)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return notif, nil
-}
 
 func (notificationRepository *NotificationRepository) CreateCommentNotification(comment *notification.Comment) error {
 	db := notificationRepository.dbClient.GetDB()
@@ -75,20 +59,21 @@ func (notificationRepository *NotificationRepository) CreateCommentNotification(
 	return nil
 }
 
-func (notificationRepository *NotificationRepository) GetCommentNotification() ([]notification.Comment, error) {
+func (notificationRepository *NotificationRepository) GetCommentNotification(userId uint64) ([]notification.Comment, error) {
 	db := notificationRepository.dbClient.GetDB()
 	var notifs []notification.Comment
-	rows, err := db.Query("SELECT * FROM NOTIFICATION_COMMENT")
+	stmt, err := db.Prepare("SELECT NOTIFICATION_COMMENT.*, receiver_id, created FROM NOTIFICATION_COMMENT, NOTIFICATION WHERE NOTIFICATION.id = NOTIFICATION_COMMENT.notif_id AND NOTIFICATION.receiver_id = ?")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+	rows, err := stmt.Query(userId)
 	if err != nil {
 		log.Fatal(err)
 	}
 	for rows.Next() {
 		var nc notification.Comment
-		err := rows.Scan(&nc.Id, &nc.CommentId)
-		if err != nil {
-			log.Fatal(err)
-		}
-		nc.Notification, err = notificationRepository.getNotification(nc.Id)
+		err := rows.Scan(&nc.Id, &nc.CommentId, &nc.ReceiverId, &nc.Created)
 		if err != nil {
 			log.Fatal(err)
 		}

@@ -30,6 +30,7 @@ func main() {
 	postRepo := persistance.NewPostRepository(&db)
 	commentRepo := persistance.NewCommentRepository(&db)
 	skillRepo := persistance.NewSkillRepository(&db)
+	notificationRepo := persistance.NewNotificationRepository(&db)
 
 	redisHost := os.Getenv("REDIS_HOST")
 	redisPort := os.Getenv("REDIS_PORT")
@@ -49,6 +50,7 @@ func main() {
 	postHandler := interfaces.NewPostHandler(postRepo)
 	commentHandler := interfaces.NewCommentHandler(commentRepo)
 	skillHandler := interfaces.NewSkillHandler(skillRepo)
+	notificationHandler := interfaces.NewNotificationHandler(notificationRepo)
 
 	router := gin.Default()
 	router.Use(gin.Recovery())
@@ -81,6 +83,11 @@ func main() {
 			userSkillGroup.POST("", skillHandler.AddUserSkill)
 			userSkillGroup.DELETE("", skillHandler.DeleteUserSkill)
 			userSkillGroup.POST("/endorse", skillHandler.EndorseSkill)
+		}
+
+		userNotificationGroup := userGroup.Group("/notification")
+		{
+			userNotificationGroup.GET("", notificationHandler.GetUserNotifications)
 		}
 	}
 
