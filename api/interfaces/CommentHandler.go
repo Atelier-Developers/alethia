@@ -50,6 +50,9 @@ func (commentHandler *CommentHandler) SaveComment(c *gin.Context) {
 	}
 	nc := notification.Comment{
 		CommentId: comment.Id,
+		Notification: notification.Notification{
+			ReceiverId: userId.(uint64),
+		},
 	}
 	err = commentHandler.notificationRepository.CreateCommentNotification(&nc)
 	if err != nil {
