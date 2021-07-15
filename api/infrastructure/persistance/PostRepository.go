@@ -51,3 +51,37 @@ func (postRepo *PostRepository) SavePost(post *entity.Post) error {
 
 	return nil
 }
+
+func (postRepo *PostRepository) LikePost(post *entity.Post, userId uint64) error {
+	db := postRepo.dbClient.GetDB()
+	stmt, err := db.Prepare("INSERT INTO POST_LIKE (post_id, user_id) VALUES (?, ?) ")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(post.Id, userId)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return nil
+}
+
+func (postRepo *PostRepository) GetPostById(postId uint64, post *entity.Post) error {
+	db := postRepo.dbClient.GetDB()
+	stmt, err := db.Prepare("SELECT * FROM POST WHERE id=?")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	row := stmt.QueryRow(postId)
+
+	err = row.Scan(&post.Id, &post.IsFeatured, &post.Description, &post.Created, &post.PosterId)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

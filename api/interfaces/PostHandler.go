@@ -50,3 +50,37 @@ func (postHandler *PostHandler) SavePost(c *gin.Context) {
 	}
 	c.JSON(http.StatusCreated, nil)
 }
+
+func (postHandler *PostHandler) LikePost(c *gin.Context) {
+	var postLikeRequestBody bodyTemplates.PostLikeRequestBody
+	if err := c.ShouldBindJSON(&postLikeRequestBody); err != nil {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"invalid_json": "invalid json",
+		})
+		return
+	}
+
+	userId, exists := c.Get("user_id")
+
+	if !exists {
+		log.Fatal("User Id does not exist!")
+	}
+
+	var tmp entity.Post
+	err := postHandler.postRepository.GetPostById(postLikeRequestBody.PostId, &tmp)
+	if err != nil {
+		c.JSON(http.StatusConflict, err)
+		return
+	}
+
+	post := entity.Post{
+		Id: postLikeRequestBody.PostId,
+	}
+
+	err = postHandler.postRepository.LikePost(&post, userId.(uint64))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+	c.JSON(http.StatusOK, nil)
+}

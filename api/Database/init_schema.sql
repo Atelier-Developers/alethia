@@ -65,17 +65,21 @@ CREATE TABLE COMMENT
     created      DATETIME DEFAULT CURRENT_TIMESTAMP,
     commenter_id INT                NOT NULL,
     post_id      INT                NOT NULL,
-    reply_id     INT                NOT NULL,
-
     PRIMARY KEY (id),
     CONSTRAINT FK_user_comment FOREIGN KEY (commenter_id) REFERENCES USER (id),
     CONSTRAINT FK_post_comment FOREIGN KEY (post_id) REFERENCES POST (id)
 );
 
-ALTER TABLE COMMENT
-    ADD CONSTRAINT FK_reply_comment
-        FOREIGN KEY (reply_id) REFERENCES COMMENT (id);
+CREATE TABLE REPLY_COMMENT
+(
+    comment_id         INT NOT NULL,
+    replied_comment_id INT NOT NULL,
 
+    PRIMARY KEY (comment_id, replied_comment_id),
+
+    CONSTRAINT FK_reply_comment_replied_comment FOREIGN KEY (replied_comment_id) REFERENCES COMMENT (id),
+    CONSTRAINT FK_reply_comment_comment FOREIGN KEY (comment_id) REFERENCES COMMENT (id)
+);
 
 CREATE TABLE POST_LIKE
 (

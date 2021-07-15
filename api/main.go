@@ -27,6 +27,7 @@ func main() {
 	backgroundHistoryRepo := persistance.NewBackgroundHistoryRepository(&db)
 	userRepo := persistance.NewUserRepository(&db)
 	postRepo := persistance.NewPostRepository(&db)
+	commentRepo := persistance.NewCommentRepository(&db)
 
 	redisHost := os.Getenv("REDIS_HOST")
 	redisPort := os.Getenv("REDIS_PORT")
@@ -42,6 +43,7 @@ func main() {
 
 	userHandler := interfaces.NewUserHandler(userRepo, backgroundHistoryRepo, redisService.Auth, token)
 	postHandler := interfaces.NewPostHandler(postRepo)
+	commentHandler := interfaces.NewCommentHandler(commentRepo)
 
 	router := gin.Default()
 	router.Use(gin.Recovery())
@@ -50,7 +52,6 @@ func main() {
 	router.POST("/login", userHandler.Login)
 	router.POST("/logout", userHandler.Logout)
 	router.POST("/register", userHandler.SaveUser)
-
 
 	userGroup := router.Group("/users", middleware.AuthMiddleware(redisService.Auth))
 	{
@@ -61,6 +62,14 @@ func main() {
 	postGroup := router.Group("/post", middleware.AuthMiddleware(redisService.Auth))
 	{
 		postGroup.POST("", postHandler.SavePost)
+		postGroup.POST("/like", postHandler.LikePost)
+		commentGroup := postGroup.Group("/comment")
+		{
+			commentGroup.POST("", commentHandler.SaveComment)
+			commentGroup.POST("/reply", commentHandler.ReplyComment)
+			//TODO multiple like not allowed
+			commentGroup.POST("/like", commentHandler.LikeComment)
+		}
 	}
 
 	router.Run(":3000")
