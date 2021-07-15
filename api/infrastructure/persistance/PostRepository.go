@@ -51,3 +51,13 @@ func (postRepo *PostRepository) SavePost(post *entity.Post) error {
 
 	return nil
 }
+
+func (postRepo *PostRepository) LikePost(post *entity.Post) error {
+	db := postRepo.dbClient.GetDB()
+	stmt, err := db.Prepare("INSERT INTO POST (is_featured, description, created, poster_id) VALUES (?, ?, ?, ?) ")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+	return nil
+}

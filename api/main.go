@@ -26,6 +26,7 @@ func main() {
 
 	userRepo := persistance.NewUserRepository(&db)
 	postRepo := persistance.NewPostRepository(&db)
+	commentRepo := persistance.NewCommentRepository(&db)
 
 	redisHost := os.Getenv("REDIS_HOST")
 	redisPort := os.Getenv("REDIS_PORT")
@@ -41,6 +42,7 @@ func main() {
 
 	userHandler := interfaces.NewUserHandler(userRepo, redisService.Auth, token)
 	postHandler := interfaces.NewPostHandler(postRepo)
+	commentHandler := interfaces.NewCommentHandler(commentRepo)
 
 	router := gin.Default()
 	router.Use(gin.Recovery())
@@ -55,6 +57,12 @@ func main() {
 	postGroup := router.Group("/post", middleware.AuthMiddleware())
 	{
 		postGroup.POST("", postHandler.SavePost)
+		commentGroup := postGroup.Group("/comment")
+		{
+			commentGroup.POST("", commentHandler.SaveComment)
+			commentGroup.POST("/reply", commentHandler.ReplyComment)
+			commentGroup.POST("/like", commentHandler.LikeComment)
+		}
 	}
 
 	router.Run(":3000")
