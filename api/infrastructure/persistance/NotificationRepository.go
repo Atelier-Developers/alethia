@@ -216,24 +216,96 @@ func (notificationRepository *NotificationRepository) GetLikeCommentNotification
 }
 
 func (notificationRepository *NotificationRepository) CreateLikePostNotification(likePost *notification.LikePost) error {
+	db := notificationRepository.dbClient.GetDB()
+	err := notificationRepository.creatNotification(&likePost.Notification)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	stmt, err := db.Prepare("INSERT INTO NOTIFICATION_LIKE_POST (notif_id, user_id, post_id) VALUES (?, ?, ?)")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(likePost.Notification.Id, likePost.UserId, likePost.PostId)
+
+	if err != nil {
+		log.Fatal(err)
+	}
 	return nil
 }
 func (notificationRepository *NotificationRepository) GetLikePostNotification(userId uint64) ([]notification.LikePost, error) {
 	return nil, nil
 }
-func (notificationRepository *NotificationRepository) CreateReplyCommentNotification(likeComment *notification.ReplyComment) error {
+func (notificationRepository *NotificationRepository) CreateReplyCommentNotification(replyComment *notification.ReplyComment) error {
+	db := notificationRepository.dbClient.GetDB()
+	err := notificationRepository.creatNotification(&replyComment.Notification)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	stmt, err := db.Prepare("INSERT INTO NOTIFICATION_REPLY (notif_id, comment_id) VALUES (?, ?)")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(replyComment.Notification.Id, replyComment.CommentId)
+
+	if err != nil {
+		log.Fatal(err)
+	}
 	return nil
 }
 func (notificationRepository *NotificationRepository) GetReplyCommentNotification(userId uint64) ([]notification.ReplyComment, error) {
 	return nil, nil
 }
-func (notificationRepository *NotificationRepository) CreateViewProfileNotification(likeComment *notification.ViewProfile) error {
+func (notificationRepository *NotificationRepository) CreateViewProfileNotification(viewProfile *notification.ViewProfile) error {
+	db := notificationRepository.dbClient.GetDB()
+	err := notificationRepository.creatNotification(&viewProfile.Notification)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	stmt, err := db.Prepare("INSERT INTO NOTIFICATION_VIEW_PROFILE (notif_id, user_id) VALUES (?, ?)")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(viewProfile.Notification.Id, viewProfile.UserId)
+
+	if err != nil {
+		log.Fatal(err)
+	}
 	return nil
 }
 func (notificationRepository *NotificationRepository) GetViewProfileNotification(userId uint64) ([]notification.ViewProfile, error) {
 	return nil, nil
 }
-func (notificationRepository *NotificationRepository) CreateBirthdayNotification(likeComment *notification.Birthday) error {
+func (notificationRepository *NotificationRepository) CreateBirthdayNotification(birthday *notification.Birthday) error {
+	db := notificationRepository.dbClient.GetDB()
+	err := notificationRepository.creatNotification(&birthday.Notification)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	stmt, err := db.Prepare("INSERT INTO NOTIFICATION_BIRTHDAY (notif_id, user_id) VALUES (?, ?)")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(birthday.Notification.Id, birthday.UserId)
+
+	if err != nil {
+		log.Fatal(err)
+	}
 	return nil
 }
 func (notificationRepository *NotificationRepository) GetBirthdayNotification(userId uint64) ([]notification.Birthday, error) {
