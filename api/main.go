@@ -58,9 +58,12 @@ func main() {
 	userGroup := router.Group("/users", middleware.AuthMiddleware(redisService.Auth))
 	{
 		userGroup.PUT("", userHandler.EditUser)
-		userGroup.POST("/background", userHandler.AddBackgroundHistory)
-		userGroup.PUT("/background", userHandler.EditBackgroundHistory)
-		userGroup.DELETE("/background", userHandler.DeleteBackgroundHistory)
+		backgroundGroup := userGroup.Group("/background")
+		{
+			backgroundGroup.POST("", userHandler.AddBackgroundHistory)
+			backgroundGroup.PUT("", userHandler.EditBackgroundHistory)
+			backgroundGroup.DELETE("", userHandler.DeleteBackgroundHistory)
+		}
 
 		userSkillGroup := userGroup.Group("/skill")
 		{
