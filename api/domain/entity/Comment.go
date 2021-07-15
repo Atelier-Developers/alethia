@@ -4,7 +4,7 @@ import "time"
 
 type Comment struct {
 	Id          uint64    `json:"id"`
-	Text        bool      `json:"text"`
+	Text        string      `json:"text"`
 	Description string    `json:"description"`
 	Created     time.Time `json:"created"`
 	CommenterId uint64    `json:"commenter_id"`

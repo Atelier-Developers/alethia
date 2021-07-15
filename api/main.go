@@ -57,6 +57,7 @@ func main() {
 	postGroup := router.Group("/post", middleware.AuthMiddleware())
 	{
 		postGroup.POST("", postHandler.SavePost)
+		postGroup.POST("/like", postHandler.LikePost)
 		commentGroup := postGroup.Group("/comment")
 		{
 			commentGroup.POST("", commentHandler.SaveComment)

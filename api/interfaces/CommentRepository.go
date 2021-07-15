@@ -65,7 +65,7 @@ func (commentHandler *CommentHandler) LikeComment(c *gin.Context) {
 
 	var tmp entity.Comment
 	err := commentHandler.commentRepository.GetCommentByID(commentLikeRequestBody.CommentId, &tmp)
-	if err == nil {
+	if err != nil {
 		c.JSON(http.StatusConflict, err)
 		return
 	}
@@ -99,7 +99,7 @@ func (commentHandler *CommentHandler) ReplyComment(c *gin.Context) {
 
 	var tmp entity.Comment
 	err := commentHandler.commentRepository.GetCommentByID(commentReplyRequestBody.RepliedCommentId, &tmp)
-	if err == nil {
+	if err != nil {
 		c.JSON(http.StatusConflict, err)
 		return
 	}

@@ -22,11 +22,17 @@ func (commentRepository *CommentRepository) SaveComment(comment *entity.Comment)
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(comment.Text, comment.CommenterId, comment.PostId)
+	res, err := stmt.Exec(comment.Text, comment.CommenterId, comment.PostId)
 
 	if err != nil {
 		return err
 	}
+
+	commentId, err := res.LastInsertId()
+	if err != nil {
+		log.Fatal(err)
+	}
+	comment.Id = uint64(commentId)
 
 	return nil
 }
@@ -54,15 +60,10 @@ func (commentRepository *CommentRepository) ReplyComment(comment *entity.Comment
 	}
 	defer stmt.Close()
 
-	res, err := stmt.Exec(comment.Id, ReplyId)
+	_, err = stmt.Exec(comment.Id, ReplyId)
 	if err != nil {
 		return err
 	}
-	commentId, err := res.LastInsertId()
-	if err != nil {
-		log.Fatal(err)
-	}
-	comment.Id = uint64(commentId)
 	return nil
 }
 
