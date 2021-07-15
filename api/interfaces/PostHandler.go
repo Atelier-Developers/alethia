@@ -11,12 +11,14 @@ import (
 )
 
 type PostHandler struct {
-	postRepository repository.PostRepository
+	postRepository         repository.PostRepository
+	notificationRepository repository.NotificationRepository
 }
 
-func NewPostHandler(postRepository repository.PostRepository) PostHandler {
+func NewPostHandler(postRepository repository.PostRepository, notificationRepository repository.NotificationRepository) PostHandler {
 	return PostHandler{
-		postRepository: postRepository,
+		postRepository:         postRepository,
+		notificationRepository: notificationRepository,
 	}
 }
 

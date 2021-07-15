@@ -22,12 +22,15 @@ func (backgroundHistoryRepo *BackgroundHistoryRepository) SaveBackgroundHistory(
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(backgroundHistory.UserID, backgroundHistory.StartDate, backgroundHistory.EndDate, backgroundHistory.Category, backgroundHistory.Title, backgroundHistory.Description, backgroundHistory.Location)
-
+	res, err := stmt.Exec(backgroundHistory.UserID, backgroundHistory.StartDate, backgroundHistory.EndDate, backgroundHistory.Category, backgroundHistory.Title, backgroundHistory.Description, backgroundHistory.Location)
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	id, err := res.LastInsertId()
+	if err != nil {
+		log.Fatal(err)
+	}
+	backgroundHistory.ID = uint64(id)
 	return nil
 }
 

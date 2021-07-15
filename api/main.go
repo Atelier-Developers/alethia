@@ -45,13 +45,13 @@ func main() {
 
 	token := auth.NewToken()
 
-	userBackgroundHistoryHandler := interfaces.NewUserBackgroundHistoryHandler(backgroundHistoryRepo, redisService.Auth, token)
+	notificationHandler := interfaces.NewNotificationHandler(notificationRepo)
+	userBackgroundHistoryHandler := interfaces.NewUserBackgroundHistoryHandler(backgroundHistoryRepo, redisService.Auth, token, notificationRepo)
 	userLanguageHandler := interfaces.NewUserLanguageHandler(languageRepo, redisService.Auth, token)
 	userHandler := interfaces.NewUserHandler(userRepo, redisService.Auth, token)
-	postHandler := interfaces.NewPostHandler(postRepo)
-	notificationHandler := interfaces.NewNotificationHandler(notificationRepo)
+	postHandler := interfaces.NewPostHandler(postRepo, notificationRepo)
 	commentHandler := interfaces.NewCommentHandler(commentRepo, notificationRepo)
-	skillHandler := interfaces.NewSkillHandler(skillRepo)
+	skillHandler := interfaces.NewSkillHandler(skillRepo, notificationRepo)
 	conversationHandler := interfaces.NewConversationHandler(conversationRepo, redisService.Auth, token)
 
 	router := gin.Default()

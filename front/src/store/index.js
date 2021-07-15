@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import PostsModules from './modules/posts-module'
 import NotifModules from './modules/notif-module'
 import UserModules from './modules/user-module'
+import SignupModules  from './modules/sign-up-module'
 
 Vue.use(Vuex)
 
@@ -10,6 +11,7 @@ export default new Vuex.Store({
     modules: {
         PostsModules,
         NotifModules,
-        UserModules
+        UserModules,
+        SignupModules
     }
 })
