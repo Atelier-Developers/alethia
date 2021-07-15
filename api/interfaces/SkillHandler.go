@@ -50,6 +50,10 @@ func (skillHandler *SkillHandler) EndorseSkill(c *gin.Context) {
 		},
 	}
 	err = skillHandler.notificationRepository.CreateEndorseSkillNotification(&n)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
 	c.JSON(http.StatusOK, nil)
 }
 

@@ -125,3 +125,48 @@ func (notificationRepository *NotificationRepository) GetEndorseSkillNotificatio
 	}
 	return notifs, nil
 }
+
+func (notificationRepository *NotificationRepository) CreateChangeWorkNotification(changeWork *notification.ChangeWork) error {
+	db := notificationRepository.dbClient.GetDB()
+	err := notificationRepository.creatNotification(&changeWork.Notification)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	stmt, err := db.Prepare("INSERT INTO NOTIFICATION_CHANGE_WORK (notif_id, user_history_id, type) VALUES (?, ?, ?)")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(changeWork.Notification.Id, changeWork.UserHistoryId, changeWork.Type)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	return nil
+}
+
+func (notificationRepository *NotificationRepository) GetChangeWorkNotification(userId uint64) ([]notification.ChangeWork, error) {
+	db := notificationRepository.dbClient.GetDB()
+	var notifs []notification.ChangeWork
+	stmt, err := db.Prepare("SELECT NOTIFICATION_CHANGE_WORK.*, receiver_id, created FROM NOTIFICATION_CHANGE_WORK, NOTIFICATION WHERE NOTIFICATION.id = NOTIFICATION_ENDORSE.notif_id AND NOTIFICATION.receiver_id = ?")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+	rows, err := stmt.Query(userId)
+	if err != nil {
+		log.Fatal(err)
+	}
+	for rows.Next() {
+		var nc notification.ChangeWork
+		err := rows.Scan(&nc.Id, &nc.UserHistoryId, &nc.Type, &nc.ReceiverId, &nc.Created)
+		if err != nil {
+			log.Fatal(err)
+		}
+		notifs = append(notifs, nc)
+	}
+	return notifs, nil
+}
