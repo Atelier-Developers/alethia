@@ -8,6 +8,7 @@ import (
 	"github.com/Atelier-Developers/alethia/infrastructure/security"
 	"github.com/Atelier-Developers/alethia/interfaces/bodyTemplates"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 	"time"
 )
@@ -27,7 +28,7 @@ func NewUserHandler(userRepository repository.UserRepository, authInterface auth
 }
 
 func (userHandler *UserHandler) SaveUser(c *gin.Context) {
-	var userRequestBody bodyTemplates.UserRequestBody
+	var userRequestBody bodyTemplates.UserCreateRequestBody
 	if err := c.ShouldBindJSON(&userRequestBody); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{
 			"invalid_json": "invalid json",
@@ -128,3 +129,34 @@ func (userHandler *UserHandler) Logout(c *gin.Context) {
 	c.JSON(http.StatusOK, "Successfully logged out")
 }
 
+func (userHandler *UserHandler) EditUser(c *gin.Context) {
+	var userRequestBody bodyTemplates.UserUpdateRequestBody
+	if err := c.ShouldBindJSON(&userRequestBody); err != nil {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"invalid_json": "invalid json",
+		})
+		return
+	}
+
+	userId, exists := c.Get("user_id")
+
+	if !exists {
+		log.Fatal("User Id does not exist!")
+	}
+
+	user := entity.User{
+		ID:              userId.(uint64),
+		Intro:           userRequestBody.Intro,
+		About:           userRequestBody.About,
+		Accomplishments: userRequestBody.Accomplishments,
+		AdditionalInfo:  userRequestBody.AdditionalInfo,
+		BirthDate:       userRequestBody.BirthDate,
+	}
+
+	err := userHandler.userRepository.UpdateUser(&user)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+	c.JSON(http.StatusCreated, nil)
+}

@@ -48,10 +48,12 @@ func main() {
 
 	router.POST("/login", userHandler.Login)
 	router.POST("/logout", userHandler.Logout)
+	router.POST("/register", userHandler.SaveUser)
 
-	userGroup := router.Group("/users")
+
+	userGroup := router.Group("/users", middleware.AuthMiddleware(redisService.Auth))
 	{
-		userGroup.POST("", userHandler.SaveUser)
+		userGroup.PUT("", userHandler.EditUser)
 	}
 
 	postGroup := router.Group("/post", middleware.AuthMiddleware(redisService.Auth))

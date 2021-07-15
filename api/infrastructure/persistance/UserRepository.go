@@ -71,6 +71,25 @@ func (userRepo *UserRepository) SaveUser(user *entity.User) error {
 	return nil
 }
 
+func (userRepo *UserRepository) UpdateUser(user *entity.User) error {
+	db := userRepo.dbClient.GetDB()
+
+	stmt, err := db.Prepare("UPDATE USER SET intro = CASE WHEN ? IS NOT NULL THEN ? ELSE intro END, about= CASE WHEN ? IS NOT NULL THEN ? ELSE about END, accomplishments= CASE WHEN ? IS NOT NULL THEN ? ELSE accomplishments END, additional_information= CASE WHEN ? IS NOT NULL THEN ? ELSE additional_information END, birthdate= CASE WHEN ? IS NOT NULL THEN ? ELSE birthdate END WHERE id=?")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer stmt.Close()
+
+	_, err = stmt.Exec(user.Intro, user.Intro, user.About, user.About, user.Accomplishments, user.Accomplishments, user.AdditionalInfo, user.AdditionalInfo, user.BirthDate, user.BirthDate, user.ID)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return nil
+}
+
 func (userRepo *UserRepository) GetUserByUsernameAndPassword(username string, password string, user *entity.User) error {
 	db := userRepo.dbClient.GetDB()
 	stmt, err := db.Prepare("SELECT * FROM USER WHERE username=?")

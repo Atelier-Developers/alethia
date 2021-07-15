@@ -28,14 +28,12 @@ func (postHandler *PostHandler) SavePost(c *gin.Context) {
 		})
 		return
 	}
-	//TODO Check validity repost ID
 
 	userId, exists := c.Get("user_id")
 
 	if !exists {
 		log.Fatal("User Id does not exist!")
 	}
-
 
 	post := entity.Post{
 		IsFeatured:  false,
