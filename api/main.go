@@ -24,6 +24,7 @@ func main() {
 		log.Fatalln(err.Error())
 	}
 
+	backgroundHistoryRepo := persistance.NewBackgroundHistoryRepository(&db)
 	userRepo := persistance.NewUserRepository(&db)
 	postRepo := persistance.NewPostRepository(&db)
 
@@ -39,7 +40,7 @@ func main() {
 
 	token := auth.NewToken()
 
-	userHandler := interfaces.NewUserHandler(userRepo, redisService.Auth, token)
+	userHandler := interfaces.NewUserHandler(userRepo, backgroundHistoryRepo, redisService.Auth, token)
 	postHandler := interfaces.NewPostHandler(postRepo)
 
 	router := gin.Default()
@@ -54,6 +55,7 @@ func main() {
 	userGroup := router.Group("/users", middleware.AuthMiddleware(redisService.Auth))
 	{
 		userGroup.PUT("", userHandler.EditUser)
+		userGroup.POST("/background", userHandler.AddBackgroundHistory)
 	}
 
 	postGroup := router.Group("/post", middleware.AuthMiddleware(redisService.Auth))

@@ -287,9 +287,10 @@ CREATE TABLE NOTIFICATION_ENDORSE
 CREATE TABLE NOTIFICATION_CHANGE_WORK
 (
     notif_id INT NOT NULL,
-    user_id  INT NOT NULL,
+    user_history_id INT NOT NULL,
+    type        ENUM('add', 'update'),
 
-    CONSTRAINT FK_user_notification_change_work FOREIGN KEY (user_id) REFERENCES USER (id),
+    CONSTRAINT FK_user_history_notification_change_work FOREIGN KEY (user_history_id) REFERENCES USER_HISTORY (id),
     CONSTRAINT FK_notification_notification_change_work FOREIGN KEY (notif_id) REFERENCES NOTIFICATION (id),
 
     PRIMARY KEY (notif_id)

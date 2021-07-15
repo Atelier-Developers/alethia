@@ -14,16 +14,18 @@ import (
 )
 
 type UserHandler struct {
-	userRepository repository.UserRepository
-	authInterface  auth.AuthInterface
-	tokenInterface auth.TokenInterface
+	userRepository              repository.UserRepository
+	backgroundHistoryRepository repository.BackgroundHistoryRepository
+	authInterface               auth.AuthInterface
+	tokenInterface              auth.TokenInterface
 }
 
-func NewUserHandler(userRepository repository.UserRepository, authInterface auth.AuthInterface, tokenInterface auth.TokenInterface) UserHandler {
+func NewUserHandler(userRepository repository.UserRepository, backgroundHistoryRepository repository.BackgroundHistoryRepository, authInterface auth.AuthInterface, tokenInterface auth.TokenInterface) UserHandler {
 	return UserHandler{
-		userRepository: userRepository,
-		authInterface:  authInterface,
-		tokenInterface: tokenInterface,
+		userRepository:              userRepository,
+		backgroundHistoryRepository: backgroundHistoryRepository,
+		authInterface:               authInterface,
+		tokenInterface:              tokenInterface,
 	}
 }
 
@@ -161,7 +163,38 @@ func (userHandler *UserHandler) EditUser(c *gin.Context) {
 	c.JSON(http.StatusCreated, nil)
 }
 
-// TODO: ADD BACKGROUND HISTORY, EDIT BACKGROUND HISTORY, DELETE BACKGROUND HISTORY
+// TODO: ADD BACKGROUND HISTORY (NOTIF CHANGE WORK ON ADD), EDIT BACKGROUND HISTORY (ONLY EDIT END DATE NULL BACKGROUNDS + NOTIF CHANGE WORK ON END DATE NULL + GET ENDING DATE FOR ENDING BACKGROUND HISTORY), DELETE BACKGROUND HISTORY
+func (userHandler *UserHandler) AddBackgroundHistory(c *gin.Context) {
+	var userRequestBody bodyTemplates.UserBackgroundHistoryBody
+	if err := c.ShouldBindJSON(&userRequestBody); err != nil {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"invalid_json": "invalid json",
+		})
+		return
+	}
+
+	userId, exists := c.Get("user_id")
+
+	if !exists {
+		log.Fatal("User Id does not exist!")
+	}
+
+	backgroundHistory := entity.BackgroundHistory{
+		UserID:      userId.(uint64),
+		StartDate:   userRequestBody.StartDate,
+		EndDate:     userRequestBody.EndDate,
+		Category:    userRequestBody.Category,
+		Title:       userRequestBody.Title,
+		Description: userRequestBody.Description,
+		Location:    userRequestBody.Location,
+	}
+
+	err := userHandler.backgroundHistoryRepository.SaveBackgroundHistory(&backgroundHistory)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+	c.JSON(http.StatusCreated, nil)
+}
 
 //TODO: GET USER (USER + BACKGROUND HISTORIES)
-

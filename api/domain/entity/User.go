@@ -5,6 +5,7 @@ import (
 )
 
 //TODO: ADD UNIQUE CONSTRAINTS USERNAME
+//TODO: CHECK PASSWORD AND USERNAME LENGTH
 type User struct {
 	ID              uint64    `json:"id"`
 	Username        string    `json:"username"  `
