@@ -14,13 +14,15 @@ type UserBackgroundHistoryHandler struct {
 	backgroundHistoryRepository repository.BackgroundHistoryRepository
 	authInterface               auth.AuthInterface
 	tokenInterface              auth.TokenInterface
+	notificationRepository      repository.NotificationRepository
 }
 
-func NewUserBackgroundHistoryHandler(backgroundHistoryRepository repository.BackgroundHistoryRepository, authInterface auth.AuthInterface, tokenInterface auth.TokenInterface) UserBackgroundHistoryHandler {
+func NewUserBackgroundHistoryHandler(backgroundHistoryRepository repository.BackgroundHistoryRepository, authInterface auth.AuthInterface, tokenInterface auth.TokenInterface, notificationRepository repository.NotificationRepository, ) UserBackgroundHistoryHandler {
 	return UserBackgroundHistoryHandler{
 		backgroundHistoryRepository: backgroundHistoryRepository,
 		authInterface:               authInterface,
 		tokenInterface:              tokenInterface,
+		notificationRepository:      notificationRepository,
 	}
 }
 
@@ -137,4 +139,3 @@ func (userBackgroundHistoryHandler *UserBackgroundHistoryHandler) GetUserBackgro
 
 	c.JSON(http.StatusCreated, backgrounds)
 }
-

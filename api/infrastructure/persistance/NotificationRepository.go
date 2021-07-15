@@ -36,7 +36,6 @@ func (notificationRepository *NotificationRepository) creatNotification(notifica
 	return nil
 }
 
-
 func (notificationRepository *NotificationRepository) CreateCommentNotification(comment *notification.Comment) error {
 	db := notificationRepository.dbClient.GetDB()
 	err := notificationRepository.creatNotification(&comment.Notification)
@@ -74,6 +73,51 @@ func (notificationRepository *NotificationRepository) GetCommentNotification(use
 	for rows.Next() {
 		var nc notification.Comment
 		err := rows.Scan(&nc.Id, &nc.CommentId, &nc.ReceiverId, &nc.Created)
+		if err != nil {
+			log.Fatal(err)
+		}
+		notifs = append(notifs, nc)
+	}
+	return notifs, nil
+}
+
+func (notificationRepository *NotificationRepository) CreateEndorseSkillNotification(endorseSkill *notification.EndorseSkill) error {
+	db := notificationRepository.dbClient.GetDB()
+	err := notificationRepository.creatNotification(&endorseSkill.Notification)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	stmt, err := db.Prepare("INSERT INTO NOTIFICATION_ENDORSE (notif_id, user_skill_skill_id, user_skill_user_id, user_id) VALUES (?, ?, ? , ?)")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(endorseSkill.Notification.Id, endorseSkill.UserSkillSkillId, endorseSkill.UserSkillUserId, endorseSkill.UserId)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	return nil
+}
+
+func (notificationRepository *NotificationRepository) GetEndorseSkillNotification(userId uint64) ([]notification.EndorseSkill, error) {
+	db := notificationRepository.dbClient.GetDB()
+	var notifs []notification.EndorseSkill
+	stmt, err := db.Prepare("SELECT NOTIFICATION_ENDORSE.*, receiver_id, created FROM NOTIFICATION_ENDORSE, NOTIFICATION WHERE NOTIFICATION.id = NOTIFICATION_ENDORSE.notif_id AND NOTIFICATION.receiver_id = ?")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+	rows, err := stmt.Query(userId)
+	if err != nil {
+		log.Fatal(err)
+	}
+	for rows.Next() {
+		var nc notification.EndorseSkill
+		err := rows.Scan(&nc.Id, &nc.UserSkillSkillId, &nc.UserSkillUserId, &nc.UserId, &nc.ReceiverId, &nc.Created)
 		if err != nil {
 			log.Fatal(err)
 		}
