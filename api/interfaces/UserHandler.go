@@ -160,3 +160,8 @@ func (userHandler *UserHandler) EditUser(c *gin.Context) {
 	}
 	c.JSON(http.StatusCreated, nil)
 }
+
+// TODO: ADD BACKGROUND HISTORY, EDIT BACKGROUND HISTORY, DELETE BACKGROUND HISTORY
+
+//TODO: GET USER (USER + BACKGROUND HISTORIES)
+
