@@ -49,12 +49,16 @@ func main() {
 	router.Use(middleware.CORSMiddleware())
 
 	router.POST("/login", userHandler.Login)
-	userGroup := router.Group("/users")
+	router.POST("/logout", userHandler.Logout)
+	router.POST("/register", userHandler.SaveUser)
+
+
+	userGroup := router.Group("/users", middleware.AuthMiddleware(redisService.Auth))
 	{
-		userGroup.POST("", userHandler.SaveUser)
+		userGroup.PUT("", userHandler.EditUser)
 	}
 
-	postGroup := router.Group("/post", middleware.AuthMiddleware())
+	postGroup := router.Group("/post", middleware.AuthMiddleware(redisService.Auth))
 	{
 		postGroup.POST("", postHandler.SavePost)
 		postGroup.POST("/like", postHandler.LikePost)

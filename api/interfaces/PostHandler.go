@@ -28,7 +28,6 @@ func (postHandler *PostHandler) SavePost(c *gin.Context) {
 		})
 		return
 	}
-	//TODO Check validity repost ID
 
 	userId, exists := c.Get("user_id")
 
