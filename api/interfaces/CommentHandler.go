@@ -2,6 +2,7 @@ package interfaces
 
 import (
 	"github.com/Atelier-Developers/alethia/domain/entity"
+	"github.com/Atelier-Developers/alethia/domain/entity/notification"
 	"github.com/Atelier-Developers/alethia/domain/repository"
 	"github.com/Atelier-Developers/alethia/interfaces/bodyTemplates"
 	"github.com/gin-gonic/gin"
@@ -47,11 +48,14 @@ func (commentHandler *CommentHandler) SaveComment(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
-	//err = commentHandler.notificationRepository.CreateCommentNotification(&comment)
-	//if err != nil {
-	//	c.JSON(http.StatusInternalServerError, err)
-	//	return
-	//}
+	nc := notification.Comment{
+		CommentId: comment.Id,
+	}
+	err = commentHandler.notificationRepository.CreateCommentNotification(&nc)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
 	c.JSON(http.StatusCreated, nil)
 }
 
