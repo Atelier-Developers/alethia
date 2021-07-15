@@ -50,5 +50,9 @@ type UserBackgroundHistoryUpdateRequestBody struct {
 	Location    string    `json:"location"  binding:"required"`
 }
 
+type UserBackgroundHistoryDeleteRequestBody struct {
+	ID          uint64    `json:"id" binding:"required"`
+}
+
 
 

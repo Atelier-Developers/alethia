@@ -14,7 +14,6 @@ func NewBackgroundHistoryRepository(dbClient *Database.MySQLDB) *BackgroundHisto
 	return &BackgroundHistoryRepository{dbClient: dbClient}
 }
 
-
 func (backgroundHistoryRepo *BackgroundHistoryRepository) SaveBackgroundHistory(backgroundHistory *entity.BackgroundHistory) error {
 	db := backgroundHistoryRepo.dbClient.GetDB()
 	stmt, err := db.Prepare("INSERT INTO USER_HISTORY (user_id, start_date, end_date, category, title, description, location) VALUES (?, ?, ?, ?, ?, ?, ?) ")
@@ -42,7 +41,7 @@ func (backgroundHistoryRepo *BackgroundHistoryRepository) UpdateBackgroundHistor
 
 	defer stmt.Close()
 
-	_, err = stmt.Exec(backgroundHistory.StartDate, backgroundHistory.StartDate, backgroundHistory.EndDate, backgroundHistory.EndDate,  backgroundHistory.Category, backgroundHistory.Category, backgroundHistory.Title, backgroundHistory.Title, backgroundHistory.Description, backgroundHistory.Description, backgroundHistory.Location, backgroundHistory.Location, backgroundHistory.ID)
+	_, err = stmt.Exec(backgroundHistory.StartDate, backgroundHistory.StartDate, backgroundHistory.EndDate, backgroundHistory.EndDate, backgroundHistory.Category, backgroundHistory.Category, backgroundHistory.Title, backgroundHistory.Title, backgroundHistory.Description, backgroundHistory.Description, backgroundHistory.Location, backgroundHistory.Location, backgroundHistory.ID)
 
 	if err != nil {
 		log.Fatal(err)
@@ -51,4 +50,21 @@ func (backgroundHistoryRepo *BackgroundHistoryRepository) UpdateBackgroundHistor
 	return nil
 }
 
+func (backgroundHistoryRepo *BackgroundHistoryRepository) DeleteBackgroundHistory(backgroundHistory *entity.BackgroundHistory) error {
+	db := backgroundHistoryRepo.dbClient.GetDB()
 
+	stmt, err := db.Prepare("DELETE FROM USER_HISTORY WHERE id=?")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer stmt.Close()
+
+	_, err = stmt.Exec(backgroundHistory.ID)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return nil
+}
