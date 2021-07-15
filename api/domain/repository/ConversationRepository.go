@@ -7,6 +7,6 @@ type ConversationRepository interface {
 	SaveConversation(conversation *entity.Conversation) error
 	UpdateConversation(conversation entity.Conversation) error
 	DeleteConversation(conversation entity.Conversation) error
-	GetConversation(userId1 uint64, userId2 uint64) (entity.Conversation, error)
+	GetConversation(userId1 uint64, userId2 uint64) (*entity.Conversation, error)
 	GetUserConversations(userId uint64) ([]entity.Conversation, error)
 }

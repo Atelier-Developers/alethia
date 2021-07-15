@@ -96,7 +96,7 @@ func main() {
 
 	conversationGroup := router.Group("/conversation", middleware.AuthMiddleware(redisService.Auth))
 	{
-		conversationGroup.POST("", )
+		conversationGroup.POST("", conversationHandler.AddConversation)
 	}
 
 	postGroup := router.Group("/post", middleware.AuthMiddleware(redisService.Auth))
