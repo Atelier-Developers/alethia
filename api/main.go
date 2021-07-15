@@ -52,7 +52,6 @@ func main() {
 	router.POST("/logout", userHandler.Logout)
 	router.POST("/register", userHandler.SaveUser)
 
-
 	userGroup := router.Group("/users", middleware.AuthMiddleware(redisService.Auth))
 	{
 		userGroup.PUT("", userHandler.EditUser)
@@ -66,6 +65,7 @@ func main() {
 		{
 			commentGroup.POST("", commentHandler.SaveComment)
 			commentGroup.POST("/reply", commentHandler.ReplyComment)
+			//TODO multiple like not allowed
 			commentGroup.POST("/like", commentHandler.LikeComment)
 		}
 	}
