@@ -38,7 +38,18 @@ func (userLanguageHandler *UserLanguageHandler) AddUserLanguage(c *gin.Context) 
 		log.Fatal("User Id does not exist!")
 	}
 
-	err := userLanguageHandler.languageRepository.SaveUserLanguage(userId.(uint64), userRequestBody.LanguageId)
+	exists, err := userLanguageHandler.languageRepository.UserLanguageExists(userId.(uint64), userRequestBody.LanguageId)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	if exists {
+		c.JSON(http.StatusConflict, err)
+		return
+	}
+
+	err = userLanguageHandler.languageRepository.SaveUserLanguage(userId.(uint64), userRequestBody.LanguageId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return

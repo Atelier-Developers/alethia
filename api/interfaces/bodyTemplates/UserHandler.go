@@ -14,7 +14,7 @@ type UserCreateRequestBody struct {
 	Accomplishments	  string	 `json:"accomplishments" binding:"required"`
 	AdditionalInfo	  string	 `json:"additional_info" binding:"required"`
 	JoinDate		time.Time	  `json:"join_date"`
-	BirthDate		time.Time	  `json:"birth)date" binding:"required"`
+	BirthDate		time.Time	  `json:"birth_date" binding:"required"`
 }
 
 type UserUpdateRequestBody struct {
