@@ -2,6 +2,7 @@ package interfaces
 
 import (
 	"github.com/Atelier-Developers/alethia/domain/entity"
+	"github.com/Atelier-Developers/alethia/domain/entity/notification"
 	"github.com/Atelier-Developers/alethia/domain/repository"
 	"github.com/Atelier-Developers/alethia/interfaces/bodyTemplates"
 	"github.com/gin-gonic/gin"
@@ -10,12 +11,14 @@ import (
 )
 
 type CommentHandler struct {
-	commentRepository repository.CommentRepository
+	commentRepository      repository.CommentRepository
+	notificationRepository repository.NotificationRepository
 }
 
-func NewCommentHandler(commentRepository repository.CommentRepository) CommentHandler {
+func NewCommentHandler(commentRepository repository.CommentRepository, notificationRepository repository.NotificationRepository, ) CommentHandler {
 	return CommentHandler{
-		commentRepository: commentRepository,
+		commentRepository:      commentRepository,
+		notificationRepository: notificationRepository,
 	}
 }
 
@@ -45,6 +48,17 @@ func (commentHandler *CommentHandler) SaveComment(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
+	nc := notification.Comment{
+		CommentId: comment.Id,
+		Notification: notification.Notification{
+			ReceiverId: userId.(uint64),
+		},
+	}
+	err = commentHandler.notificationRepository.CreateCommentNotification(&nc)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
 	c.JSON(http.StatusCreated, nil)
 }
 
@@ -63,15 +77,11 @@ func (commentHandler *CommentHandler) LikeComment(c *gin.Context) {
 		log.Fatal("User Id does not exist!")
 	}
 
-	var tmp entity.Comment
-	err := commentHandler.commentRepository.GetCommentByID(commentLikeRequestBody.CommentId, &tmp)
+	var comment entity.Comment
+	err := commentHandler.commentRepository.GetCommentByID(commentLikeRequestBody.CommentId, &comment)
 	if err != nil {
 		c.JSON(http.StatusConflict, err)
 		return
-	}
-
-	comment := entity.Comment{
-		Id: commentLikeRequestBody.CommentId,
 	}
 
 	err = commentHandler.commentRepository.LikeComment(&comment, userId.(uint64))
@@ -79,6 +89,20 @@ func (commentHandler *CommentHandler) LikeComment(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
+
+	n := notification.LikeComment{
+		UserId:    userId.(uint64),
+		CommentId: commentLikeRequestBody.CommentId,
+		Notification: notification.Notification{
+			ReceiverId: comment.CommenterId,
+		},
+	}
+	err = commentHandler.notificationRepository.CreateLikeCommentNotification(&n)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+
 	c.JSON(http.StatusOK, nil)
 }
 

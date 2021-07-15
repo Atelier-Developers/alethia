@@ -30,6 +30,7 @@ func main() {
 	postRepo := persistance.NewPostRepository(&db)
 	commentRepo := persistance.NewCommentRepository(&db)
 	skillRepo := persistance.NewSkillRepository(&db)
+	notificationRepo := persistance.NewNotificationRepository(&db)
 
 	redisHost := os.Getenv("REDIS_HOST")
 	redisPort := os.Getenv("REDIS_PORT")
@@ -43,12 +44,13 @@ func main() {
 
 	token := auth.NewToken()
 
-	userBackgroundHistoryHandler := interfaces.NewUserBackgroundHistoryHandler(backgroundHistoryRepo, redisService.Auth, token)
+	notificationHandler := interfaces.NewNotificationHandler(notificationRepo)
+	userBackgroundHistoryHandler := interfaces.NewUserBackgroundHistoryHandler(backgroundHistoryRepo, redisService.Auth, token, notificationRepo)
 	userLanguageHandler := interfaces.NewUserLanguageHandler(languageRepo, redisService.Auth, token)
 	userHandler := interfaces.NewUserHandler(userRepo, redisService.Auth, token)
-	postHandler := interfaces.NewPostHandler(postRepo)
-	commentHandler := interfaces.NewCommentHandler(commentRepo)
-	skillHandler := interfaces.NewSkillHandler(skillRepo)
+	postHandler := interfaces.NewPostHandler(postRepo, notificationRepo)
+	commentHandler := interfaces.NewCommentHandler(commentRepo, notificationRepo)
+	skillHandler := interfaces.NewSkillHandler(skillRepo, notificationRepo)
 
 	router := gin.Default()
 	router.Use(gin.Recovery())
@@ -73,6 +75,7 @@ func main() {
 			backgroundGroup.POST("", userBackgroundHistoryHandler.AddBackgroundHistory)
 			backgroundGroup.PUT("", userBackgroundHistoryHandler.EditBackgroundHistory)
 			backgroundGroup.DELETE("", userBackgroundHistoryHandler.DeleteBackgroundHistory)
+			backgroundGroup.GET("", userBackgroundHistoryHandler.GetUserBackgroundHistories)
 		}
 
 		userSkillGroup := userGroup.Group("/skill")
@@ -81,6 +84,11 @@ func main() {
 			userSkillGroup.POST("", skillHandler.AddUserSkill)
 			userSkillGroup.DELETE("", skillHandler.DeleteUserSkill)
 			userSkillGroup.POST("/endorse", skillHandler.EndorseSkill)
+		}
+
+		userNotificationGroup := userGroup.Group("/notification")
+		{
+			userNotificationGroup.GET("", notificationHandler.GetUserNotifications)
 		}
 	}
 

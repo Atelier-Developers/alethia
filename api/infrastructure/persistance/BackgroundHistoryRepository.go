@@ -22,12 +22,15 @@ func (backgroundHistoryRepo *BackgroundHistoryRepository) SaveBackgroundHistory(
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(backgroundHistory.UserID, backgroundHistory.StartDate, backgroundHistory.EndDate, backgroundHistory.Category, backgroundHistory.Title, backgroundHistory.Description, backgroundHistory.Location)
-
+	res, err := stmt.Exec(backgroundHistory.UserID, backgroundHistory.StartDate, backgroundHistory.EndDate, backgroundHistory.Category, backgroundHistory.Title, backgroundHistory.Description, backgroundHistory.Location)
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	id, err := res.LastInsertId()
+	if err != nil {
+		log.Fatal(err)
+	}
+	backgroundHistory.ID = uint64(id)
 	return nil
 }
 
@@ -67,4 +70,32 @@ func (backgroundHistoryRepo *BackgroundHistoryRepository) DeleteBackgroundHistor
 	}
 
 	return nil
+}
+
+func (backgroundHistoryRepo *BackgroundHistoryRepository) GetUserBackgroundHistory(userId uint64) ([]entity.BackgroundHistory, error) {
+	db := backgroundHistoryRepo.dbClient.GetDB()
+	stmt, err := db.Prepare("SELECT * FROM USER_HISTORY WHERE USER_HISTORY.user_id=?")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer stmt.Close()
+
+	rows, err := stmt.Query(userId)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var backgroundHistories []entity.BackgroundHistory
+	for rows.Next() {
+		var backgroundHistory entity.BackgroundHistory
+		err = rows.Scan(&backgroundHistory.ID, &backgroundHistory.UserID, &backgroundHistory.StartDate, &backgroundHistory.EndDate, &backgroundHistory.Category, &backgroundHistory.Title, &backgroundHistory.Description, &backgroundHistory.Location)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		backgroundHistories = append(backgroundHistories, backgroundHistory)
+	}
+
+	return backgroundHistories, nil
 }

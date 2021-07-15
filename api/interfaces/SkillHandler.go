@@ -1,6 +1,7 @@
 package interfaces
 
 import (
+	"github.com/Atelier-Developers/alethia/domain/entity/notification"
 	"github.com/Atelier-Developers/alethia/domain/repository"
 	"github.com/Atelier-Developers/alethia/interfaces/bodyTemplates"
 	"github.com/gin-gonic/gin"
@@ -9,12 +10,14 @@ import (
 )
 
 type SkillHandler struct {
-	skillRepository repository.SkillRepository
+	skillRepository        repository.SkillRepository
+	notificationRepository repository.NotificationRepository
 }
 
-func NewSkillHandler(skillRepository repository.SkillRepository) SkillHandler {
+func NewSkillHandler(skillRepository repository.SkillRepository, notificationRepository repository.NotificationRepository) SkillHandler {
 	return SkillHandler{
-		skillRepository: skillRepository,
+		skillRepository:        skillRepository,
+		notificationRepository: notificationRepository,
 	}
 }
 
@@ -34,6 +37,19 @@ func (skillHandler *SkillHandler) EndorseSkill(c *gin.Context) {
 	}
 
 	err := skillHandler.skillRepository.EndorseSkill(endorseSkillRequestBody.SkillId, endorseSkillRequestBody.UserId, userId.(uint64))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+	n := notification.EndorseSkill{
+		UserId:           userId.(uint64),
+		UserSkillUserId:  endorseSkillRequestBody.UserId,
+		UserSkillSkillId: endorseSkillRequestBody.SkillId,
+		Notification: notification.Notification{
+			ReceiverId: endorseSkillRequestBody.UserId,
+		},
+	}
+	err = skillHandler.notificationRepository.CreateEndorseSkillNotification(&n)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return

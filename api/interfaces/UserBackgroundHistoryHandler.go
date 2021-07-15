@@ -2,6 +2,7 @@ package interfaces
 
 import (
 	"github.com/Atelier-Developers/alethia/domain/entity"
+	"github.com/Atelier-Developers/alethia/domain/entity/notification"
 	"github.com/Atelier-Developers/alethia/domain/repository"
 	"github.com/Atelier-Developers/alethia/infrastructure/auth"
 	"github.com/Atelier-Developers/alethia/interfaces/bodyTemplates"
@@ -14,13 +15,15 @@ type UserBackgroundHistoryHandler struct {
 	backgroundHistoryRepository repository.BackgroundHistoryRepository
 	authInterface               auth.AuthInterface
 	tokenInterface              auth.TokenInterface
+	notificationRepository      repository.NotificationRepository
 }
 
-func NewUserBackgroundHistoryHandler(backgroundHistoryRepository repository.BackgroundHistoryRepository, authInterface auth.AuthInterface, tokenInterface auth.TokenInterface) UserBackgroundHistoryHandler {
+func NewUserBackgroundHistoryHandler(backgroundHistoryRepository repository.BackgroundHistoryRepository, authInterface auth.AuthInterface, tokenInterface auth.TokenInterface, notificationRepository repository.NotificationRepository, ) UserBackgroundHistoryHandler {
 	return UserBackgroundHistoryHandler{
 		backgroundHistoryRepository: backgroundHistoryRepository,
 		authInterface:               authInterface,
 		tokenInterface:              tokenInterface,
+		notificationRepository:      notificationRepository,
 	}
 }
 
@@ -55,7 +58,19 @@ func (userBackgroundHistoryHandler *UserBackgroundHistoryHandler) AddBackgroundH
 		return
 	}
 
-	//TODO: CREATE NOTIF TOO?
+	//TODO WRONG
+	n := notification.ChangeWork{
+		UserHistoryId: backgroundHistory.ID,
+		Type:          "add",
+		Notification: notification.Notification{
+			ReceiverId: userId.(uint64),
+		},
+	}
+	err = userBackgroundHistoryHandler.notificationRepository.CreateChangeWorkNotification(&n)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
 	c.JSON(http.StatusCreated, nil)
 }
 
@@ -68,7 +83,7 @@ func (userBackgroundHistoryHandler *UserBackgroundHistoryHandler) EditBackground
 		return
 	}
 
-	_, exists := c.Get("user_id")
+	userId, exists := c.Get("user_id")
 
 	if !exists {
 		log.Fatal("User Id does not exist!")
@@ -91,6 +106,18 @@ func (userBackgroundHistoryHandler *UserBackgroundHistoryHandler) EditBackground
 	}
 
 	// TODO CREATE NOTIF TOO? (ONLY EDIT END DATE NULL BACKGROUNDS + NOTIF CHANGE WORK ON END DATE NULL + GET ENDING DATE FOR ENDING BACKGROUND HISTORY)
+	n := notification.ChangeWork{
+		UserHistoryId: backgroundHistory.ID,
+		Type:          "update",
+		Notification: notification.Notification{
+			ReceiverId: userId.(uint64),
+		},
+	}
+	err = userBackgroundHistoryHandler.notificationRepository.CreateChangeWorkNotification(&n)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
 	c.JSON(http.StatusCreated, nil)
 }
 
@@ -120,4 +147,20 @@ func (userBackgroundHistoryHandler *UserBackgroundHistoryHandler) DeleteBackgrou
 	}
 
 	c.JSON(http.StatusCreated, nil)
+}
+
+func (userBackgroundHistoryHandler *UserBackgroundHistoryHandler) GetUserBackgroundHistories(c *gin.Context) {
+	userId, exists := c.Get("user_id")
+
+	if !exists {
+		log.Fatal("User Id does not exist!")
+	}
+
+	backgrounds, err := userBackgroundHistoryHandler.backgroundHistoryRepository.GetUserBackgroundHistory(userId.(uint64))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.JSON(http.StatusCreated, backgrounds)
 }
