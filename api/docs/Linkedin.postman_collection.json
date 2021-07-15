@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "43cd716c-dc4c-4017-a2ef-1a8b3ecc0352",
-		"name": "Linkedin",
+		"_postman_id": "4989a095-6ebd-41c0-a706-2e04f8788897",
+		"name": "Linkedin Copy",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -256,7 +256,9 @@
 							"request": {
 								"method": "GET",
 								"header": [],
-								"url": null
+								"url": {
+									"raw": ""
+								}
 							},
 							"response": []
 						}
@@ -269,7 +271,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\" : \"amir79\",\n    \"password\": \"amir1234\"\n}",
+							"raw": "{\n    \"username\" : \"aref79\",\n    \"password\": \"amir1234\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -289,13 +291,56 @@
 					"response": []
 				},
 				{
+					"name": "Get User By Token",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{path}}/users",
+							"host": [
+								"{{path}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User By ID",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{path}}/users",
+							"host": [
+								"{{path}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Register",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\" : \"amir79\",\n    \"first_name\": \"amir\",\n    \"last_name\": \"tavakkoli\",\n    \"password\": \"amir1234\",\n    \"intro\": \"Not much to say\",\n    \"about\": \"CE Student\",\n    \"accomplishments\": \"A simple loser in my life\",\n    \"additional-info\": \"nothing to say\",\n    \"birth-date\" : \"2000-07-14T17:55:50+00:00\"\n}",
+							"raw": "{\n    \"username\" : \"aref79\",\n    \"first_name\": \"amir\",\n    \"last_name\": \"tavakkoli\",\n    \"password\": \"amir1234\",\n    \"intro\": \"Not much to say\",\n    \"about\": \"CE Student\",\n    \"accomplishments\": \"A simple loser in my life\",\n    \"additional_info\": \"nothing to say\",\n    \"birth_date\" : \"2000-07-14T17:55:50+00:00\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -487,6 +532,136 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Conversation",
+			"item": [
+				{
+					"name": "Create Conversation",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id_2\": 1,\n    \"is_archived\": false,\n    \"is_deleted\": false,\n    \"is_read\": false \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{path}}/conversation",
+							"host": [
+								"{{path}}"
+							],
+							"path": [
+								"conversation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Conversation",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 1,\n    \"is_archived\": false,\n    \"is_deleted\": true,\n    \"is_read\": false \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{path}}/conversation",
+							"host": [
+								"{{path}}"
+							],
+							"path": [
+								"conversation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Conversation",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{path}}/conversation",
+							"host": [
+								"{{path}}"
+							],
+							"path": [
+								"conversation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Conversations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{path}}/conversation",
+							"host": [
+								"{{path}}"
+							],
+							"path": [
+								"conversation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Conversation",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id_1\": 2,\n    \"user_id_2\": 3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{path}}/conversation/singleConversation",
+							"host": [
+								"{{path}}"
+							],
+							"path": [
+								"conversation",
+								"singleConversation"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"auth": {
@@ -494,7 +669,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6ImRlOGE2ODMyLTVmOWYtNGIwMC05ZGYzLTRkNDJlNjBlOTU2ZSIsImF1dGhvcml6ZWQiOnRydWUsImV4cCI6MTYyNjM2MzIwNiwidXNlcl9pZCI6IjEifQ.1BmHnhMngCXO0pX09HOh4YZqsh1xy6aeMjv18SilPkA",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6IjY1MTdhMmVjLTdiZTAtNDNlZi1hOWE0LWMxZWZlMzI2OTc5ZCIsImF1dGhvcml6ZWQiOnRydWUsImV4cCI6MTYyNjM4ODU2MSwidXNlcl9pZCI6IjMifQ.0QXccrv9WVRGG4Qc20P9H3PI1tzPvw1XdnhSPmD7hzc",
 				"type": "string"
 			}
 		]
