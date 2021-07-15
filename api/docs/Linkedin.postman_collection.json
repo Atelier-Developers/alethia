@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "cb071123-d445-46f7-b7da-74dbcebdbcd9",
+		"_postman_id": "43cd716c-dc4c-4017-a2ef-1a8b3ecc0352",
 		"name": "Linkedin",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -249,6 +249,20 @@
 					]
 				},
 				{
+					"name": "Notifications",
+					"item": [
+						{
+							"name": "Get Notifications",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": null
+							},
+							"response": []
+						}
+					]
+				},
+				{
 					"name": "Login",
 					"request": {
 						"method": "POST",
@@ -480,7 +494,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6IjAzZTNhYmUwLThlMTgtNGEwYS05YzcwLTljZTMwNTJkOWEzNiIsImF1dGhvcml6ZWQiOnRydWUsImV4cCI6MTYyNjM1NjY0OSwidXNlcl9pZCI6IjEifQ.aPCkICeUOd5kOFuepZWINqMGLB-wrvEkDSrKbFaPb78",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6ImRlOGE2ODMyLTVmOWYtNGIwMC05ZGYzLTRkNDJlNjBlOTU2ZSIsImF1dGhvcml6ZWQiOnRydWUsImV4cCI6MTYyNjM2MzIwNiwidXNlcl9pZCI6IjEifQ.1BmHnhMngCXO0pX09HOh4YZqsh1xy6aeMjv18SilPkA",
 				"type": "string"
 			}
 		]
