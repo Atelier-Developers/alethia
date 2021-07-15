@@ -237,7 +237,26 @@ func (notificationRepository *NotificationRepository) CreateLikePostNotification
 	return nil
 }
 func (notificationRepository *NotificationRepository) GetLikePostNotification(userId uint64) ([]notification.LikePost, error) {
-	return nil, nil
+	db := notificationRepository.dbClient.GetDB()
+	var notifs []notification.LikePost
+	stmt, err := db.Prepare("SELECT NOTIFICATION_LIKE_POST.*, receiver_id, created FROM NOTIFICATION_LIKE_POST, NOTIFICATION WHERE NOTIFICATION.id = NOTIFICATION_LIKE_POST.notif_id AND NOTIFICATION.receiver_id = ?")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+	rows, err := stmt.Query(userId)
+	if err != nil {
+		log.Fatal(err)
+	}
+	for rows.Next() {
+		var nc notification.LikePost
+		err := rows.Scan(&nc.Id, &nc.UserId, &nc.PostId, &nc.ReceiverId, &nc.Created)
+		if err != nil {
+			log.Fatal(err)
+		}
+		notifs = append(notifs, nc)
+	}
+	return notifs, nil
 }
 func (notificationRepository *NotificationRepository) CreateReplyCommentNotification(replyComment *notification.ReplyComment) error {
 	db := notificationRepository.dbClient.GetDB()
@@ -261,7 +280,26 @@ func (notificationRepository *NotificationRepository) CreateReplyCommentNotifica
 	return nil
 }
 func (notificationRepository *NotificationRepository) GetReplyCommentNotification(userId uint64) ([]notification.ReplyComment, error) {
-	return nil, nil
+	db := notificationRepository.dbClient.GetDB()
+	var notifs []notification.ReplyComment
+	stmt, err := db.Prepare("SELECT NOTIFICATION_REPLY.*, receiver_id, created FROM NOTIFICATION_REPLY, NOTIFICATION WHERE NOTIFICATION.id = NOTIFICATION_REPLY.notif_id AND NOTIFICATION.receiver_id = ?")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+	rows, err := stmt.Query(userId)
+	if err != nil {
+		log.Fatal(err)
+	}
+	for rows.Next() {
+		var nc notification.ReplyComment
+		err := rows.Scan(&nc.Id, &nc.CommentId, &nc.ReceiverId, &nc.Created)
+		if err != nil {
+			log.Fatal(err)
+		}
+		notifs = append(notifs, nc)
+	}
+	return notifs, nil
 }
 func (notificationRepository *NotificationRepository) CreateViewProfileNotification(viewProfile *notification.ViewProfile) error {
 	db := notificationRepository.dbClient.GetDB()
@@ -285,7 +323,26 @@ func (notificationRepository *NotificationRepository) CreateViewProfileNotificat
 	return nil
 }
 func (notificationRepository *NotificationRepository) GetViewProfileNotification(userId uint64) ([]notification.ViewProfile, error) {
-	return nil, nil
+	db := notificationRepository.dbClient.GetDB()
+	var notifs []notification.ViewProfile
+	stmt, err := db.Prepare("SELECT NOTIFICATION_VIEW_PROFILE.*, receiver_id, created FROM NOTIFICATION_VIEW_PROFILE, NOTIFICATION WHERE NOTIFICATION.id = NOTIFICATION_VIEW_PROFILE.notif_id AND NOTIFICATION.receiver_id = ?")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+	rows, err := stmt.Query(userId)
+	if err != nil {
+		log.Fatal(err)
+	}
+	for rows.Next() {
+		var nc notification.ViewProfile
+		err := rows.Scan(&nc.Id, &nc.UserId, &nc.ReceiverId, &nc.Created)
+		if err != nil {
+			log.Fatal(err)
+		}
+		notifs = append(notifs, nc)
+	}
+	return notifs, nil
 }
 func (notificationRepository *NotificationRepository) CreateBirthdayNotification(birthday *notification.Birthday) error {
 	db := notificationRepository.dbClient.GetDB()
@@ -309,5 +366,24 @@ func (notificationRepository *NotificationRepository) CreateBirthdayNotification
 	return nil
 }
 func (notificationRepository *NotificationRepository) GetBirthdayNotification(userId uint64) ([]notification.Birthday, error) {
-	return nil, nil
+	db := notificationRepository.dbClient.GetDB()
+	var notifs []notification.Birthday
+	stmt, err := db.Prepare("SELECT NOTIFICATION_BIRTHDAY.*, receiver_id, created FROM NOTIFICATION_BIRTHDAY, NOTIFICATION WHERE NOTIFICATION.id = NOTIFICATION_BIRTHDAY.notif_id AND NOTIFICATION.receiver_id = ?")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+	rows, err := stmt.Query(userId)
+	if err != nil {
+		log.Fatal(err)
+	}
+	for rows.Next() {
+		var nc notification.Birthday
+		err := rows.Scan(&nc.Id, &nc.UserId, &nc.ReceiverId, &nc.Created)
+		if err != nil {
+			log.Fatal(err)
+		}
+		notifs = append(notifs, nc)
+	}
+	return notifs, nil
 }
