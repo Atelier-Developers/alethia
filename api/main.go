@@ -31,6 +31,7 @@ func main() {
 	commentRepo := persistance.NewCommentRepository(&db)
 	skillRepo := persistance.NewSkillRepository(&db)
 	notificationRepo := persistance.NewNotificationRepository(&db)
+	conversationRepo := persistance.NewConversationRepository(&db)
 
 	redisHost := os.Getenv("REDIS_HOST")
 	redisPort := os.Getenv("REDIS_PORT")
@@ -51,6 +52,7 @@ func main() {
 	notificationHandler := interfaces.NewNotificationHandler(notificationRepo)
 	commentHandler := interfaces.NewCommentHandler(commentRepo, notificationRepo)
 	skillHandler := interfaces.NewSkillHandler(skillRepo)
+	conversationHandler := interfaces.NewConversationHandler(conversationRepo, redisService.Auth, token)
 
 	router := gin.Default()
 	router.Use(gin.Recovery())
@@ -90,6 +92,11 @@ func main() {
 		{
 			userNotificationGroup.GET("", notificationHandler.GetUserNotifications)
 		}
+	}
+
+	conversationGroup := router.Group("/conversation", middleware.AuthMiddleware(redisService.Auth))
+	{
+		conversationGroup.POST("", )
 	}
 
 	postGroup := router.Group("/post", middleware.AuthMiddleware(redisService.Auth))
