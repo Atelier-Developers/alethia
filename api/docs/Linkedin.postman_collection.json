@@ -662,6 +662,40 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Get Languages",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{path}}/language",
+					"host": [
+						"{{path}}"
+					],
+					"path": [
+						"language"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Skills",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{path}}/skill",
+					"host": [
+						"{{path}}"
+					],
+					"path": [
+						"skill"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"auth": {

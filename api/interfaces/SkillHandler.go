@@ -57,6 +57,16 @@ func (skillHandler *SkillHandler) EndorseSkill(c *gin.Context) {
 	c.JSON(http.StatusOK, nil)
 }
 
+func (skillHandler *SkillHandler) GetSkills(c *gin.Context) {
+	skills, err := skillHandler.skillRepository.GetSkills()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.JSON(http.StatusCreated, skills)
+}
+
 func (skillHandler *SkillHandler) AddUserSkill(c *gin.Context) {
 	var addUserSkillRequestBody bodyTemplates.AddUserSkillRequestBody
 	if err := c.ShouldBindJSON(&addUserSkillRequestBody); err != nil {

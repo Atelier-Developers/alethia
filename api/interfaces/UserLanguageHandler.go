@@ -23,6 +23,16 @@ func NewUserLanguageHandler(languageRepository repository.LanguageRepository, au
 	}
 }
 
+func (userLanguageHandler *UserLanguageHandler) GetLanguages(c *gin.Context) {
+	languages, err := userLanguageHandler.languageRepository.GetLanguages()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.JSON(http.StatusCreated, languages)
+}
+
 func (userLanguageHandler *UserLanguageHandler) AddUserLanguage(c *gin.Context) {
 	var userRequestBody bodyTemplates.UserLanguageCreateRequestBody
 	if err := c.ShouldBindJSON(&userRequestBody); err != nil {

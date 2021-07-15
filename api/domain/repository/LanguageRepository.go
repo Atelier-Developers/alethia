@@ -7,4 +7,5 @@ type LanguageRepository interface {
 	DeleteUserLanguage(userId uint64, languageId uint64) error
 	UserLanguageExists(userId uint64, languageId uint64) (bool, error)
 	GetUserLanguages(userId uint64) ([]entity.Language, error)
+	GetLanguages() ([]entity.Language, error)
 }

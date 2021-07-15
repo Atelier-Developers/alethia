@@ -138,7 +138,7 @@ CREATE TABLE USER_CONVERSATION
     PRIMARY KEY (user_id, conversation_id),
     CONSTRAINT FK_user_user_conversation FOREIGN KEY (user_id) REFERENCES USER (id),
     CONSTRAINT FK_conversation_user_conversation FOREIGN KEY (conversation_id) REFERENCES CONVERSATION (id)
-)
+);
 
 CREATE TABLE MESSAGE
 (
@@ -326,6 +326,8 @@ CREATE TABLE NOTIFICATION_CHANGE_WORK
     PRIMARY KEY (notif_id)
 );
 
+INSERT INTO LANGUAGE (language) VALUES ("Japanese"), ("Farsi"), ("English"), ("German"), ("French");
+INSERT INTO SKILL (title, category) VALUES ("C++", "tools_technologies"), ("Game Dev", "industry_knowledge"), ("Communication", "interpersonal_skills");
 
 
 

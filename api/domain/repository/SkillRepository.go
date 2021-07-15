@@ -8,4 +8,5 @@ type SkillRepository interface {
 	DeleteUserSkill(skillId uint64, userId uint64) error
 	GetUserSkills(userId uint64) ([]entity.Skill, error)
 	UserSkillExist(skillId uint64, userId uint64) (bool, error)
+	GetSkills() ([]entity.Skill, error)
 }

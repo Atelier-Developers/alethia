@@ -51,6 +51,35 @@ func (languageRepo *LanguageRepository) DeleteUserLanguage(userId uint64, langua
 	return nil
 }
 
+func (languageRepo *LanguageRepository) GetLanguages() ([]entity.Language, error) {
+	db := languageRepo.dbClient.GetDB()
+
+	stmt, err := db.Prepare("SELECT * FROM LANGUAGE")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer stmt.Close()
+
+	var languages []entity.Language
+	rows, err := stmt.Query()
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		var language entity.Language
+		err = rows.Scan(&language.ID, &language.Language)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		languages = append(languages, language)
+	}
+
+	return languages, nil
+}
+
 func (languageRepo *LanguageRepository) UserLanguageExists(userId uint64, languageId uint64) (bool, error) {
 	db := languageRepo.dbClient.GetDB()
 	stmt, err := db.Prepare("SELECT Count(*) FROM USER_LANGUAGE WHERE user_id=? AND language_id=?")

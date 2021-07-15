@@ -31,7 +31,7 @@ func main() {
 	commentRepo := persistance.NewCommentRepository(&db)
 	skillRepo := persistance.NewSkillRepository(&db)
 	notificationRepo := persistance.NewNotificationRepository(&db)
-	conversationRepo := persistance.NewConversationRepository(&db)
+	//conversationRepo := persistance.NewConversationRepository(&db)
 
 	redisHost := os.Getenv("REDIS_HOST")
 	redisPort := os.Getenv("REDIS_PORT")
@@ -52,7 +52,7 @@ func main() {
 	postHandler := interfaces.NewPostHandler(postRepo, notificationRepo)
 	commentHandler := interfaces.NewCommentHandler(commentRepo, notificationRepo)
 	skillHandler := interfaces.NewSkillHandler(skillRepo, notificationRepo)
-	conversationHandler := interfaces.NewConversationHandler(conversationRepo, redisService.Auth, token)
+	//conversationHandler := interfaces.NewConversationHandler(conversationRepo, redisService.Auth, token)
 
 	router := gin.Default()
 	router.Use(gin.Recovery())
@@ -61,6 +61,9 @@ func main() {
 	router.POST("/login", userHandler.Login)
 	router.POST("/logout", userHandler.Logout)
 	router.POST("/register", userHandler.SaveUser)
+
+	router.GET("/language", userLanguageHandler.GetLanguages)
+	router.GET("/skill", skillHandler.GetSkills)
 
 	userGroup := router.Group("/users", middleware.AuthMiddleware(redisService.Auth))
 	{
@@ -96,15 +99,15 @@ func main() {
 		}
 	}
 
-	conversationGroup := router.Group("/conversation", middleware.AuthMiddleware(redisService.Auth))
-	{
-		conversationGroup.POST("", conversationHandler.AddConversation)
-		conversationGroup.PUT("", conversationHandler.UpdateConversation)
-		conversationGroup.DELETE("", conversationHandler.DeleteConversation)
-		conversationGroup.GET("", conversationHandler.GetUserConversations)
-		// TODO: Naming should be different
-		conversationGroup.GET("/singleConversation", conversationHandler.GetConversation)
-	}
+	//conversationGroup := router.Group("/conversation", middleware.AuthMiddleware(redisService.Auth))
+	//{
+	//	conversationGroup.POST("", conversationHandler.AddConversation)
+	//	conversationGroup.PUT("", conversationHandler.UpdateConversation)
+	//	conversationGroup.DELETE("", conversationHandler.DeleteConversation)
+	//	conversationGroup.GET("", conversationHandler.GetUserConversations)
+	//	// TODO: Naming should be different
+	//	conversationGroup.GET("/singleConversation", conversationHandler.GetConversation)
+	//}
 
 	postGroup := router.Group("/post", middleware.AuthMiddleware(redisService.Auth))
 	{
