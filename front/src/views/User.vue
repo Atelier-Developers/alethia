@@ -72,8 +72,6 @@
               <h2>
                 Languages
               </h2>
-              <v-spacer/>
-              <v-icon color="black" @click="dialogLang=true">mdi-plus</v-icon>
             </v-card-title>
             <v-divider/>
             <v-container>

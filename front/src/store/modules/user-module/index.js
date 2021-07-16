@@ -52,30 +52,30 @@ const actions = {
             console.log(e);
         }
     },
-    async getSkills(context,payload) {
+    async getSkills(context, payload) {
         console.log("Get SKILLS")
         try {
-            let res = await axios.get(API.getSkills, payload);
+            let res = await axios.get(API.getSkills + '/' + payload.user_id,);
             console.log(res)
             context.commit('setSkills', res.data);
         } catch (e) {
             console.log(e);
         }
     },
-    async getLanguages(context,payload) {
+    async getLanguages(context, payload) {
         console.log("Get Langs")
         try {
-            let res = await axios.get(API.getLanguages,payload);
+            let res = await axios.get(API.getLanguages + '/' + payload.user_id, payload);
             console.log(res)
             context.commit('setLanguages', res.data);
         } catch (e) {
             console.log(e);
         }
     },
-    async getBackgrounds(context,payload) {
+    async getBackgrounds(context, payload) {
         console.log("Get Backgrounds")
         try {
-            let res = await axios.get(API.getBackground,payload);
+            let res = await axios.get(API.getBackground + '/' + payload.user_id, payload);
             console.log(res)
             context.commit('setBackgrounds', res.data);
         } catch (e) {
@@ -137,7 +137,7 @@ const actions = {
             console.log(e);
         }
     },
-    async editUser(context, payload){
+    async editUser(context, payload) {
         console.log("PUT User")
         try {
             let res = await axios.put(API.editUser, payload);
