@@ -2,6 +2,7 @@ package interfaces
 
 import (
 	"github.com/Atelier-Developers/alethia/domain/entity"
+	"github.com/Atelier-Developers/alethia/domain/entity/Post"
 	"github.com/Atelier-Developers/alethia/domain/entity/notification"
 	"github.com/Atelier-Developers/alethia/domain/repository"
 	"github.com/Atelier-Developers/alethia/interfaces/bodyTemplates"
@@ -50,7 +51,7 @@ func (commentHandler *CommentHandler) SaveComment(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
-	var post entity.Post
+	var post Post.Post
 	err = commentHandler.postRepository.GetPostById(comment.PostId, &post)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
