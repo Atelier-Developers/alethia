@@ -4,7 +4,7 @@
       <v-col cols="12" sm="6" md="4">
         <v-card style="border-radius: 7px;" flat>
           <v-card-title>
-            Login
+            Sign in to Linkedin
           </v-card-title>
           <v-card-subtitle>
             See your growth and get consulting support
@@ -40,7 +40,7 @@
                   dark
                   @click="sendLogin()"
               >
-                login
+                Sign in
               </v-btn>
             </v-row>
           </v-card-text>
