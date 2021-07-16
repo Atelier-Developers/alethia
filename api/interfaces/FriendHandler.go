@@ -194,14 +194,6 @@ func (friendHandler *FriendHandler) DeleteFriend(c *gin.Context) {
 }
 
 func (friendHandler *FriendHandler) GetFriends(c *gin.Context) {
-	var userRequestBody bodyTemplates.FriendDeleteRequestBody
-	if err := c.ShouldBindJSON(&userRequestBody); err != nil {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			"invalid_json": "invalid json",
-		})
-		return
-	}
-
 	userId, exists := c.Get("user_id")
 
 	if !exists {

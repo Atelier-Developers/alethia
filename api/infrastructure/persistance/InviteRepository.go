@@ -99,7 +99,7 @@ func (inviteRepo *InviteRepository) GetInvites(userId uint64) ([]entity.Invite, 
 	var invites []entity.Invite
 	for rows.Next() {
 		var invite entity.Invite
-		err = rows.Scan(&invite.UserId1, &invite.UserId2, &invite.Body, &invite.Created, &invite.Username1, &invite.Username2)
+		err = rows.Scan(&invite.UserId1, &invite.UserId2, &invite.Created, &invite.Body, &invite.Username1, &invite.Username2)
 		if err != nil {
 			log.Fatal(err)
 		}
