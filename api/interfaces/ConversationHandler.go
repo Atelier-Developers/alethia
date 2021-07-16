@@ -3,7 +3,6 @@ package interfaces
 import (
 	"github.com/Atelier-Developers/alethia/domain/entity/Conversation"
 	"github.com/Atelier-Developers/alethia/domain/repository"
-	"github.com/Atelier-Developers/alethia/infrastructure/auth"
 	"github.com/Atelier-Developers/alethia/interfaces/bodyTemplates"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -12,15 +11,11 @@ import (
 
 type ConversationHandler struct {
 	conversationRepository repository.ConversationRepository
-	authInterface          auth.AuthInterface
-	tokenInterface         auth.TokenInterface
 }
 
-func NewConversationHandler(conversationRepository repository.ConversationRepository, authInterface auth.AuthInterface, tokenInterface auth.TokenInterface) ConversationHandler {
+func NewConversationHandler(conversationRepository repository.ConversationRepository) ConversationHandler {
 	return ConversationHandler{
 		conversationRepository: conversationRepository,
-		authInterface:          authInterface,
-		tokenInterface:         tokenInterface,
 	}
 }
 
@@ -139,35 +134,6 @@ func (conversationHandler ConversationHandler) DeleteConversation(c *gin.Context
 
 }
 
-//
-//func (conversationHandler ConversationHandler) GetConversation(c *gin.Context) {
-//	var userRequestBody bodyTemplates.ConversationGetRequestBody
-//	if err := c.ShouldBindJSON(&userRequestBody); err != nil {
-//		c.JSON(http.StatusUnprocessableEntity, gin.H{
-//			"invalid_json": "invalid json",
-//		})
-//		return
-//	}
-//
-//	userId, exists := c.Get("user_id")
-//
-//	if !exists {
-//		log.Fatal("User Id does not exist!")
-//	}
-//
-//	if userId != userRequestBody.UserId1 && userId != userRequestBody.UserId2 {
-//		log.Fatal("This user doesn't have access to this conversation!")
-//	}
-//
-//	conversation, err := conversationHandler.conversationRepository.GetConversation(userRequestBody.UserId1, userRequestBody.UserId2)
-//	if err != nil {
-//		c.JSON(http.StatusInternalServerError, err)
-//		return
-//	}
-//
-//	c.JSON(http.StatusCreated, conversation)
-//}
-//
 func (conversationHandler ConversationHandler) GetUserConversations(c *gin.Context) {
 	userId, exists := c.Get("user_id")
 

@@ -2,7 +2,6 @@ package interfaces
 
 import (
 	"github.com/Atelier-Developers/alethia/domain/repository"
-	"github.com/Atelier-Developers/alethia/infrastructure/auth"
 	"github.com/Atelier-Developers/alethia/interfaces/bodyTemplates"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -11,15 +10,11 @@ import (
 
 type UserLanguageHandler struct {
 	languageRepository repository.LanguageRepository
-	authInterface      auth.AuthInterface
-	tokenInterface     auth.TokenInterface
 }
 
-func NewUserLanguageHandler(languageRepository repository.LanguageRepository, authInterface auth.AuthInterface, tokenInterface auth.TokenInterface) UserLanguageHandler {
+func NewUserLanguageHandler(languageRepository repository.LanguageRepository) UserLanguageHandler {
 	return UserLanguageHandler{
 		languageRepository: languageRepository,
-		authInterface:      authInterface,
-		tokenInterface:     tokenInterface,
 	}
 }
 

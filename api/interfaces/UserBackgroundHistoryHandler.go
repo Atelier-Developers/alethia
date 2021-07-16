@@ -4,7 +4,6 @@ import (
 	"github.com/Atelier-Developers/alethia/domain/entity"
 	"github.com/Atelier-Developers/alethia/domain/entity/notification"
 	"github.com/Atelier-Developers/alethia/domain/repository"
-	"github.com/Atelier-Developers/alethia/infrastructure/auth"
 	"github.com/Atelier-Developers/alethia/interfaces/bodyTemplates"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -13,16 +12,12 @@ import (
 
 type UserBackgroundHistoryHandler struct {
 	backgroundHistoryRepository repository.BackgroundHistoryRepository
-	authInterface               auth.AuthInterface
-	tokenInterface              auth.TokenInterface
 	notificationRepository      repository.NotificationRepository
 }
 
-func NewUserBackgroundHistoryHandler(backgroundHistoryRepository repository.BackgroundHistoryRepository, authInterface auth.AuthInterface, tokenInterface auth.TokenInterface, notificationRepository repository.NotificationRepository, ) UserBackgroundHistoryHandler {
+func NewUserBackgroundHistoryHandler(backgroundHistoryRepository repository.BackgroundHistoryRepository, notificationRepository repository.NotificationRepository) UserBackgroundHistoryHandler {
 	return UserBackgroundHistoryHandler{
 		backgroundHistoryRepository: backgroundHistoryRepository,
-		authInterface:               authInterface,
-		tokenInterface:              tokenInterface,
 		notificationRepository:      notificationRepository,
 	}
 }

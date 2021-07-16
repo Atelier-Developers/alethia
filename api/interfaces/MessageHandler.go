@@ -3,7 +3,6 @@ package interfaces
 import (
 	"github.com/Atelier-Developers/alethia/domain/entity/Conversation"
 	"github.com/Atelier-Developers/alethia/domain/repository"
-	"github.com/Atelier-Developers/alethia/infrastructure/auth"
 	"github.com/Atelier-Developers/alethia/interfaces/bodyTemplates"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -13,16 +12,12 @@ import (
 type MessageHandler struct {
 	conversationRepository repository.ConversationRepository
 	messageRepository      repository.MessageRepository
-	authInterface          auth.AuthInterface
-	tokenInterface         auth.TokenInterface
 }
 
-func NewMessageHandler(conversationRepository repository.ConversationRepository, messageRepository repository.MessageRepository, authInterface auth.AuthInterface, tokenInterface auth.TokenInterface) MessageHandler {
+func NewMessageHandler(conversationRepository repository.ConversationRepository, messageRepository repository.MessageRepository) MessageHandler {
 	return MessageHandler{
 		conversationRepository: conversationRepository,
 		messageRepository:      messageRepository,
-		authInterface:          authInterface,
-		tokenInterface:         tokenInterface,
 	}
 }
 

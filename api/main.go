@@ -24,6 +24,8 @@ func main() {
 		log.Fatalln(err.Error())
 	}
 
+	inviteRepo := persistance.NewInviteRepository(&db)
+	friendRepo := persistance.NewFriendRepository(&db)
 	messageRepo := persistance.NewMessageRepository(&db)
 	languageRepo := persistance.NewLanguageRepository(&db)
 	backgroundHistoryRepo := persistance.NewBackgroundHistoryRepository(&db)
@@ -46,15 +48,16 @@ func main() {
 
 	token := auth.NewToken()
 
-	messageHandler := interfaces.NewMessageHandler(conversationRepo, messageRepo, redisService.Auth, token)
 	notificationHandler := interfaces.NewNotificationHandler(notificationRepo)
-	userBackgroundHistoryHandler := interfaces.NewUserBackgroundHistoryHandler(backgroundHistoryRepo, redisService.Auth, token, notificationRepo)
-	userLanguageHandler := interfaces.NewUserLanguageHandler(languageRepo, redisService.Auth, token)
+	friendHandler := interfaces.NewFriendHandler(friendRepo, inviteRepo)
+	messageHandler := interfaces.NewMessageHandler(conversationRepo, messageRepo)
+	userBackgroundHistoryHandler := interfaces.NewUserBackgroundHistoryHandler(backgroundHistoryRepo, notificationRepo)
+	userLanguageHandler := interfaces.NewUserLanguageHandler(languageRepo)
 	userHandler := interfaces.NewUserHandler(userRepo, redisService.Auth, token)
 	postHandler := interfaces.NewPostHandler(postRepo, notificationRepo)
 	commentHandler := interfaces.NewCommentHandler(commentRepo, notificationRepo)
 	skillHandler := interfaces.NewSkillHandler(skillRepo, notificationRepo)
-	conversationHandler := interfaces.NewConversationHandler(conversationRepo, redisService.Auth, token)
+	conversationHandler := interfaces.NewConversationHandler(conversationRepo)
 
 	router := gin.Default()
 	router.Use(gin.Recovery())
@@ -73,7 +76,21 @@ func main() {
 		userGroup.GET("", userHandler.GetUser)
 		userGroup.POST("", userHandler.GetUserById)
 
-		languageGroup := userGroup.Group("/language", middleware.AuthMiddleware(redisService.Auth))
+		inviteGroup := userGroup.Group("/invite")
+		{
+			inviteGroup.POST("", friendHandler.AddInvite)
+			inviteGroup.DELETE("", friendHandler.DeleteInvite)
+			inviteGroup.GET("", friendHandler.GetUserInvites)
+		}
+
+		friendGroup := userGroup.Group("/friend")
+		{
+			friendGroup.POST("", friendHandler.AddFriend)
+			friendGroup.GET("", friendHandler.GetFriends)
+			friendGroup.DELETE("", friendHandler.DeleteFriend)
+		}
+
+		languageGroup := userGroup.Group("/language")
 		{
 			languageGroup.POST("", userLanguageHandler.AddUserLanguage)
 			languageGroup.DELETE("", userLanguageHandler.DeleteUserLanguage)
@@ -105,10 +122,10 @@ func main() {
 	{
 		conversationGroup.POST("", conversationHandler.AddConversation)
 		conversationGroup.PUT("", conversationHandler.UpdateUserConversation)
-		conversationGroup.DELETE("", conversationHandler.DeleteConversation)
+		//conversationGroup.DELETE("", conversationHandler.DeleteConversation)
 		conversationGroup.GET("", conversationHandler.GetUserConversations)
 
-		messageGroup := conversationGroup.Group("/message", middleware.AuthMiddleware(redisService.Auth))
+		messageGroup := conversationGroup.Group("/message")
 		{
 			messageGroup.POST("", messageHandler.AddMessage)
 			messageGroup.GET("", messageHandler.GetMessages)
