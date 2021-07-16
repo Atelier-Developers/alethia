@@ -130,7 +130,7 @@ func (userHandler *UserHandler) GetUserById(c *gin.Context) {
 		BirthDate:       user.BirthDate,
 		JoinDate:        user.JoinDate,
 	}
-	c.JSON(http.StatusCreated, response)
+	c.JSON(http.StatusOK, response)
 }
 
 func (userHandler *UserHandler) Login(c *gin.Context) {

@@ -24,6 +24,7 @@ func main() {
 		log.Fatalln(err.Error())
 	}
 
+	messageRepo := persistance.NewMessageRepository(&db)
 	languageRepo := persistance.NewLanguageRepository(&db)
 	backgroundHistoryRepo := persistance.NewBackgroundHistoryRepository(&db)
 	userRepo := persistance.NewUserRepository(&db)
@@ -45,6 +46,7 @@ func main() {
 
 	token := auth.NewToken()
 
+	messageHandler := interfaces.NewMessageHandler(conversationRepo, messageRepo, redisService.Auth, token)
 	notificationHandler := interfaces.NewNotificationHandler(notificationRepo)
 	userBackgroundHistoryHandler := interfaces.NewUserBackgroundHistoryHandler(backgroundHistoryRepo, redisService.Auth, token, notificationRepo)
 	userLanguageHandler := interfaces.NewUserLanguageHandler(languageRepo, redisService.Auth, token)
@@ -105,7 +107,14 @@ func main() {
 		conversationGroup.PUT("", conversationHandler.UpdateUserConversation)
 		conversationGroup.DELETE("", conversationHandler.DeleteConversation)
 		conversationGroup.GET("", conversationHandler.GetUserConversations)
-		// TODO: Naming should be different
+
+		messageGroup := conversationGroup.Group("/message", middleware.AuthMiddleware(redisService.Auth))
+		{
+			messageGroup.POST("", messageHandler.AddMessage)
+			messageGroup.GET("", messageHandler.GetMessages)
+			// TODO: Naming should be different
+			messageGroup.GET("/singleMessage", messageHandler.GetMessage)
+		}
 		//conversationGroup.GET("/singleConversation", conversationHandler.GetConversation)
 	}
 

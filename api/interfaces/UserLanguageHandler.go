@@ -30,7 +30,7 @@ func (userLanguageHandler *UserLanguageHandler) GetLanguages(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, languages)
+	c.JSON(http.StatusOK, languages)
 }
 
 func (userLanguageHandler *UserLanguageHandler) AddUserLanguage(c *gin.Context) {
@@ -105,5 +105,5 @@ func (userLanguageHandler *UserLanguageHandler) GetUserLanguages(c *gin.Context)
 		return
 	}
 
-	c.JSON(http.StatusCreated, languages)
+	c.JSON(http.StatusOK, languages)
 }

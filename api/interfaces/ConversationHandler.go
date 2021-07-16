@@ -181,5 +181,5 @@ func (conversationHandler ConversationHandler) GetUserConversations(c *gin.Conte
 		return
 	}
 
-	c.JSON(http.StatusCreated, conversations)
+	c.JSON(http.StatusOK, conversations)
 }

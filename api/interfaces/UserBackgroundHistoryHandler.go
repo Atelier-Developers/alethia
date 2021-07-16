@@ -162,5 +162,5 @@ func (userBackgroundHistoryHandler *UserBackgroundHistoryHandler) GetUserBackgro
 		return
 	}
 
-	c.JSON(http.StatusCreated, backgrounds)
+	c.JSON(http.StatusOK, backgrounds)
 }

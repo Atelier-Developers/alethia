@@ -14,7 +14,7 @@ func NewConversationRepository(dbClient *Database.MySQLDB) *ConversationReposito
 	return &ConversationRepository{dbClient: dbClient}
 }
 
-func (conversationRepo ConversationRepository) ConversationExists(userId1 uint64, userId2 uint64) (bool, error) {
+func (conversationRepo *ConversationRepository) ConversationExists(userId1 uint64, userId2 uint64) (bool, error) {
 	db := conversationRepo.dbClient.GetDB()
 	stmt, err := db.Prepare("SELECT Count(*) FROM USER_CONVERSATION UC1 WHERE user_id=? AND EXISTS (SELECT * FROM USER_CONVERSATION WHERE USER_CONVERSATION.conversation_id = UC1.conversation_id AND USER_CONVERSATION.user_id=?)")
 	if err != nil {
