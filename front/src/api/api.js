@@ -12,5 +12,17 @@ export const API = {
 	addLanguage: API_PERFIX + 'users/language',
 	addSkill: API_PERFIX + 'users/skill',
 	getAllLanguages: API_PERFIX + 'language',
-	getAllSkills: API_PERFIX + 'skill'
+	getAllSkills: API_PERFIX + 'skill',
+	addPost: API_PERFIX + 'post',
+	editUser: API_PERFIX + 'users',
 }
+
+
+// TODO
+// LOGOUT
+// add invite
+// delete invite
+// get user invites
+// add friend
+// delete freind
+

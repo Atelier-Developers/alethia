@@ -2,7 +2,7 @@ package persistance
 
 import (
 	"github.com/Atelier-Developers/alethia/Database"
-	"github.com/Atelier-Developers/alethia/domain/entity"
+	"github.com/Atelier-Developers/alethia/domain/entity/Post"
 	"log"
 )
 
@@ -14,7 +14,7 @@ func NewPostRepository(dbClient *Database.MySQLDB) *PostRepository {
 	return &PostRepository{dbClient: dbClient}
 }
 
-func (postRepo *PostRepository) SavePost(post *entity.Post) error {
+func (postRepo *PostRepository) SavePost(post *Post.Post) error {
 	db := postRepo.dbClient.GetDB()
 	stmt, err := db.Prepare("INSERT INTO POST (is_featured, description, created, poster_id) VALUES (?, ?, ?, ?) ")
 	if err != nil {
@@ -52,7 +52,7 @@ func (postRepo *PostRepository) SavePost(post *entity.Post) error {
 	return nil
 }
 
-func (postRepo *PostRepository) LikePost(post *entity.Post, userId uint64) error {
+func (postRepo *PostRepository) LikePost(post *Post.Post, userId uint64) error {
 	db := postRepo.dbClient.GetDB()
 	stmt, err := db.Prepare("INSERT INTO POST_LIKE (post_id, user_id) VALUES (?, ?) ")
 	if err != nil {
@@ -68,7 +68,8 @@ func (postRepo *PostRepository) LikePost(post *entity.Post, userId uint64) error
 	return nil
 }
 
-func (postRepo *PostRepository) GetPostById(postId uint64, post *entity.Post) error {
+
+func (postRepo *PostRepository) GetPostById(postId uint64, post *Post.Post) error {
 	db := postRepo.dbClient.GetDB()
 	stmt, err := db.Prepare("SELECT * FROM POST WHERE id=?")
 	if err != nil {

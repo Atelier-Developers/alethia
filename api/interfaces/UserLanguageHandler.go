@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 type UserLanguageHandler struct {
@@ -88,22 +89,18 @@ func (userLanguageHandler *UserLanguageHandler) DeleteUserLanguage(c *gin.Contex
 }
 
 func (userLanguageHandler *UserLanguageHandler) GetUserLanguages(c *gin.Context) {
-
-	var userRequestBody bodyTemplates.UserLanguageGetRequestBody
-	if err := c.ShouldBindJSON(&userRequestBody); err != nil {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			"invalid_json": "invalid json",
-		})
-		return
-	}
-
 	_, exists := c.Get("user_id")
 
 	if !exists {
 		log.Fatal("User Id does not exist!")
 	}
 
-	languages, err := userLanguageHandler.languageRepository.GetUserLanguages(userRequestBody.UserId)
+	uId, err := strconv.ParseInt(c.Param("user_id"), 10, 64)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	languages, err := userLanguageHandler.languageRepository.GetUserLanguages(uint64(uId))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return

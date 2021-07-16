@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 type UserBackgroundHistoryHandler struct {
@@ -181,21 +182,18 @@ func (userBackgroundHistoryHandler *UserBackgroundHistoryHandler) DeleteBackgrou
 }
 
 func (userBackgroundHistoryHandler *UserBackgroundHistoryHandler) GetUserBackgroundHistories(c *gin.Context) {
-	var userRequestBody bodyTemplates.UserBackgroundHistoryGetRequestBody
-	if err := c.ShouldBindJSON(&userRequestBody); err != nil {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			"invalid_json": "invalid json",
-		})
-		return
-	}
-
 	_, exists := c.Get("user_id")
 
 	if !exists {
 		log.Fatal("User Id does not exist!")
 	}
 
-	backgrounds, err := userBackgroundHistoryHandler.backgroundHistoryRepository.GetUserBackgroundHistory(userRequestBody.UserId)
+	uId, err := strconv.ParseInt(c.Param("user_id"), 10, 64)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	backgrounds, err := userBackgroundHistoryHandler.backgroundHistoryRepository.GetUserBackgroundHistory(uint64(uId))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return

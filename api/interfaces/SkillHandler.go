@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 type SkillHandler struct {
@@ -141,20 +142,17 @@ func (skillHandler *SkillHandler) DeleteUserSkill(c *gin.Context) {
 }
 
 func (skillHandler *SkillHandler) GetUserSkills(c *gin.Context) {
-	var userRequestBody bodyTemplates.GetUserSkillRequestBody
-	if err := c.ShouldBindJSON(&userRequestBody); err != nil {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			"invalid_json": "invalid json",
-		})
-		return
-	}
-
 	_, exists := c.Get("user_id")
 	if !exists {
 		log.Fatal("User Id does not exist!")
 	}
 
-	skills, err := skillHandler.skillRepository.GetUserSkills(userRequestBody.UserId)
+	uId, err := strconv.ParseInt(c.Param("user_id"), 10, 64)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	skills, err := skillHandler.skillRepository.GetUserSkills(uint64(uId))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return
