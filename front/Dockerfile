@@ -9,11 +9,13 @@ COPY . .
 FROM build-stage as development-stage
 EXPOSE 8080
 CMD ["npm", "run", "--silent", "serve"]
-# production stage
-FROM build-stage as production-stage
+
+# pre production stage
+FROM build-stage as pre-production-stage
 RUN npm run --silent build
-FROM nginx:1.20-alpine
+
+FROM nginx:1.20-alpine as production-stage
 COPY nginx_config/default.conf /etc/nginx/conf.d/default.conf
-COPY --from=build-stage /app/dist /usr/share/nginx/html
+COPY --from=pre-production-stage /app/dist /usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]

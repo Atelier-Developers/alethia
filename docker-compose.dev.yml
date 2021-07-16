@@ -1,0 +1,17 @@
+version: "3.4"
+
+services:
+  db:
+    ports:
+      - "3306:3306"
+  frontend:
+    build:
+      context: ./front
+      target: development-stage
+    volumes:
+      - ./front:/app
+    ports:
+      - "7001:8080"
+  api:
+    ports:
+      - "7000:3000"

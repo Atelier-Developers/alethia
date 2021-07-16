@@ -1,0 +1,12 @@
+version: "3.4"
+
+services:
+  frontend:
+    build:
+      context: ./front
+      target: production-stage
+    ports:
+      - "7001:80"
+  api:
+    ports:
+      - "7000:3000"
