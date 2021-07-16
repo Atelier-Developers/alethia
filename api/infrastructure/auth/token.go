@@ -24,7 +24,7 @@ type TokenInterface interface {
 
 func (t *Token) CreateToken(userid uint64) (*TokenDetails, error) {
 	td := &TokenDetails{}
-	td.AccessTokenExpires = time.Now().Add(time.Minute * 15).Unix()
+	td.AccessTokenExpires = time.Now().Add(time.Hour * 5).Unix()
 	td.TokenUuid = uuid.NewV4().String()
 
 	td.RefreshTokenExpires = time.Now().Add(time.Hour * 24 * 7).Unix()
