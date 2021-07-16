@@ -84,7 +84,7 @@ func (inviteRepo *InviteRepository) InviteExists(userId1 uint64, userId2 uint64)
 
 func (inviteRepo *InviteRepository) GetInvites(userId uint64) ([]entity.Invite, error) {
 	db := inviteRepo.dbClient.GetDB()
-	stmt, err := db.Prepare("SELECT * FROM INVITE WHERE user1_id=? OR user2_id=?")
+	stmt, err := db.Prepare("SELECT INVITE.*, U1.username, U2.username FROM INVITE, USER U1, USER U2 WHERE (user1_id=? OR user2_id=?) AND U1.id = INVITE.user1_id AND U2.id = INVITE.user2_id ")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -99,7 +99,7 @@ func (inviteRepo *InviteRepository) GetInvites(userId uint64) ([]entity.Invite, 
 	var invites []entity.Invite
 	for rows.Next() {
 		var invite entity.Invite
-		err = rows.Scan(&invite.UserId1, &invite.UserId2, &invite.Body, &invite.Created)
+		err = rows.Scan(&invite.UserId1, &invite.UserId2, &invite.Body, &invite.Created, &invite.Username1, &invite.Username2)
 		if err != nil {
 			log.Fatal(err)
 		}

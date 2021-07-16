@@ -14,7 +14,6 @@ func NewFriendRepository(dbClient *Database.MySQLDB) *FriendRepository {
 	return &FriendRepository{dbClient: dbClient}
 }
 
-
 func (friendRepository *FriendRepository) FriendExists(userId1 uint64, userId2 uint64) (bool, error) {
 	db := friendRepository.dbClient.GetDB()
 	stmt, err := db.Prepare("SELECT Count(*) FROM FRIEND WHERE (user1_id=? AND user2_id=?) OR (user1_id=? AND user2_id=?)")
@@ -68,7 +67,7 @@ func (friendRepository *FriendRepository) DeleteFriend(userId1 uint64, userId2 u
 
 func (friendRepository *FriendRepository) GetFriends(userId uint64) ([]entity.Friend, error) {
 	db := friendRepository.dbClient.GetDB()
-	stmt, err := db.Prepare("SELECT * FROM FRIEND WHERE user1_id=? OR user2_id=?")
+	stmt, err := db.Prepare("SELECT FRIEND.*, U1.username, U2.username FROM FRIEND , USER U1, USER U2 WHERE (user1_id=? OR user2_id=?) AND U1.id = FRIEND.user1_id AND U2.id = FRIEND.user2_id ")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -83,7 +82,7 @@ func (friendRepository *FriendRepository) GetFriends(userId uint64) ([]entity.Fr
 	var friends []entity.Friend
 	for rows.Next() {
 		var friend entity.Friend
-		err = rows.Scan(&friend.UserId1, &friend.UserId2, &friend.Created)
+		err = rows.Scan(&friend.UserId1, &friend.UserId2, &friend.Created, &friend.Username1, &friend.Username2)
 		if err != nil {
 			log.Fatal(err)
 		}
