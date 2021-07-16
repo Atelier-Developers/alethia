@@ -1,7 +1,7 @@
 package interfaces
 
 import (
-	"github.com/Atelier-Developers/alethia/domain/entity"
+	"github.com/Atelier-Developers/alethia/domain/entity/Post"
 	"github.com/Atelier-Developers/alethia/domain/entity/notification"
 	"github.com/Atelier-Developers/alethia/domain/repository"
 	"github.com/Atelier-Developers/alethia/interfaces/bodyTemplates"
@@ -38,7 +38,7 @@ func (postHandler *PostHandler) SavePost(c *gin.Context) {
 		log.Fatal("User Id does not exist!")
 	}
 
-	post := entity.Post{
+	post := Post.Post{
 		IsFeatured:  false,
 		Description: postCreateRequestBody.Description,
 		Created:     time.Now(),
@@ -69,14 +69,14 @@ func (postHandler *PostHandler) LikePost(c *gin.Context) {
 		log.Fatal("User Id does not exist!")
 	}
 
-	var likedPost entity.Post
+	var likedPost Post.Post
 	err := postHandler.postRepository.GetPostById(postLikeRequestBody.PostId, &likedPost)
 	if err != nil {
 		c.JSON(http.StatusConflict, err)
 		return
 	}
 
-	post := entity.Post{
+	post := Post.Post{
 		Id: postLikeRequestBody.PostId,
 	}
 
