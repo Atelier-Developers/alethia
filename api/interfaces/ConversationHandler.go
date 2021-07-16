@@ -140,7 +140,7 @@ func (conversationHandler ConversationHandler) GetUserConversations(c *gin.Conte
 	if !exists {
 		log.Fatal("User Id does not exist!")
 	}
-
+	//TODO map ID to name for users
 	conversations, err := conversationHandler.conversationRepository.GetUserConversations(userId.(uint64))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)

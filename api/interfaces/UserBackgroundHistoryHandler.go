@@ -13,12 +13,14 @@ import (
 type UserBackgroundHistoryHandler struct {
 	backgroundHistoryRepository repository.BackgroundHistoryRepository
 	notificationRepository      repository.NotificationRepository
+	friendRepository            repository.FriendRepository
 }
 
-func NewUserBackgroundHistoryHandler(backgroundHistoryRepository repository.BackgroundHistoryRepository, notificationRepository repository.NotificationRepository) UserBackgroundHistoryHandler {
+func NewUserBackgroundHistoryHandler(backgroundHistoryRepository repository.BackgroundHistoryRepository, notificationRepository repository.NotificationRepository, friendRepository repository.FriendRepository) UserBackgroundHistoryHandler {
 	return UserBackgroundHistoryHandler{
 		backgroundHistoryRepository: backgroundHistoryRepository,
 		notificationRepository:      notificationRepository,
+		friendRepository:            friendRepository,
 	}
 }
 
@@ -53,18 +55,31 @@ func (userBackgroundHistoryHandler *UserBackgroundHistoryHandler) AddBackgroundH
 		return
 	}
 
-	//TODO WRONG
-	n := notification.ChangeWork{
-		UserHistoryId: backgroundHistory.ID,
-		Type:          "add",
-		Notification: notification.Notification{
-			ReceiverId: userId.(uint64),
-		},
-	}
-	err = userBackgroundHistoryHandler.notificationRepository.CreateChangeWorkNotification(&n)
+	friends, err := userBackgroundHistoryHandler.friendRepository.GetFriends(backgroundHistory.UserID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return
+	}
+
+	for _, f := range friends {
+		var recieverId uint64
+		if f.UserId1 == backgroundHistory.UserID {
+			recieverId = f.UserId2
+		} else {
+			recieverId = f.UserId1
+		}
+		n := notification.ChangeWork{
+			UserHistoryId: backgroundHistory.ID,
+			Type:          "add",
+			Notification: notification.Notification{
+				ReceiverId: recieverId,
+			},
+		}
+		err = userBackgroundHistoryHandler.notificationRepository.CreateChangeWorkNotification(&n)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
 	}
 	c.JSON(http.StatusCreated, nil)
 }
@@ -83,7 +98,16 @@ func (userBackgroundHistoryHandler *UserBackgroundHistoryHandler) EditBackground
 	if !exists {
 		log.Fatal("User Id does not exist!")
 	}
-
+	bh, err := userBackgroundHistoryHandler.backgroundHistoryRepository.GetBackgroundHistory(userRequestBody.ID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+	//TODO TEST this
+	if bh.UserID != userId.(uint64) {
+		c.JSON(http.StatusForbidden, err)
+		return
+	}
 	backgroundHistory := entity.BackgroundHistory{
 		ID:          userRequestBody.ID,
 		StartDate:   userRequestBody.StartDate,
@@ -94,25 +118,37 @@ func (userBackgroundHistoryHandler *UserBackgroundHistoryHandler) EditBackground
 		Location:    userRequestBody.Location,
 	}
 
-	err := userBackgroundHistoryHandler.backgroundHistoryRepository.UpdateBackgroundHistory(&backgroundHistory)
+	err = userBackgroundHistoryHandler.backgroundHistoryRepository.UpdateBackgroundHistory(&backgroundHistory)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return
+	}
+	friends, err := userBackgroundHistoryHandler.friendRepository.GetFriends(backgroundHistory.UserID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+	for _, f := range friends {
+		var recieverId uint64
+		if f.UserId1 == backgroundHistory.UserID {
+			recieverId = f.UserId2
+		} else {
+			recieverId = f.UserId1
+		}
+		n := notification.ChangeWork{
+			UserHistoryId: backgroundHistory.ID,
+			Type:          "update",
+			Notification: notification.Notification{
+				ReceiverId: recieverId,
+			},
+		}
+		err = userBackgroundHistoryHandler.notificationRepository.CreateChangeWorkNotification(&n)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
 	}
 
-	// TODO CREATE NOTIF TOO? (ONLY EDIT END DATE NULL BACKGROUNDS + NOTIF CHANGE WORK ON END DATE NULL + GET ENDING DATE FOR ENDING BACKGROUND HISTORY)
-	n := notification.ChangeWork{
-		UserHistoryId: backgroundHistory.ID,
-		Type:          "update",
-		Notification: notification.Notification{
-			ReceiverId: userId.(uint64),
-		},
-	}
-	err = userBackgroundHistoryHandler.notificationRepository.CreateChangeWorkNotification(&n)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, err)
-		return
-	}
 	c.JSON(http.StatusCreated, nil)
 }
 
