@@ -22,7 +22,6 @@ pnpm-debug.log*
 *.sln
 *.sw?
 
-src/store/modules/auth-module
 src/store/modules/idea-patent-module
 src/store/modules/idea-process-module
 src/store/modules/profile-module

@@ -139,6 +139,7 @@ export default {
       username: ''
     },
     date: null,
+    menu1: false,
   }),
   methods: {
     ...mapActions('SignupModules', ["signup"]),
@@ -150,7 +151,7 @@ export default {
     },
     sendSignup(){
       console.log("k");
-      this.user.birthDate = (new Date(this.user.birthDate)).toISOString();
+      this.user.birth_date = (new Date(this.user.birth_date)).toISOString();
       this.signup(this.user);
       console.log("k");
     }

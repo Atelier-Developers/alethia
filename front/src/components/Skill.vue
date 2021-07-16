@@ -2,10 +2,10 @@
   <v-container>
     <v-row>
       <v-col cols="8">
-        {{skill.name}}
+        {{skill.title}}
       </v-col>
       <v-col cols="4">
-        {{skill.n_endorse}}
+<!--        {{skill.n_endorse}}-->
       </v-col>
     </v-row>
   </v-container>

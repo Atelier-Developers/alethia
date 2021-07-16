@@ -11,6 +11,7 @@
               <v-col cols="12">
                 <v-text-field
                     label="username"
+                    v-model="user.username"
                 />
               </v-col>
             </v-row>
@@ -19,13 +20,14 @@
                 <v-text-field
                     label="password"
                     type="password"
+                    v-model="user.password"
                 />
               </v-col>
             </v-row>
             <v-row>
               <v-col cols="3">
                 <v-btn
-                    @click="login()"
+                    @click="sendLogin()"
                 >
                   LOG IN
                 </v-btn>
@@ -39,8 +41,22 @@
 </template>
 
 <script>
+import {mapActions} from "vuex";
+
 export default {
-  name: "Login"
+  name: "Login",
+  data: () => ({
+    user: {
+      username: '',
+      password: ''
+    }
+  }),
+  methods: {
+    ...mapActions('AuthModules', ['login']),
+    sendLogin() {
+      this.login(this.user);
+    }
+  }
 }
 </script>
 
