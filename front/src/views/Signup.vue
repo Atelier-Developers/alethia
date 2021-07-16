@@ -98,7 +98,7 @@
                 </v-btn>
               </v-row>
             </v-form>
-
+            <!--TODO Add validator and submit button-->
           </v-card-text>
         </v-card>
       </v-col>
@@ -135,10 +135,9 @@ export default {
       return date;
     },
     sendSignup() {
-      console.log("k");
+      // TODO FIx this birth_date
       this.user.birth_date = (new Date(this.user.birth_date)).toISOString();
       this.signup(this.user);
-      console.log("k");
     }
   }
 }
