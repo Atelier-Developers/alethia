@@ -462,6 +462,7 @@ export default {
   },
   mounted() {
     this.getUser().then(() => {
+      this.newUser = this.user;
       this.getBackgrounds(this.user.user_id)
       this.getSkills(this.user.user_id).then(() => {
         this.selectedSkills = this.skills.map((x) => x.id)
