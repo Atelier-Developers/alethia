@@ -158,7 +158,7 @@ func (conversationRepo *ConversationRepository) DeleteConversation(conversation 
 //
 func (conversationRepo *ConversationRepository) GetUserConversations(userId uint64) ([]Conversation.UserConversation, error) {
 	db := conversationRepo.dbClient.GetDB()
-	stmt, err := db.Prepare("SELECT UC2.user_id, UC1.conversation_id, UC1.is_read, UC1.is_deleted, UC1.is_archived FROM USER_CONVERSATION UC1, USER_CONVERSATION UC2 WHERE UC1.user_id = ? AND UC1.conversation_id = UC2.conversation_id AND UC1.user_id != UC2.user_id")
+	stmt, err := db.Prepare("SELECT UC2.user_id, UC1.conversation_id, UC1.is_read, UC1.is_deleted, UC1.is_archived FROM USER_CONVERSATION UC1, USER_CONVERSATION UC2 WHERE UC1.user_id = ? AND UC1.is_deleted = 0 AND UC1.conversation_id = UC2.conversation_id AND UC1.user_id != UC2.user_id")
 	if err != nil {
 		log.Fatal(err)
 	}

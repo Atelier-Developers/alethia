@@ -7,4 +7,5 @@ type BackgroundHistoryRepository interface {
 	UpdateBackgroundHistory(backgroundHistory *entity.BackgroundHistory) error
 	DeleteBackgroundHistory(backgroundHistory *entity.BackgroundHistory) error
 	GetUserBackgroundHistory(userId uint64) ([]entity.BackgroundHistory, error)
+	GetBackgroundHistory(id uint64) (entity.BackgroundHistory, error)
 }

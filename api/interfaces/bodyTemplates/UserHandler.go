@@ -46,3 +46,7 @@ type UserGetResponseBody struct {
 type UserGetRequestBody struct {
 	Id uint64 `json:"id" binding:"required"`
 }
+
+type UserViewProfileRequestBody struct {
+	Id uint64 `json:"id" binding:"required"`
+}

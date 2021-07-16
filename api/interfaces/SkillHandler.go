@@ -36,6 +36,11 @@ func (skillHandler *SkillHandler) EndorseSkill(c *gin.Context) {
 		log.Fatal("User Id does not exist!")
 	}
 
+	if endorseSkillRequestBody.UserId == userId.(uint64) {
+		c.JSON(http.StatusForbidden, nil)
+		return
+	}
+
 	err := skillHandler.skillRepository.EndorseSkill(endorseSkillRequestBody.SkillId, endorseSkillRequestBody.UserId, userId.(uint64))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)

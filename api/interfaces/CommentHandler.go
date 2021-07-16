@@ -13,12 +13,14 @@ import (
 type CommentHandler struct {
 	commentRepository      repository.CommentRepository
 	notificationRepository repository.NotificationRepository
+	postRepository         repository.PostRepository
 }
 
-func NewCommentHandler(commentRepository repository.CommentRepository, notificationRepository repository.NotificationRepository, ) CommentHandler {
+func NewCommentHandler(commentRepository repository.CommentRepository, notificationRepository repository.NotificationRepository, postRepository repository.PostRepository) CommentHandler {
 	return CommentHandler{
 		commentRepository:      commentRepository,
 		notificationRepository: notificationRepository,
+		postRepository:         postRepository,
 	}
 }
 
@@ -48,10 +50,16 @@ func (commentHandler *CommentHandler) SaveComment(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
+	var post entity.Post
+	err = commentHandler.postRepository.GetPostById(comment.PostId, &post)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
 	nc := notification.Comment{
 		CommentId: comment.Id,
 		Notification: notification.Notification{
-			ReceiverId: userId.(uint64),
+			ReceiverId: post.PosterId,
 		},
 	}
 	err = commentHandler.notificationRepository.CreateCommentNotification(&nc)
@@ -89,20 +97,20 @@ func (commentHandler *CommentHandler) LikeComment(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
-
-	n := notification.LikeComment{
-		UserId:    userId.(uint64),
-		CommentId: commentLikeRequestBody.CommentId,
-		Notification: notification.Notification{
-			ReceiverId: comment.CommenterId,
-		},
+	if userId.(uint64) != comment.CommenterId {
+		n := notification.LikeComment{
+			UserId:    userId.(uint64),
+			CommentId: commentLikeRequestBody.CommentId,
+			Notification: notification.Notification{
+				ReceiverId: comment.CommenterId,
+			},
+		}
+		err = commentHandler.notificationRepository.CreateLikeCommentNotification(&n)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
 	}
-	err = commentHandler.notificationRepository.CreateLikeCommentNotification(&n)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, err)
-		return
-	}
-
 	c.JSON(http.StatusOK, nil)
 }
 
@@ -121,8 +129,8 @@ func (commentHandler *CommentHandler) ReplyComment(c *gin.Context) {
 		log.Fatal("User Id does not exist!")
 	}
 
-	var tmp entity.Comment
-	err := commentHandler.commentRepository.GetCommentByID(commentReplyRequestBody.RepliedCommentId, &tmp)
+	var repliedComment entity.Comment
+	err := commentHandler.commentRepository.GetCommentByID(commentReplyRequestBody.RepliedCommentId, &repliedComment)
 	if err != nil {
 		c.JSON(http.StatusConflict, err)
 		return
@@ -143,6 +151,19 @@ func (commentHandler *CommentHandler) ReplyComment(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return
+	}
+	if repliedComment.CommenterId != userId.(uint64) {
+		n := notification.ReplyComment{
+			CommentId: commentReplyRequestBody.RepliedCommentId,
+			Notification: notification.Notification{
+				ReceiverId: repliedComment.CommenterId,
+			},
+		}
+		err = commentHandler.notificationRepository.CreateReplyCommentNotification(&n)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
 	}
 	c.JSON(http.StatusOK, nil)
 }

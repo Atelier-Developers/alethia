@@ -53,6 +53,26 @@ func (backgroundHistoryRepo *BackgroundHistoryRepository) UpdateBackgroundHistor
 	return nil
 }
 
+func (backgroundHistoryRepo *BackgroundHistoryRepository) GetBackgroundHistory(id uint64) (entity.BackgroundHistory, error) {
+	db := backgroundHistoryRepo.dbClient.GetDB()
+
+	stmt, err := db.Prepare("SELECT * FROM USER_HISTORY where id = ?")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer stmt.Close()
+
+	row := stmt.QueryRow(id)
+	var bh entity.BackgroundHistory
+	err = row.Scan(&bh.ID, &bh.UserID, &bh.StartDate, &bh.EndDate, &bh.Category, &bh.Title, &bh.Description, &bh.Location)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return bh, nil
+}
+
 func (backgroundHistoryRepo *BackgroundHistoryRepository) DeleteBackgroundHistory(backgroundHistory *entity.BackgroundHistory) error {
 	db := backgroundHistoryRepo.dbClient.GetDB()
 

@@ -228,6 +228,7 @@ CREATE TABLE NOTIFICATION
     id          INT AUTO_INCREMENT NOT NULL,
     receiver_id INT                NOT NULL,
     created     DATETIME DEFAULT CURRENT_TIMESTAMP,
+    is_seen     BOOLEAN  DEFAULT 0 NOT NULL,
 
     CONSTRAINT FK_user_notification FOREIGN KEY (receiver_id) REFERENCES USER (id),
 
@@ -338,8 +339,16 @@ CREATE TABLE NOTIFICATION_CHANGE_WORK
     PRIMARY KEY (notif_id)
 );
 
-INSERT INTO LANGUAGE (language) VALUES ("Japanese"), ("Farsi"), ("English"), ("German"), ("French");
-INSERT INTO SKILL (title, category) VALUES ("C++", "tools_technologies"), ("Game Dev", "industry_knowledge"), ("Communication", "interpersonal_skills");
+INSERT INTO LANGUAGE (language)
+VALUES ("Japanese"),
+       ("Farsi"),
+       ("English"),
+       ("German"),
+       ("French");
+INSERT INTO SKILL (title, category)
+VALUES ("C++", "tools_technologies"),
+       ("Game Dev", "industry_knowledge"),
+       ("Communication", "interpersonal_skills");
 
 
 

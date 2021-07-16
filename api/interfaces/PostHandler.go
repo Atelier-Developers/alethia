@@ -2,6 +2,7 @@ package interfaces
 
 import (
 	"github.com/Atelier-Developers/alethia/domain/entity"
+	"github.com/Atelier-Developers/alethia/domain/entity/notification"
 	"github.com/Atelier-Developers/alethia/domain/repository"
 	"github.com/Atelier-Developers/alethia/interfaces/bodyTemplates"
 	"github.com/gin-gonic/gin"
@@ -68,8 +69,8 @@ func (postHandler *PostHandler) LikePost(c *gin.Context) {
 		log.Fatal("User Id does not exist!")
 	}
 
-	var tmp entity.Post
-	err := postHandler.postRepository.GetPostById(postLikeRequestBody.PostId, &tmp)
+	var likedPost entity.Post
+	err := postHandler.postRepository.GetPostById(postLikeRequestBody.PostId, &likedPost)
 	if err != nil {
 		c.JSON(http.StatusConflict, err)
 		return
@@ -84,5 +85,19 @@ func (postHandler *PostHandler) LikePost(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
+
+	n := notification.LikePost{
+		UserId: userId.(uint64),
+		PostId: likedPost.Id,
+		Notification: notification.Notification{
+			ReceiverId: likedPost.PosterId,
+		},
+	}
+	err = postHandler.notificationRepository.CreateLikePostNotification(&n)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+
 	c.JSON(http.StatusOK, nil)
 }

@@ -51,11 +51,11 @@ func main() {
 	notificationHandler := interfaces.NewNotificationHandler(notificationRepo)
 	friendHandler := interfaces.NewFriendHandler(friendRepo, inviteRepo)
 	messageHandler := interfaces.NewMessageHandler(conversationRepo, messageRepo)
-	userBackgroundHistoryHandler := interfaces.NewUserBackgroundHistoryHandler(backgroundHistoryRepo, notificationRepo)
+	userBackgroundHistoryHandler := interfaces.NewUserBackgroundHistoryHandler(backgroundHistoryRepo, notificationRepo, friendRepo)
 	userLanguageHandler := interfaces.NewUserLanguageHandler(languageRepo)
-	userHandler := interfaces.NewUserHandler(userRepo, redisService.Auth, token)
+	userHandler := interfaces.NewUserHandler(userRepo, redisService.Auth, token, notificationRepo)
 	postHandler := interfaces.NewPostHandler(postRepo, notificationRepo)
-	commentHandler := interfaces.NewCommentHandler(commentRepo, notificationRepo)
+	commentHandler := interfaces.NewCommentHandler(commentRepo, notificationRepo, postRepo)
 	skillHandler := interfaces.NewSkillHandler(skillRepo, notificationRepo)
 	conversationHandler := interfaces.NewConversationHandler(conversationRepo)
 
@@ -115,6 +115,7 @@ func main() {
 		userNotificationGroup := userGroup.Group("/notification")
 		{
 			userNotificationGroup.GET("", notificationHandler.GetUserNotifications)
+			userNotificationGroup.POST("/profile", userHandler.ViewProfile)
 		}
 	}
 
