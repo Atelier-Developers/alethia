@@ -1,4 +1,4 @@
-version: "3.3"
+version: "3.4"
 services:
   db:
     image: mysql:8.0.25
@@ -9,8 +9,6 @@ services:
       - ./api/Database/init_schema.sql:/docker-entrypoint-initdb.d/init_schema.sql:ro
     networks:
       - backend
-    ports:
-      - "3306:3306"
     environment:
       MYSQL_DATABASE: alethia
       MYSQL_ROOT_HOST: "%"
@@ -26,12 +24,8 @@ services:
       - backend
   frontend:
     image: alethia_frontend:v0.01
-    build:
-      context: ./front
     volumes:
-      - ./front:/app
-    ports:
-      - "7001:80"
+      - /app/node_modules
     depends_on:
       - api
     environment:
@@ -43,8 +37,6 @@ services:
       context: ./api
     networks:
       - backend
-    ports:
-      - "7000:3000"
     depends_on:
       - db
       - redis_db
