@@ -265,6 +265,155 @@
 					]
 				},
 				{
+					"name": "Invite/Friend",
+					"item": [
+						{
+							"name": "Create Invite",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"receiver_id\": 2,\n    \"body\": \"hello\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{path}}/users/invite",
+									"host": [
+										"{{path}}"
+									],
+									"path": [
+										"users",
+										"invite"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add Friend",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"user_id\": 2\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{path}}/users/friend",
+									"host": [
+										"{{path}}"
+									],
+									"path": [
+										"users",
+										"friend"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Invite",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"user_id\": 2\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{path}}/users/invite",
+									"host": [
+										"{{path}}"
+									],
+									"path": [
+										"users",
+										"invite"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Friend",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"user_id\": 2\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{path}}/users/friend",
+									"host": [
+										"{{path}}"
+									],
+									"path": [
+										"users",
+										"friend"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get User Invites",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{path}}/users/invite",
+									"host": [
+										"{{path}}"
+									],
+									"path": [
+										"users",
+										"invite"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get User Friends",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{path}}/users/friend",
+									"host": [
+										"{{path}}"
+									],
+									"path": [
+										"users",
+										"friend"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
 					"name": "Login",
 					"request": {
 						"method": "POST",

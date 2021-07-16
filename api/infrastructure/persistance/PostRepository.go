@@ -68,6 +68,33 @@ func (postRepo *PostRepository) LikePost(post *Post.Post, userId uint64) error {
 	return nil
 }
 
+//func (postRepo *PostRepository) GetPostLikes(postId uint64) ([]Post.PostLike, error) {
+//	db := postRepo.dbClient.GetDB()
+//	stmt, err := db.Prepare("SELECT * FROM POST_LIKE WHERE post_id=?")
+//	if err != nil {
+//		log.Fatal(err)
+//	}
+//	defer stmt.Close()
+//
+//	rows, err := stmt.Query(postId)
+//	if err != nil {
+//		log.Fatal(err)
+//	}
+//
+//	var likes []Post.PostLike
+//	for rows.Next() {
+//		var like Post.PostLike
+//		err = rows.Scan(&like.PostId, &like.UserId)
+//
+//		if err != nil {
+//			log.Fatal(err)
+//		}
+//
+//		likes = append(likes, like)
+//	}
+//
+//	return likes, nil
+//}
 
 func (postRepo *PostRepository) GetPostById(postId uint64, post *Post.Post) error {
 	db := postRepo.dbClient.GetDB()
