@@ -61,7 +61,7 @@ func (notificationRepository *NotificationRepository) CreateCommentNotification(
 func (notificationRepository *NotificationRepository) GetCommentNotification(userId uint64) ([]notification.Comment, error) {
 	db := notificationRepository.dbClient.GetDB()
 	var notifs []notification.Comment
-	stmt, err := db.Prepare("SELECT NOTIFICATION_COMMENT.*, receiver_id, created FROM NOTIFICATION_COMMENT, NOTIFICATION WHERE NOTIFICATION.id = NOTIFICATION_COMMENT.notif_id AND NOTIFICATION.receiver_id = ?")
+	stmt, err := db.Prepare("SELECT NOTIFICATION_COMMENT.*, receiver_id, created FROM NOTIFICATION_COMMENT, NOTIFICATION WHERE NOTIFICATION.id = NOTIFICATION_COMMENT.notif_id AND NOTIFICATION.receiver_id = ? AND NOTIFICATION.is_seen = 1")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -72,7 +72,7 @@ func (notificationRepository *NotificationRepository) GetCommentNotification(use
 	}
 	for rows.Next() {
 		var nc notification.Comment
-		err := rows.Scan(&nc.Id, &nc.CommentId, &nc.ReceiverId, &nc.Created)
+		err := rows.Scan(&nc.Id, &nc.CommentId, &nc.ReceiverId, &nc.Created, &nc.IsSeen)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -106,7 +106,7 @@ func (notificationRepository *NotificationRepository) CreateEndorseSkillNotifica
 func (notificationRepository *NotificationRepository) GetEndorseSkillNotification(userId uint64) ([]notification.EndorseSkill, error) {
 	db := notificationRepository.dbClient.GetDB()
 	var notifs []notification.EndorseSkill
-	stmt, err := db.Prepare("SELECT NOTIFICATION_ENDORSE.*, receiver_id, created FROM NOTIFICATION_ENDORSE, NOTIFICATION WHERE NOTIFICATION.id = NOTIFICATION_ENDORSE.notif_id AND NOTIFICATION.receiver_id = ?")
+	stmt, err := db.Prepare("SELECT NOTIFICATION_ENDORSE.*, receiver_id, created FROM NOTIFICATION_ENDORSE, NOTIFICATION WHERE NOTIFICATION.id = NOTIFICATION_ENDORSE.notif_id AND NOTIFICATION.receiver_id = ? AND NOTIFICATION.is_seen = 1")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -117,7 +117,7 @@ func (notificationRepository *NotificationRepository) GetEndorseSkillNotificatio
 	}
 	for rows.Next() {
 		var nc notification.EndorseSkill
-		err := rows.Scan(&nc.Id, &nc.UserSkillSkillId, &nc.UserSkillUserId, &nc.UserId, &nc.ReceiverId, &nc.Created)
+		err := rows.Scan(&nc.Id, &nc.UserSkillSkillId, &nc.UserSkillUserId, &nc.UserId, &nc.ReceiverId, &nc.Created, &nc.IsSeen)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -151,7 +151,7 @@ func (notificationRepository *NotificationRepository) CreateChangeWorkNotificati
 func (notificationRepository *NotificationRepository) GetChangeWorkNotification(userId uint64) ([]notification.ChangeWork, error) {
 	db := notificationRepository.dbClient.GetDB()
 	var notifs []notification.ChangeWork
-	stmt, err := db.Prepare("SELECT NOTIFICATION_CHANGE_WORK.*, receiver_id, created FROM NOTIFICATION_CHANGE_WORK, NOTIFICATION WHERE NOTIFICATION.id = NOTIFICATION_CHANGE_WORK.notif_id AND NOTIFICATION.receiver_id = ?")
+	stmt, err := db.Prepare("SELECT NOTIFICATION_CHANGE_WORK.*, receiver_id, created FROM NOTIFICATION_CHANGE_WORK, NOTIFICATION WHERE NOTIFICATION.id = NOTIFICATION_CHANGE_WORK.notif_id AND NOTIFICATION.receiver_id = ? AND NOTIFICATION.is_seen = 1")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -162,7 +162,7 @@ func (notificationRepository *NotificationRepository) GetChangeWorkNotification(
 	}
 	for rows.Next() {
 		var nc notification.ChangeWork
-		err := rows.Scan(&nc.Id, &nc.UserHistoryId, &nc.Type, &nc.ReceiverId, &nc.Created)
+		err := rows.Scan(&nc.Id, &nc.UserHistoryId, &nc.Type, &nc.ReceiverId, &nc.Created, &nc.IsSeen)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -195,7 +195,7 @@ func (notificationRepository *NotificationRepository) CreateLikeCommentNotificat
 func (notificationRepository *NotificationRepository) GetLikeCommentNotification(userId uint64) ([]notification.LikeComment, error) {
 	db := notificationRepository.dbClient.GetDB()
 	var notifs []notification.LikeComment
-	stmt, err := db.Prepare("SELECT NOTIFICATION_LIKE_COMMENT.*, receiver_id, created FROM NOTIFICATION_LIKE_COMMENT, NOTIFICATION WHERE NOTIFICATION.id = NOTIFICATION_LIKE_COMMENT.notif_id AND NOTIFICATION.receiver_id = ?")
+	stmt, err := db.Prepare("SELECT NOTIFICATION_LIKE_COMMENT.*, receiver_id, created FROM NOTIFICATION_LIKE_COMMENT, NOTIFICATION WHERE NOTIFICATION.id = NOTIFICATION_LIKE_COMMENT.notif_id AND NOTIFICATION.receiver_id = ? AND NOTIFICATION.is_seen = 1")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -206,7 +206,7 @@ func (notificationRepository *NotificationRepository) GetLikeCommentNotification
 	}
 	for rows.Next() {
 		var nc notification.LikeComment
-		err := rows.Scan(&nc.Id, &nc.CommentId, &nc.UserId, &nc.ReceiverId, &nc.Created)
+		err := rows.Scan(&nc.Id, &nc.CommentId, &nc.UserId, &nc.ReceiverId, &nc.Created, &nc.IsSeen)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -239,7 +239,7 @@ func (notificationRepository *NotificationRepository) CreateLikePostNotification
 func (notificationRepository *NotificationRepository) GetLikePostNotification(userId uint64) ([]notification.LikePost, error) {
 	db := notificationRepository.dbClient.GetDB()
 	var notifs []notification.LikePost
-	stmt, err := db.Prepare("SELECT NOTIFICATION_LIKE_POST.*, receiver_id, created FROM NOTIFICATION_LIKE_POST, NOTIFICATION WHERE NOTIFICATION.id = NOTIFICATION_LIKE_POST.notif_id AND NOTIFICATION.receiver_id = ?")
+	stmt, err := db.Prepare("SELECT NOTIFICATION_LIKE_POST.*, receiver_id, created FROM NOTIFICATION_LIKE_POST, NOTIFICATION WHERE NOTIFICATION.id = NOTIFICATION_LIKE_POST.notif_id AND NOTIFICATION.receiver_id = ? AND NOTIFICATION.is_seen = 1")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -250,7 +250,7 @@ func (notificationRepository *NotificationRepository) GetLikePostNotification(us
 	}
 	for rows.Next() {
 		var nc notification.LikePost
-		err := rows.Scan(&nc.Id, &nc.UserId, &nc.PostId, &nc.ReceiverId, &nc.Created)
+		err := rows.Scan(&nc.Id, &nc.UserId, &nc.PostId, &nc.ReceiverId, &nc.Created, &nc.IsSeen)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -282,7 +282,7 @@ func (notificationRepository *NotificationRepository) CreateReplyCommentNotifica
 func (notificationRepository *NotificationRepository) GetReplyCommentNotification(userId uint64) ([]notification.ReplyComment, error) {
 	db := notificationRepository.dbClient.GetDB()
 	var notifs []notification.ReplyComment
-	stmt, err := db.Prepare("SELECT NOTIFICATION_REPLY.*, receiver_id, created FROM NOTIFICATION_REPLY, NOTIFICATION WHERE NOTIFICATION.id = NOTIFICATION_REPLY.notif_id AND NOTIFICATION.receiver_id = ?")
+	stmt, err := db.Prepare("SELECT NOTIFICATION_REPLY.*, receiver_id, created FROM NOTIFICATION_REPLY, NOTIFICATION WHERE NOTIFICATION.id = NOTIFICATION_REPLY.notif_id AND NOTIFICATION.receiver_id = ? AND NOTIFICATION.is_seen = 1")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -293,7 +293,7 @@ func (notificationRepository *NotificationRepository) GetReplyCommentNotificatio
 	}
 	for rows.Next() {
 		var nc notification.ReplyComment
-		err := rows.Scan(&nc.Id, &nc.CommentId, &nc.ReceiverId, &nc.Created)
+		err := rows.Scan(&nc.Id, &nc.CommentId, &nc.ReceiverId, &nc.Created, &nc.IsSeen)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -325,7 +325,7 @@ func (notificationRepository *NotificationRepository) CreateViewProfileNotificat
 func (notificationRepository *NotificationRepository) GetViewProfileNotification(userId uint64) ([]notification.ViewProfile, error) {
 	db := notificationRepository.dbClient.GetDB()
 	var notifs []notification.ViewProfile
-	stmt, err := db.Prepare("SELECT NOTIFICATION_VIEW_PROFILE.*, receiver_id, created FROM NOTIFICATION_VIEW_PROFILE, NOTIFICATION WHERE NOTIFICATION.id = NOTIFICATION_VIEW_PROFILE.notif_id AND NOTIFICATION.receiver_id = ?")
+	stmt, err := db.Prepare("SELECT NOTIFICATION_VIEW_PROFILE.*, receiver_id, created FROM NOTIFICATION_VIEW_PROFILE, NOTIFICATION WHERE NOTIFICATION.id = NOTIFICATION_VIEW_PROFILE.notif_id AND NOTIFICATION.receiver_id = ? AND NOTIFICATION.is_seen = 1")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -336,7 +336,7 @@ func (notificationRepository *NotificationRepository) GetViewProfileNotification
 	}
 	for rows.Next() {
 		var nc notification.ViewProfile
-		err := rows.Scan(&nc.Id, &nc.UserId, &nc.ReceiverId, &nc.Created)
+		err := rows.Scan(&nc.Id, &nc.UserId, &nc.ReceiverId, &nc.Created, &nc.IsSeen)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -368,7 +368,7 @@ func (notificationRepository *NotificationRepository) CreateBirthdayNotification
 func (notificationRepository *NotificationRepository) GetBirthdayNotification(userId uint64) ([]notification.Birthday, error) {
 	db := notificationRepository.dbClient.GetDB()
 	var notifs []notification.Birthday
-	stmt, err := db.Prepare("SELECT NOTIFICATION_BIRTHDAY.*, receiver_id, created FROM NOTIFICATION_BIRTHDAY, NOTIFICATION WHERE NOTIFICATION.id = NOTIFICATION_BIRTHDAY.notif_id AND NOTIFICATION.receiver_id = ?")
+	stmt, err := db.Prepare("SELECT NOTIFICATION_BIRTHDAY.*, receiver_id, created FROM NOTIFICATION_BIRTHDAY, NOTIFICATION WHERE NOTIFICATION.id = NOTIFICATION_BIRTHDAY.notif_id AND NOTIFICATION.receiver_id = ? AND NOTIFICATION.is_seen = 1")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -379,7 +379,7 @@ func (notificationRepository *NotificationRepository) GetBirthdayNotification(us
 	}
 	for rows.Next() {
 		var nc notification.Birthday
-		err := rows.Scan(&nc.Id, &nc.UserId, &nc.ReceiverId, &nc.Created)
+		err := rows.Scan(&nc.Id, &nc.UserId, &nc.ReceiverId, &nc.Created, &nc.IsSeen)
 		if err != nil {
 			log.Fatal(err)
 		}
