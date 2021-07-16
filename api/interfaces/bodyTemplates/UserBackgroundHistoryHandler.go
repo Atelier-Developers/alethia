@@ -25,3 +25,7 @@ type UserBackgroundHistoryUpdateRequestBody struct {
 type UserBackgroundHistoryDeleteRequestBody struct {
 	ID uint64 `json:"id" binding:"required"`
 }
+
+type UserBackgroundHistoryGetRequestBody struct {
+	UserId uint64 `json:"user_id" binding:"required"`
+}

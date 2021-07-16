@@ -88,13 +88,22 @@ func (userLanguageHandler *UserLanguageHandler) DeleteUserLanguage(c *gin.Contex
 }
 
 func (userLanguageHandler *UserLanguageHandler) GetUserLanguages(c *gin.Context) {
-	userId, exists := c.Get("user_id")
+
+	var userRequestBody bodyTemplates.UserLanguageGetRequestBody
+	if err := c.ShouldBindJSON(&userRequestBody); err != nil {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"invalid_json": "invalid json",
+		})
+		return
+	}
+
+	_, exists := c.Get("user_id")
 
 	if !exists {
 		log.Fatal("User Id does not exist!")
 	}
 
-	languages, err := userLanguageHandler.languageRepository.GetUserLanguages(userId.(uint64))
+	languages, err := userLanguageHandler.languageRepository.GetUserLanguages(userRequestBody.UserId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return

@@ -93,6 +93,7 @@ func (userHandler *UserHandler) GetUser(c *gin.Context) {
 	}
 
 	response := bodyTemplates.UserGetResponseBody{
+		UserID:          userId.(uint64),
 		Username:        user.Username,
 		FirstName:       user.FirstName,
 		LastName:        user.LastName,
@@ -152,6 +153,7 @@ func (userHandler *UserHandler) GetUserById(c *gin.Context) {
 	}
 
 	response := bodyTemplates.UserGetResponseBody{
+		UserID:          user.ID,
 		Username:        user.Username,
 		FirstName:       user.FirstName,
 		LastName:        user.LastName,
