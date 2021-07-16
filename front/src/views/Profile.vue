@@ -462,15 +462,15 @@ export default {
   },
   mounted() {
     this.getUser().then(() => {
-      this.newUser = this.user;
-    });
-    this.getBackgrounds(this.user.id)
-    this.getSkills(this.user.id).then(() => {
-      this.selectedSkills = this.skills.map((x) => x.id)
+      this.getBackgrounds(this.user.user_id)
+      this.getSkills(this.user.user_id).then(() => {
+        this.selectedSkills = this.skills.map((x) => x.id)
+      })
+      this.getLanguages(this.user.user_id).then(() => {
+        this.selectedLangs = this.languages.map((x) => x.id)
+      })
     })
-    this.getLanguages(this.user.id).then(() => {
-      this.selectedLangs = this.languages.map((x) => x.id)
-    })
+
     this.getAllLanguages()
     this.getAllSkills()
   }

@@ -1,5 +1,31 @@
 <template>
   <div>
+    <v-dialog v-model="dialogInvite">
+      <v-card>
+        <v-card-title>
+          <h3>Invitation</h3>
+        </v-card-title>
+        <v-divider/>
+        <v-container>
+          <v-row>
+            <v-col cols="12">
+              <v-textarea
+                  lable="Invite Message"
+                  v-model="inviteReq.body"
+              />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12">
+              <v-btn @click="sendCreateInvite()">
+                Send
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card>
+    </v-dialog>
+
     <v-container>
       <v-row>
         <v-col cols="12">
@@ -8,6 +34,10 @@
               <h2>
                 {{ user.username }}
               </h2>
+              <v-spacer/>
+              <v-btn @click="dialogInvite=true">
+                INVITE +
+              </v-btn>
             </v-card-title>
             <v-divider/>
             <v-container>
@@ -128,9 +158,19 @@
 
 <script>
 import {mapActions, mapGetters} from "vuex";
+import Skill from "../components/Skill";
+import Background from "../components/Background";
 
 export default {
   name: "User",
+  components: {Background, Skill},
+  data: () => ({
+    inviteReq: {
+      receiver_id: 0,
+      body: '',
+    },
+    dialogInvite: false,
+  }),
   computed: {
     ...mapGetters("UserModules",
         ["user",
@@ -145,12 +185,18 @@ export default {
           "getSkills",
           "getLanguages",
           "getBackgrounds"]),
+    ...mapActions("InviteFriendModules", ["createInvite"]),
+    sendCreateInvite() {
+      this.inviteReq.receiver_id = +this.$route.params.id;
+      this.createInvite(this.inviteReq);
+    }
   },
   mounted() {
-    this.getUserById({id: +this.$route.params.id})
-    this.getBackgrounds(this.user.id)
-    this.getSkills(this.user.id)
-    this.getLanguages(this.user.id)
+    let id = +this.$route.params.id
+    this.getUserById({id: id})
+    this.getBackgrounds(id)
+    this.getSkills(id)
+    this.getLanguages(id)
   }
 }
 </script>
