@@ -115,6 +115,7 @@ func main() {
 		userNotificationGroup := userGroup.Group("/notification")
 		{
 			userNotificationGroup.GET("", notificationHandler.GetUserNotifications)
+			userNotificationGroup.POST("/profile", userHandler.ViewProfile)
 		}
 	}
 
