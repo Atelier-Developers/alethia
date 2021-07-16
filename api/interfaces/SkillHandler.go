@@ -136,12 +136,20 @@ func (skillHandler *SkillHandler) DeleteUserSkill(c *gin.Context) {
 }
 
 func (skillHandler *SkillHandler) GetUserSkills(c *gin.Context) {
-	userId, exists := c.Get("user_id")
+	var userRequestBody bodyTemplates.GetUserSkillRequestBody
+	if err := c.ShouldBindJSON(&userRequestBody); err != nil {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"invalid_json": "invalid json",
+		})
+		return
+	}
+
+	_, exists := c.Get("user_id")
 	if !exists {
 		log.Fatal("User Id does not exist!")
 	}
 
-	skills, err := skillHandler.skillRepository.GetUserSkills(userId.(uint64))
+	skills, err := skillHandler.skillRepository.GetUserSkills(userRequestBody.UserId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return
