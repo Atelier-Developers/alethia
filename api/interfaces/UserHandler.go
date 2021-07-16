@@ -3,6 +3,7 @@ package interfaces
 import (
 	"fmt"
 	"github.com/Atelier-Developers/alethia/domain/entity"
+	"github.com/Atelier-Developers/alethia/domain/entity/notification"
 	"github.com/Atelier-Developers/alethia/domain/repository"
 	"github.com/Atelier-Developers/alethia/infrastructure/auth"
 	"github.com/Atelier-Developers/alethia/infrastructure/security"
@@ -14,16 +15,18 @@ import (
 )
 
 type UserHandler struct {
-	userRepository repository.UserRepository
-	authInterface  auth.AuthInterface
-	tokenInterface auth.TokenInterface
+	userRepository         repository.UserRepository
+	authInterface          auth.AuthInterface
+	tokenInterface         auth.TokenInterface
+	notificationRepository repository.NotificationRepository
 }
 
-func NewUserHandler(userRepository repository.UserRepository, authInterface auth.AuthInterface, tokenInterface auth.TokenInterface) UserHandler {
+func NewUserHandler(userRepository repository.UserRepository, authInterface auth.AuthInterface, tokenInterface auth.TokenInterface, notificationRepository repository.NotificationRepository) UserHandler {
 	return UserHandler{
-		userRepository: userRepository,
-		authInterface:  authInterface,
-		tokenInterface: tokenInterface,
+		userRepository:         userRepository,
+		authInterface:          authInterface,
+		tokenInterface:         tokenInterface,
+		notificationRepository: notificationRepository,
 	}
 }
 
@@ -101,6 +104,35 @@ func (userHandler *UserHandler) GetUser(c *gin.Context) {
 		JoinDate:        user.JoinDate,
 	}
 	c.JSON(http.StatusCreated, response)
+}
+
+func (userHandler *UserHandler) ViewProfile(c *gin.Context) {
+
+	var userViewProfileRequestBody bodyTemplates.UserViewProfileRequestBody
+	if err := c.ShouldBindJSON(&userViewProfileRequestBody); err != nil {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"invalid_json": "invalid json",
+		})
+		return
+	}
+
+	userId, exists := c.Get("user_id")
+
+	if !exists {
+		log.Fatal("User Id does not exist!")
+	}
+	n := notification.ViewProfile{
+		UserId: userId.(uint64),
+		Notification: notification.Notification{
+			ReceiverId: userViewProfileRequestBody.Id,
+		},
+	}
+	err := userHandler.notificationRepository.CreateViewProfileNotification(&n)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+	c.JSON(http.StatusOK, nil)
 }
 
 func (userHandler *UserHandler) GetUserById(c *gin.Context) {
