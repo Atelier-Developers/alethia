@@ -28,8 +28,6 @@ services:
     image: alethia_frontend:v0.01
     build:
       context: ./front
-    networks:
-      - frontend
     volumes:
       - ./front:/app
     ports:
@@ -45,7 +43,6 @@ services:
       context: ./api
     networks:
       - backend
-      - frontend
     ports:
       - "7000:3000"
     depends_on:
@@ -64,8 +61,6 @@ services:
 
 networks:
   backend:
-    driver: bridge
-  frontend:
     driver: bridge
 
 volumes:
