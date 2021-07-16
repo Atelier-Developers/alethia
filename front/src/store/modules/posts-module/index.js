@@ -1,3 +1,6 @@
+import {API} from '@/api/api'
+import axios from "axios";
+
 const state = {
     posts: [],
 };
@@ -54,6 +57,16 @@ const actions = {
         ];
         context.commit('setPosts', posts);
     },
+    async addPost(context, payload) {
+        console.log("ADD POST");
+        try {
+            let res = await axios.post(API.addPost, payload);
+            console.log(res)
+        }
+        catch(e){
+            console.log(e);
+        }
+    }
 };
 
 const getters = {

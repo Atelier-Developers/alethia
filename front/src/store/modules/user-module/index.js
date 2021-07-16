@@ -42,30 +42,40 @@ const actions = {
             console.log(e);
         }
     },
-    async getSkills(context,) {
+    async getUserById(context, payload) {
+        console.log("Get User")
+        try {
+            let res = await axios.post(API.getUser, payload);
+            console.log(res)
+            context.commit('setUser', res.data);
+        } catch (e) {
+            console.log(e);
+        }
+    },
+    async getSkills(context,payload) {
         console.log("Get SKILLS")
         try {
-            let res = await axios.get(API.getSkills);
+            let res = await axios.get(API.getSkills, payload);
             console.log(res)
             context.commit('setSkills', res.data);
         } catch (e) {
             console.log(e);
         }
     },
-    async getLanguages(context,) {
+    async getLanguages(context,payload) {
         console.log("Get Langs")
         try {
-            let res = await axios.get(API.getLanguages);
+            let res = await axios.get(API.getLanguages,payload);
             console.log(res)
             context.commit('setLanguages', res.data);
         } catch (e) {
             console.log(e);
         }
     },
-    async getBackgrounds(context,) {
+    async getBackgrounds(context,payload) {
         console.log("Get Backgrounds")
         try {
-            let res = await axios.get(API.getBackground);
+            let res = await axios.get(API.getBackground,payload);
             console.log(res)
             context.commit('setBackgrounds', res.data);
         } catch (e) {
@@ -126,7 +136,16 @@ const actions = {
         } catch (e) {
             console.log(e);
         }
-    }
+    },
+    async editUser(context, payload){
+        console.log("PUT User")
+        try {
+            let res = await axios.put(API.editUser, payload);
+            console.log(res)
+        } catch (e) {
+            console.log(e);
+        }
+    },
 
 };
 

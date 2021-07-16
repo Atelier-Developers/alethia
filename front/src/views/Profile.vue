@@ -163,6 +163,86 @@
         </v-container>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="dialogUser">
+      <v-card>
+        <v-card-title>
+          <h3>Edit Info</h3>
+        </v-card-title>
+        <v-divider/>
+        <v-container>
+          <v-row>
+            <v-col cols="6">
+              <v-menu
+                  ref="menu3"
+                  v-model="menu3"
+                  :close-on-content-click="false"
+                  transition="scale-transition"
+                  offset-y
+                  max-width="290px"
+                  min-width="auto"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                      v-model="newUser.birth_date"
+                      label="Start Date"
+                      hint="MM/DD/YYYY format"
+                      persistent-hint
+                      prepend-icon="mdi-calendar"
+                      v-bind="attrs"
+                      @blur="date = parseDate(newUser.birth_date)"
+                      v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                    v-model="newUser.birth_date"
+                    no-title
+                    @input="menu3 = false"
+                ></v-date-picker>
+              </v-menu>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12">
+              <v-text-field
+                  v-model="newUser.intro"
+                  label="Intro"
+              />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12">
+              <v-text-field
+                  v-model="newUser.about"
+                  label="About"
+              />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12">
+              <v-text-field
+                  v-model="newUser.accomplishments"
+                  label="Accomplishments"
+              />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12">
+              <v-text-field
+                  v-model="newUser.additional_info"
+                  label="Additional Info"
+              />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12">
+              <v-btn @click="sendEditUser()">
+                Change
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card>
+    </v-dialog>
     <v-container>
       <v-row>
         <v-col cols="12">
@@ -171,18 +251,43 @@
               <h2>
                 {{ user.username }}
               </h2>
+              <v-spacer/>
+              <v-icon @click="dialogUser=true">mdi-account-edit</v-icon>
             </v-card-title>
             <v-divider/>
             <v-container>
               <v-row>
                 <v-col cols="12">
-                  <h3>info</h3>
+                  <p>
+                    <span class="font-weight-bold">Full Name:</span> {{ user.first_name }} {{ user.last_name }}
+                  </p>
                 </v-col>
               </v-row>
               <v-row>
                 <v-col cols="12">
                   <p>
-                    {{ user.info }}
+                    <span class="font-weight-bold">Intro:</span> {{ user.intro }}
+                  </p>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12">
+                  <p>
+                    <span class="font-weight-bold">About:</span> {{ user.about }}
+                  </p>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12">
+                  <p>
+                    <span class="font-weight-bold">Accomplishments:</span> {{ user.accomplishments }}
+                  </p>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12">
+                  <p>
+                    <span class="font-weight-bold">Additional Info:</span> {{ user.additional_info }}
                   </p>
                 </v-col>
               </v-row>
@@ -243,9 +348,9 @@
             <v-divider/>
             <v-container>
               <v-row>
-                  <v-col cols="6" v-for="back in backgrounds" :key="back.id">
-                      <Background :back="back"/>
-                  </v-col>
+                <v-col cols="6" v-for="back in backgrounds" :key="back.id">
+                  <Background :back="back"/>
+                </v-col>
               </v-row>
             </v-container>
           </v-card>
@@ -285,6 +390,7 @@ export default {
     dialogLang: false,
     dialogSkill: false,
     dialogBack: false,
+    dialogUser: false,
     selectedLangs: [],
     selectedSkills: [],
     newBack: {
@@ -294,28 +400,33 @@ export default {
       description: '',
       category: '',
     },
+    newUser: {},
     menu1: false,
     menu2: false,
+    menu3: false,
 
   }),
   computed: {
-    ...mapGetters("UserModules", ["user",
-      "skills",
-      "languages",
-      "backgrounds",
-      "allLanguages",
-      "allSkills"])
+    ...mapGetters("UserModules",
+        ["user",
+          "skills",
+          "languages",
+          "backgrounds",
+          "allLanguages",
+          "allSkills"])
   },
   methods: {
-    ...mapActions('UserModules', ["getUser",
-      "getBackgrounds",
-      "getSkills",
-      "getLanguages",
-      "addLanguage",
-      "addSkill",
-      "addBackground",
-      "getAllLanguages",
-      'getAllSkills']),
+    ...mapActions('UserModules',
+        ["getUser",
+          "getBackgrounds",
+          "getSkills",
+          "getLanguages",
+          "addLanguage",
+          "addSkill",
+          "addBackground",
+          "getAllLanguages",
+          'getAllSkills',
+          "editUser"]),
     sendLangs() {
       console.log(this.selectedLangs);
       this.addLanguage(this.selectedLangs)
@@ -337,15 +448,27 @@ export default {
       console.log(x.toUTCString())
       console.log(x.toISOString())
       return date;
+    },
+    sendEditUser() {
+      this.editUser({
+        about: this.newUser.about,
+        accomplishments: this.newUser.accomplishments,
+        additional_info: this.newUser.additional_info,
+        birth_date: this.newUser.birth_date,
+        intro: this.newUser.intro,
+      });
+      this.dialogUser = false;
     }
   },
   mounted() {
-    this.getUser();
-    this.getBackgrounds()
-    this.getSkills().then(() => {
+    this.getUser().then(() => {
+      this.newUser = this.user;
+    });
+    this.getBackgrounds(this.user.id)
+    this.getSkills(this.user.id).then(() => {
       this.selectedSkills = this.skills.map((x) => x.id)
     })
-    this.getLanguages().then(() => {
+    this.getLanguages(this.user.id).then(() => {
       this.selectedLangs = this.languages.map((x) => x.id)
     })
     this.getAllLanguages()

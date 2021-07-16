@@ -33,6 +33,16 @@
                 </v-btn>
               </v-col>
             </v-row>
+            <v-row v-if="status !== ''">
+              <v-col cols="12">
+                  <v-alert
+                      border="left"
+                      dense
+                      outlined
+                      type="error"
+                  >{{this.status}}</v-alert>
+              </v-col>
+            </v-row>
           </v-container>
         </v-card>
       </v-col>
@@ -49,17 +59,27 @@ export default {
     user: {
       username: '',
       password: ''
-    }
+    },
+    status: '',
   }),
   methods: {
     ...mapActions('AuthModules', ['login']),
     sendLogin() {
-      this.login(this.user);
+      this.status = '';
+      this.login(this.user).then((r) => {
+        if (r) {
+          this.$router.replace({name: "Home"})
+        } else {
+          this.status = "User or Password is invalid"
+        }
+      });
     }
   }
 }
 </script>
 
 <style scoped>
-
+.status {
+  color: red;
+}
 </style>

@@ -19,8 +19,10 @@ const actions = {
             context.commit("setToken", response.data.access_token);
             localStorage.setItem("userToken", state.token);
             axios.defaults.headers.common['Authorization'] = "Bearer " + state.token;
+            return true;
         } catch (e) {
-            console.log(e)
+            console.log(e);
+            return false;
         }
     },
     logout(context) {
