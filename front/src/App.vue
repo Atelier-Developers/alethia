@@ -8,7 +8,7 @@
           fixed
       >
         <v-toolbar-title>
-          <v-icon x-large left color="blue">mdi-linkedin</v-icon>
+          <v-icon x-large left color="primary">mdi-linkedin</v-icon>
         </v-toolbar-title>
 
         <v-spacer></v-spacer>

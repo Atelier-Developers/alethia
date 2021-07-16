@@ -1,49 +1,49 @@
 <template>
   <v-container>
     <v-row justify="center">
-      <v-col cols="4">
-        <v-card>
+      <v-col cols="12" sm="6" md="4">
+        <v-card style="border-radius: 7px;" flat>
           <v-card-title>
             Login
           </v-card-title>
-          <v-container>
-            <v-row>
-              <v-col cols="12">
-                <v-text-field
-                    label="username"
-                    v-model="user.username"
-                />
-              </v-col>
+          <v-card-subtitle>
+            See your growth and get consulting support
+          </v-card-subtitle>
+          <v-divider />
+          <v-card-text>
+            <v-text-field
+                outlined
+                prepend-icon="mdi-account-circle-outline"
+                label="Username"
+                v-model="user.username"
+            />
+            <v-text-field
+                label="Password"
+                type="password"
+                prepend-icon="mdi-lock-outline"
+                outlined
+                v-model="user.password"
+            />
+            <template v-if="status !== ''">
+              <v-alert
+                  border="left"
+                  dense
+                  outlined
+                  type="error"
+              >{{ this.status }}
+              </v-alert>
+            </template>
+            <v-row class="pa-3">
+              <v-spacer/>
+              <v-btn
+                  color="primary"
+                  dark
+                  @click="sendLogin()"
+              >
+                login
+              </v-btn>
             </v-row>
-            <v-row>
-              <v-col cols="12">
-                <v-text-field
-                    label="password"
-                    type="password"
-                    v-model="user.password"
-                />
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="3">
-                <v-btn
-                    @click="sendLogin()"
-                >
-                  LOG IN
-                </v-btn>
-              </v-col>
-            </v-row>
-            <v-row v-if="status !== ''">
-              <v-col cols="12">
-                  <v-alert
-                      border="left"
-                      dense
-                      outlined
-                      type="error"
-                  >{{this.status}}</v-alert>
-              </v-col>
-            </v-row>
-          </v-container>
+          </v-card-text>
         </v-card>
       </v-col>
     </v-row>
