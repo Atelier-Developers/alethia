@@ -15,6 +15,8 @@ export const API = {
 	getAllSkills: API_PERFIX + 'skill',
 	addPost: API_PERFIX + 'post',
 	editUser: API_PERFIX + 'users',
+	getInvites: API_PERFIX + 'users/invite',
+	getFriends: API_PERFIX + 'users/friend'
 }
 
 
