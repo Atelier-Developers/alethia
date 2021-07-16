@@ -156,6 +156,18 @@ CREATE TABLE MESSAGE
 );
 
 
+# TODO: ADD REPLY MESSAGE TABLE
+# CREATE TABLE REPLY_MESSAGE
+# (
+#     message_id    INT NOT NULL ,
+#     replied_message_id  INT NOT NULL,
+#
+#     PRIMARY KEY (message_id, replied_message_id),
+#     CONSTRAINT FK_message_reply_message FOREIGN KEY (message_id) REFERENCES  (id),
+#     CONSTRAINT FK_replied_message_reply_message FOREIGN KEY (reply_id) REFERENCES MESSAGE (id),
+# )
+
+
 CREATE TABLE FRIEND
 (
     user1_id INT NOT NULL,

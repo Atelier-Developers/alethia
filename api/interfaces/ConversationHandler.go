@@ -1,139 +1,144 @@
 package interfaces
-//
-//import (
-//	"github.com/Atelier-Developers/alethia/domain/entity"
-//	"github.com/Atelier-Developers/alethia/domain/repository"
-//	"github.com/Atelier-Developers/alethia/infrastructure/auth"
-//	"github.com/Atelier-Developers/alethia/interfaces/bodyTemplates"
-//	"github.com/gin-gonic/gin"
-//	"log"
-//	"net/http"
-//)
-//
-//type ConversationHandler struct {
-//	conversationRepository repository.ConversationRepository
-//	authInterface          auth.AuthInterface
-//	tokenInterface         auth.TokenInterface
-//}
-//
-//func NewConversationHandler(conversationRepository repository.ConversationRepository, authInterface auth.AuthInterface, tokenInterface auth.TokenInterface) ConversationHandler {
-//	return ConversationHandler{
-//		conversationRepository: conversationRepository,
-//		authInterface:          authInterface,
-//		tokenInterface:         tokenInterface,
-//	}
-//}
-//
-//func (conversationHandler ConversationHandler) AddConversation(c *gin.Context) {
-//	var userRequestBody bodyTemplates.ConversationCreateRequestBody
-//	if err := c.ShouldBindJSON(&userRequestBody); err != nil {
-//		c.JSON(http.StatusUnprocessableEntity, gin.H{
-//			"invalid_json": "invalid json",
-//		})
-//		return
-//	}
-//
-//	userId, exists := c.Get("user_id")
-//
-//	if !exists {
-//		log.Fatal("User Id does not exist!")
-//	}
-//
-//	exists, err := conversationHandler.conversationRepository.ConversationExists(userId.(uint64), userRequestBody.UserId2)
-//	if err != nil {
-//		c.JSON(http.StatusInternalServerError, err)
-//		return
-//	}
-//
-//	if exists {
-//		c.JSON(http.StatusConflict, err)
-//		return
-//	}
-//
-//	conversation := entity.Conversation{UserId1: userId.(uint64), UserId2: userRequestBody.UserId2, IsArchived: *userRequestBody.IsArchived, IsDeleted: *userRequestBody.IsDeleted, IsRead: *userRequestBody.IsRead}
-//
-//	err = conversationHandler.conversationRepository.SaveConversation(&conversation)
-//	if err != nil {
-//		c.JSON(http.StatusInternalServerError, err)
-//		return
-//	}
-//
-//	c.JSON(http.StatusCreated, nil)
-//}
-//
-//func (conversationHandler ConversationHandler) UpdateConversation(c *gin.Context) {
-//	var userRequestBody bodyTemplates.ConversationUpdateRequestBody
-//	if err := c.ShouldBindJSON(&userRequestBody); err != nil {
-//		c.JSON(http.StatusUnprocessableEntity, gin.H{
-//			"invalid_json": "invalid json",
-//		})
-//		return
-//	}
-//
-//	userId, exists := c.Get("user_id")
-//
-//	if !exists {
-//		log.Fatal("User Id does not exist!")
-//	}
-//
-//	conversationBelongToUser, err := conversationHandler.conversationRepository.DoesConversationBelongToUser(userRequestBody.Id, userId.(uint64))
-//
-//	if err != nil {
-//		log.Fatal(err)
-//	}
-//
-//	if !conversationBelongToUser {
-//		log.Fatal("This is not this user's conversation.")
-//	}
-//
-//	conversation := entity.Conversation{Id: userRequestBody.Id, IsArchived: *userRequestBody.IsArchived, IsDeleted: *userRequestBody.IsDeleted, IsRead: *userRequestBody.IsRead}
-//
-//	err = conversationHandler.conversationRepository.UpdateConversation(conversation)
-//	if err != nil {
-//		c.JSON(http.StatusInternalServerError, err)
-//		return
-//	}
-//
-//	c.JSON(http.StatusCreated, nil)
-//
-//}
-//
-//func (conversationHandler ConversationHandler) DeleteConversation(c *gin.Context) {
-//	var userRequestBody bodyTemplates.ConversationDeleteRequestBody
-//	if err := c.ShouldBindJSON(&userRequestBody); err != nil {
-//		c.JSON(http.StatusUnprocessableEntity, gin.H{
-//			"invalid_json": "invalid json",
-//		})
-//		return
-//	}
-//
-//	userId, exists := c.Get("user_id")
-//
-//	if !exists {
-//		log.Fatal("User Id does not exist!")
-//	}
-//
-//	conversationBelongToUser, err := conversationHandler.conversationRepository.DoesConversationBelongToUser(userRequestBody.Id, userId.(uint64))
-//
-//	if err != nil {
-//		log.Fatal(err)
-//	}
-//
-//	if !conversationBelongToUser {
-//		log.Fatal("This is not this user's conversation.")
-//	}
-//
-//	conversation := entity.Conversation{Id: userRequestBody.Id}
-//
-//	err = conversationHandler.conversationRepository.DeleteConversation(conversation)
-//	if err != nil {
-//		c.JSON(http.StatusInternalServerError, err)
-//		return
-//	}
-//
-//	c.JSON(http.StatusCreated, nil)
-//
-//}
+
+import (
+	"github.com/Atelier-Developers/alethia/domain/entity/Conversation"
+	"github.com/Atelier-Developers/alethia/domain/repository"
+	"github.com/Atelier-Developers/alethia/infrastructure/auth"
+	"github.com/Atelier-Developers/alethia/interfaces/bodyTemplates"
+	"github.com/gin-gonic/gin"
+	"log"
+	"net/http"
+)
+
+type ConversationHandler struct {
+	conversationRepository repository.ConversationRepository
+	authInterface          auth.AuthInterface
+	tokenInterface         auth.TokenInterface
+}
+
+func NewConversationHandler(conversationRepository repository.ConversationRepository, authInterface auth.AuthInterface, tokenInterface auth.TokenInterface) ConversationHandler {
+	return ConversationHandler{
+		conversationRepository: conversationRepository,
+		authInterface:          authInterface,
+		tokenInterface:         tokenInterface,
+	}
+}
+
+func (conversationHandler ConversationHandler) AddConversation(c *gin.Context) {
+	var userRequestBody bodyTemplates.ConversationCreateRequestBody
+	if err := c.ShouldBindJSON(&userRequestBody); err != nil {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"invalid_json": "invalid json",
+		})
+		return
+	}
+
+	userId, exists := c.Get("user_id")
+
+	if !exists {
+		log.Fatal("User Id does not exist!")
+	}
+
+	exists, err := conversationHandler.conversationRepository.ConversationExists(userId.(uint64), userRequestBody.UserId2)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	if exists {
+		c.JSON(http.StatusConflict, err)
+		return
+	}
+
+	err = conversationHandler.conversationRepository.SaveConversation(userId.(uint64), userRequestBody.UserId2)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.JSON(http.StatusCreated, nil)
+}
+
+func (conversationHandler ConversationHandler) UpdateUserConversation(c *gin.Context) {
+	var userRequestBody bodyTemplates.ConversationUpdateRequestBody
+	if err := c.ShouldBindJSON(&userRequestBody); err != nil {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"invalid_json": "invalid json",
+		})
+		return
+	}
+
+	userId, exists := c.Get("user_id")
+
+	if !exists {
+		log.Fatal("User Id does not exist!")
+	}
+
+	conversationBelongToUser, err := conversationHandler.conversationRepository.DoesConversationBelongToUser(userRequestBody.ConversationId, userId.(uint64))
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if !conversationBelongToUser {
+		log.Fatal("This is not this user's conversation.")
+	}
+
+	conversation := Conversation.UserConversation{
+		UserId:         userId.(uint64),
+		ConversationId: userRequestBody.ConversationId,
+		IsArchived:     *userRequestBody.IsArchived,
+		IsDeleted:      *userRequestBody.IsDeleted,
+		IsRead:         *userRequestBody.IsRead,
+	}
+
+	err = conversationHandler.conversationRepository.UpdateUserConversation(conversation)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.JSON(http.StatusCreated, nil)
+
+}
+
+func (conversationHandler ConversationHandler) DeleteConversation(c *gin.Context) {
+	var userRequestBody bodyTemplates.ConversationDeleteRequestBody
+	if err := c.ShouldBindJSON(&userRequestBody); err != nil {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"invalid_json": "invalid json",
+		})
+		return
+	}
+
+	userId, exists := c.Get("user_id")
+
+	if !exists {
+		log.Fatal("User Id does not exist!")
+	}
+
+	conversationBelongToUser, err := conversationHandler.conversationRepository.DoesConversationBelongToUser(userRequestBody.ConversationId, userId.(uint64))
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if !conversationBelongToUser {
+		log.Fatal("This is not this user's conversation.")
+	}
+
+	conversation := Conversation.Conversation{Id: userRequestBody.ConversationId}
+
+	err = conversationHandler.conversationRepository.DeleteConversation(conversation)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.JSON(http.StatusCreated, nil)
+
+}
+
 //
 //func (conversationHandler ConversationHandler) GetConversation(c *gin.Context) {
 //	var userRequestBody bodyTemplates.ConversationGetRequestBody
@@ -163,18 +168,18 @@ package interfaces
 //	c.JSON(http.StatusCreated, conversation)
 //}
 //
-//func (conversationHandler ConversationHandler) GetUserConversations(c *gin.Context) {
-//	userId, exists := c.Get("user_id")
-//
-//	if !exists {
-//		log.Fatal("User Id does not exist!")
-//	}
-//
-//	conversations, err := conversationHandler.conversationRepository.GetUserConversations(userId.(uint64))
-//	if err != nil {
-//		c.JSON(http.StatusInternalServerError, err)
-//		return
-//	}
-//
-//	c.JSON(http.StatusCreated, conversations)
-//}
+func (conversationHandler ConversationHandler) GetUserConversations(c *gin.Context) {
+	userId, exists := c.Get("user_id")
+
+	if !exists {
+		log.Fatal("User Id does not exist!")
+	}
+
+	conversations, err := conversationHandler.conversationRepository.GetUserConversations(userId.(uint64))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.JSON(http.StatusCreated, conversations)
+}
