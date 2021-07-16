@@ -4,10 +4,15 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install -s
 COPY . .
-RUN npm run --silent build
 
+# development stage
+FROM build-stage as development-stage
+EXPOSE 8080
+CMD ["npm", "run", "--silent", "serve"]
 # production stage
-FROM nginx:1.20-alpine as production-stage
+FROM build-stage as production-stage
+RUN npm run --silent build
+FROM nginx:1.20-alpine
 COPY nginx_config/default.conf /etc/nginx/conf.d/default.conf
 COPY --from=build-stage /app/dist /usr/share/nginx/html
 EXPOSE 80
