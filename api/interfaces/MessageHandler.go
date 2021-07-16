@@ -26,6 +26,7 @@ func NewMessageHandler(conversationRepository repository.ConversationRepository,
 	}
 }
 
+//TODO: REPLY ID CAN'T BE 0 IN JSON, FIX IT
 func (messageHandler MessageHandler) AddMessage(c *gin.Context) {
 	var userRequestBody bodyTemplates.MessageCreateRequestBody
 	if err := c.ShouldBindJSON(&userRequestBody); err != nil {
