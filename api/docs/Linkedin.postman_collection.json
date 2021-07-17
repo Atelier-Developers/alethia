@@ -714,14 +714,14 @@
 									}
 								},
 								"url": {
-									"raw": "{{path}}/post/comment/1/likes",
+									"raw": "{{path}}/post/comment/2/likes",
 									"host": [
 										"{{path}}"
 									],
 									"path": [
 										"post",
 										"comment",
-										"1",
+										"2",
 										"likes"
 									]
 								}
@@ -1158,7 +1158,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6IjZkN2FmYWY4LWFkZTctNDdlYy1iMThjLWJmNjEwYjliMmZmYyIsImF1dGhvcml6ZWQiOnRydWUsImV4cCI6MTYyNjU1NDE0NywidXNlcl9pZCI6IjIifQ.tA9RsWOOS2CA8eSZ4bH4PTjEJLTIiz1doVfGetkBDJY",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6Ijg4NDA3MGJkLWI4MTEtNGRlZS1hOTRkLTBlMDIzNGMxOGE2MyIsImF1dGhvcml6ZWQiOnRydWUsImV4cCI6MTYyNjU1NjAyOCwidXNlcl9pZCI6IjMifQ.Q9VTg4dE66MMZ9aAcpQCbtwgklyeFH3NOffg4xzKLl8",
 				"type": "string"
 			}
 		]

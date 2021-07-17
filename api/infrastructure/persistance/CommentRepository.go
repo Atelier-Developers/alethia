@@ -78,7 +78,7 @@ func (commentRepository *CommentRepository) GetCommentNumberOfLikes(commentId ui
 	row := stmt.QueryRow(commentId)
 
 	var noOfLikes entity.CommentLikeCount
-	err = row.Scan(&noOfLikes)
+	err = row.Scan(&noOfLikes.LikeCount)
 	if err != nil {
 		return nil, err
 	}
