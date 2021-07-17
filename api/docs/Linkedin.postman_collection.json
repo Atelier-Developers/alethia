@@ -482,7 +482,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\" : \"aref79\",\n    \"password\": \"amir1234\"\n}",
+							"raw": "{\n    \"username\" : \"amir99\",\n    \"password\": \"amir1234\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -605,7 +605,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\" : \"amir99\",\n    \"first_name\": \"amir\",\n    \"last_name\": \"tavakkoli\",\n    \"password\": \"amir1234\",\n    \"intro\": \"Not much to say\",\n    \"about\": \"CE Student\",\n    \"accomplishments\": \"A simple loser in my life\",\n    \"additional_info\": \"nothing to say\",\n    \"birth_date\" : \"2000-07-14T17:55:50+00:00\"\n}",
+							"raw": "{\n    \"username\" : \"aref79\",\n    \"first_name\": \"amir\",\n    \"last_name\": \"tavakkoli\",\n    \"password\": \"amir1234\",\n    \"intro\": \"Not much to say\",\n    \"about\": \"CE Student\",\n    \"accomplishments\": \"A simple loser in my life\",\n    \"additional_info\": \"nothing to say\",\n    \"birth_date\" : \"2000-07-14T17:55:50+00:00\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -716,7 +716,7 @@
 							"response": []
 						},
 						{
-							"name": "Get Comment Like Count",
+							"name": "Get Comment Likes",
 							"protocolProfileBehavior": {
 								"disableBodyPruning": true
 							},
@@ -733,14 +733,14 @@
 									}
 								},
 								"url": {
-									"raw": "{{path}}/post/comment/2/likes",
+									"raw": "{{path}}/post/comment/1/likes",
 									"host": [
 										"{{path}}"
 									],
 									"path": [
 										"post",
 										"comment",
-										"2",
+										"1",
 										"likes"
 									]
 								}
@@ -945,29 +945,18 @@
 						},
 						{
 							"name": "Get Messages",
-							"protocolProfileBehavior": {
-								"disableBodyPruning": true
-							},
 							"request": {
 								"method": "GET",
 								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"conversation_id\": 1\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
 								"url": {
-									"raw": "{{path}}/conversation/message",
+									"raw": "{{path}}/conversation/message/1",
 									"host": [
 										"{{path}}"
 									],
 									"path": [
 										"conversation",
-										"message"
+										"message",
+										"1"
 									]
 								}
 							},
@@ -1100,42 +1089,8 @@
 						}
 					},
 					"response": []
-				},
-				{
-					"name": "Get Single Conversation",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"user_id_1\": 2,\n    \"user_id_2\": 3\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{path}}/conversation/singleConversation",
-							"host": [
-								"{{path}}"
-							],
-							"path": [
-								"conversation",
-								"singleConversation"
-							]
-						}
-					},
-					"response": []
 				}
 			]
-		},
-		{
-			"name": "Comment",
-			"item": []
 		},
 		{
 			"name": "Get Languages",
@@ -1177,7 +1132,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6ImMwYzgyNWIyLTY4MzUtNDk1MC05NjY3LWE0ZGVmNmIxOWE1MSIsImF1dGhvcml6ZWQiOnRydWUsImV4cCI6MTYyNjU2MzkzOCwidXNlcl9pZCI6IjIifQ.Oxt9RgoNdcE1UWJbnDRCGSXe2SfjkHC7TU3qt3bMlkk",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6IjcyMGQwYWEzLTRmMmQtNGY5Ny1hMGI5LTVhNDY1MWI5NDVkNiIsImF1dGhvcml6ZWQiOnRydWUsImV4cCI6MTYyNjU3NjAzNSwidXNlcl9pZCI6IjEifQ.5whou_2qogRKV8fGOhxwvpsr4xFkpXzhHyu2mRImUkM",
 				"type": "string"
 			}
 		]
