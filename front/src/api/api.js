@@ -22,7 +22,9 @@ export const API = {
     commentPost: API_PERFIX + 'post/comment',
     replyComment: API_PERFIX + 'post/comment/reply',
     likeComment: API_PERFIX + 'post/comment/like',
-    repost: 'post'
+    repost: 'post',
+    conversation: API_PERFIX + 'conversation'
+
 }
 
 

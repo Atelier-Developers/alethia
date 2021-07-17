@@ -35,8 +35,11 @@
                 {{ user.username }}
               </h2>
               <v-spacer/>
-              <v-btn @click="dialogInvite=true">
+              <v-btn class="mr-5" @click="dialogInvite=true" color="primary">
                 INVITE +
+              </v-btn>
+              <v-btn @click="startConversation()" color="secondary">
+                Message
               </v-btn>
             </v-card-title>
             <v-divider/>
@@ -186,9 +189,16 @@ export default {
           "getLanguages",
           "getBackgrounds"]),
     ...mapActions("InviteFriendModules", ["createInvite"]),
+    ...mapActions("ConversationModules", ["createConversation"]),
     sendCreateInvite() {
       this.inviteReq.receiver_id = +this.$route.params.id;
       this.createInvite(this.inviteReq);
+    },
+    startConversation() {
+      let id = +this.$route.params.id
+      this.createConversation({user_id_2: id}).then(() => {
+        this.$router.push({name: "Conversation"})
+      })
     }
   },
   mounted() {

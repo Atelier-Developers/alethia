@@ -7,6 +7,7 @@ import UserModules from './modules/user-module'
 import SignupModules from './modules/sign-up-module'
 import AuthModules from './modules/auth-module'
 import InviteFriendModules from './modules/invite-friend-module'
+import ConversationModules from './modules/conversation-module'
 
 Vue.use(Vuex)
 
@@ -18,6 +19,7 @@ export default new Vuex.Store({
         SignupModules,
         AuthModules,
         InviteFriendModules,
-        PostModules
+        PostModules,
+        ConversationModules
     }
 })

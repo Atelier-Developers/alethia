@@ -50,6 +50,11 @@ const routes = [
         name: 'Network',
         component: () => import("@/views/Network")
     },
+    {
+        path: '/conversation',
+        name: 'Conversation',
+        component: () => import("@/views/Conversation")
+    }
     // {
     //     path: '*',
     //     name: 'Error404',
