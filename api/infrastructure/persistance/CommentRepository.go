@@ -2,7 +2,7 @@ package persistance
 
 import (
 	"github.com/Atelier-Developers/alethia/Database"
-	"github.com/Atelier-Developers/alethia/domain/entity"
+	"github.com/Atelier-Developers/alethia/domain/entity/Comment"
 	"log"
 )
 
@@ -14,7 +14,7 @@ func NewCommentRepository(dbClient *Database.MySQLDB) *CommentRepository {
 	return &CommentRepository{dbClient: dbClient}
 }
 
-func (commentRepository *CommentRepository) SaveComment(comment *entity.Comment) error {
+func (commentRepository *CommentRepository) SaveComment(comment *Comment.Comment) error {
 	db := commentRepository.dbClient.GetDB()
 	stmt, err := db.Prepare("INSERT INTO COMMENT (text, commenter_id, post_id) VALUES (?, ?, ?) ")
 	if err != nil {
@@ -37,7 +37,7 @@ func (commentRepository *CommentRepository) SaveComment(comment *entity.Comment)
 	return nil
 }
 
-func (commentRepository *CommentRepository) LikeComment(comment *entity.Comment, UserId uint64) error {
+func (commentRepository *CommentRepository) LikeComment(comment *Comment.Comment, UserId uint64) error {
 	db := commentRepository.dbClient.GetDB()
 	stmt, err := db.Prepare("INSERT INTO COMMENT_LIKE (comment_id, user_id) VALUES (?, ?) ")
 	if err != nil {
@@ -52,7 +52,7 @@ func (commentRepository *CommentRepository) LikeComment(comment *entity.Comment,
 	return nil
 }
 
-func (commentRepository *CommentRepository) ReplyComment(comment *entity.Comment, ReplyId uint64) error {
+func (commentRepository *CommentRepository) ReplyComment(comment *Comment.Comment, ReplyId uint64) error {
 	db := commentRepository.dbClient.GetDB()
 	stmt, err := db.Prepare("INSERT INTO REPLY_COMMENT (comment_id, replied_comment_id) VALUES (?, ?) ")
 	if err != nil {
@@ -67,9 +67,36 @@ func (commentRepository *CommentRepository) ReplyComment(comment *entity.Comment
 	return nil
 }
 
-func (commentRepository *CommentRepository) GetCommentByID(id uint64, comment *entity.Comment) error {
+func (commentRepository *CommentRepository) GetCommentLikes(commentId uint64) ([]Comment.CommentLike, error) {
 	db := commentRepository.dbClient.GetDB()
-	stmt, err := db.Prepare("SELECT COMMENT.*, USER.username FROM COMMENT, USER WHERE COMMENT.id=? AND COMMENT.commenter_id=USER.id")
+	stmt, err := db.Prepare("SELECT * FROM COMMENT_LIKE WHERE COMMENT_LIKE.comment_id=? ORDER BY created DESC")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query(commentId)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var commentLikes []Comment.CommentLike
+	for rows.Next() {
+		var commentLike Comment.CommentLike
+		err = rows.Scan(&commentLike.CommentId, &commentLike.UserId, &commentLike.Created)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		commentLikes = append(commentLikes, commentLike)
+	}
+
+	return commentLikes, nil
+}
+
+func (commentRepository *CommentRepository) GetCommentByID(id uint64, comment *Comment.Comment) error {
+	db := commentRepository.dbClient.GetDB()
+	stmt, err := db.Prepare("SELECT COMMENT.*, U.username, RC.replied_comment_id FROM COMMENT LEFT OUTER JOIN REPLY_COMMENT RC on COMMENT.id = RC.comment_id INNER JOIN USER U on COMMENT.commenter_id = U.id WHERE COMMENT.id=?")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -77,7 +104,7 @@ func (commentRepository *CommentRepository) GetCommentByID(id uint64, comment *e
 
 	row := stmt.QueryRow(id)
 
-	err = row.Scan(&comment.Id, &comment.Text, &comment.Created, &comment.CommenterId, &comment.PostId, &comment.CommenterUsername)
+	err = row.Scan(&comment.Id, &comment.Text, &comment.Created, &comment.CommenterId, &comment.PostId, &comment.CommenterUsername, &comment.RepliedCommentId)
 	if err != nil {
 		return err
 	}

@@ -580,13 +580,32 @@
 					"response": []
 				},
 				{
+					"name": "Get Users With Mutual Connection",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{path}}/users/mutualConnection/1",
+							"host": [
+								"{{path}}"
+							],
+							"path": [
+								"users",
+								"mutualConnection",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Register",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\" : \"amir89\",\n    \"first_name\": \"amir\",\n    \"last_name\": \"tavakkoli\",\n    \"password\": \"amir1234\",\n    \"intro\": \"Not much to say\",\n    \"about\": \"CE Student\",\n    \"accomplishments\": \"A simple loser in my life\",\n    \"additional_info\": \"nothing to say\",\n    \"birth_date\" : \"2000-07-14T17:55:50+00:00\"\n}",
+							"raw": "{\n    \"username\" : \"amir99\",\n    \"first_name\": \"amir\",\n    \"last_name\": \"tavakkoli\",\n    \"password\": \"amir1234\",\n    \"intro\": \"Not much to say\",\n    \"about\": \"CE Student\",\n    \"accomplishments\": \"A simple loser in my life\",\n    \"additional_info\": \"nothing to say\",\n    \"birth_date\" : \"2000-07-14T17:55:50+00:00\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -691,6 +710,38 @@
 										"post",
 										"comment",
 										"like"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Comment Like Count",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"comment_id\": 2\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{path}}/post/comment/2/likes",
+									"host": [
+										"{{path}}"
+									],
+									"path": [
+										"post",
+										"comment",
+										"2",
+										"likes"
 									]
 								}
 							},
@@ -1083,6 +1134,10 @@
 			]
 		},
 		{
+			"name": "Comment",
+			"item": []
+		},
+		{
 			"name": "Get Languages",
 			"request": {
 				"method": "GET",
@@ -1122,7 +1177,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6Ijc2NDNkODg5LWU1MWMtNDgyYy05MTBhLTIwYTViNzAwMzg0NyIsImF1dGhvcml6ZWQiOnRydWUsImV4cCI6MTYyNjU0Mjc3OCwidXNlcl9pZCI6IjEifQ.ilXFSq4Nfh0GgAgGqMhRqXuwMfEZuCO3HsxgqkW33UM",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6ImMwYzgyNWIyLTY4MzUtNDk1MC05NjY3LWE0ZGVmNmIxOWE1MSIsImF1dGhvcml6ZWQiOnRydWUsImV4cCI6MTYyNjU2MzkzOCwidXNlcl9pZCI6IjIifQ.Oxt9RgoNdcE1UWJbnDRCGSXe2SfjkHC7TU3qt3bMlkk",
 				"type": "string"
 			}
 		]

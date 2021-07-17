@@ -73,6 +73,7 @@ func main() {
 	userGroup := router.Group("/users", middleware.AuthMiddleware(redisService.Auth))
 	{
 		userGroup.GET("/:username", userHandler.GetUsersWithSimilarUsername)
+		userGroup.GET("/mutualConnection/:user_id", userHandler.GetUsersWithMutualConnection)
 		userGroup.PUT("", userHandler.EditUser)
 		userGroup.GET("", userHandler.GetUser)
 		userGroup.POST("", userHandler.GetUserById)
@@ -159,6 +160,7 @@ func main() {
 
 		commentGroup := postGroup.Group("/comment")
 		{
+			commentGroup.GET("/:comment_id/likes", commentHandler.GetCommentLikesById)
 			commentGroup.POST("", commentHandler.SaveComment)
 			commentGroup.POST("/reply", commentHandler.ReplyComment)
 			//TODO multiple like not allowed

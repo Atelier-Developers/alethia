@@ -2,7 +2,7 @@ package persistance
 
 import (
 	"github.com/Atelier-Developers/alethia/Database"
-	"github.com/Atelier-Developers/alethia/domain/entity"
+	"github.com/Atelier-Developers/alethia/domain/entity/Comment"
 	"github.com/Atelier-Developers/alethia/domain/entity/Post"
 	"log"
 )
@@ -97,9 +97,9 @@ func (postRepo *PostRepository) GetPostLikes(postId uint64) ([]Post.Like, error)
 	return likes, nil
 }
 
-func (postRepo *PostRepository) GetPostComments(postId uint64) ([]entity.Comment, error) {
+func (postRepo *PostRepository) GetPostComments(postId uint64) ([]Comment.Comment, error) {
 	db := postRepo.dbClient.GetDB()
-	stmt, err := db.Prepare("SELECT COMMENT.*, USER.username FROM COMMENT, USER WHERE post_id=? AND COMMENT.commenter_id=USER.id")
+	stmt, err := db.Prepare("SELECT COMMENT.*, U.username, RC.replied_comment_id FROM COMMENT LEFT OUTER JOIN REPLY_COMMENT RC on COMMENT.id = RC.comment_id INNER JOIN USER U on COMMENT.commenter_id = U.id WHERE COMMENT.post_id=?")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -110,10 +110,10 @@ func (postRepo *PostRepository) GetPostComments(postId uint64) ([]entity.Comment
 		log.Fatal(err)
 	}
 
-	var comments []entity.Comment
+	var comments []Comment.Comment
 	for rows.Next() {
-		var comment entity.Comment
-		err = rows.Scan(&comment.Id, &comment.Text, &comment.Created, &comment.CommenterId, &comment.PostId, &comment.CommenterUsername)
+		var comment Comment.Comment
+		err = rows.Scan(&comment.Id, &comment.Text, &comment.Created, &comment.CommenterId, &comment.PostId, &comment.CommenterUsername, &comment.RepliedCommentId)
 
 		if err != nil {
 			log.Fatal(err)
