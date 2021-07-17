@@ -153,6 +153,24 @@ func (postRepo *PostRepository) GetPostReposts(postId uint64) ([]Post.Repost, er
 	return reposts, nil
 }
 
+//func (postRepo *PostRepository) GetPostsByFriends(userId uint64) ([]Post.Post, error) {
+//	db := postRepo.dbClient.GetDB()
+//	stmt, err := db.Prepare("SELECT POST.*, USER.username FROM POST, USER WHERE USER.id = POST.poster_id AND POST.poster_id IN (SELECT id FROM FRIEND WHERE  )")
+//	if err != nil {
+//		log.Fatal(err)
+//	}
+//	defer stmt.Close()
+//
+//	row := stmt.QueryRow(postId)
+//
+//	err = row.Scan(&post.Id, &post.IsFeatured, &post.Description, &post.Created, &post.PosterId, &post.PosterUsername)
+//	if err != nil {
+//		return err
+//	}
+//
+//	return nil
+//}
+
 func (postRepo *PostRepository) GetPostById(postId uint64, post *Post.Post) error {
 	db := postRepo.dbClient.GetDB()
 	stmt, err := db.Prepare("SELECT POST.*, USER.username FROM POST, USER WHERE POST.id=? AND USER.id = POST.poster_id")

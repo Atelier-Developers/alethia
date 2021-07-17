@@ -100,7 +100,7 @@ func (friendHandler *FriendHandler) AddFriend(c *gin.Context) {
 		log.Fatal("This user has not been invited by the user.")
 	}
 
-	err = friendHandler.inviteRepository.DeleteInvite(userId.(uint64), userRequestBody.UserId)
+	err = friendHandler.inviteRepository.DeleteInvite(userRequestBody.UserId, userId.(uint64))
 	if err != nil {
 		log.Fatal(err)
 	}
