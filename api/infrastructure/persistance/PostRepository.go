@@ -280,6 +280,21 @@ func (postRepo *PostRepository) GetPostsByFriends(userId uint64) ([]Post.PostWit
 			post.IsLikedByThisUser = false
 		}
 
+		stmt6, err := db.Prepare("SELECT repost_id FROM REPOST WHERE  post_id=?")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer stmt6.Close()
+
+		row = stmt6.QueryRow(post.Id)
+		var repostId uint64
+		err = row.Scan(&repostId)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		post.RepostId = repostId
+
 		posts = append(posts, post)
 	}
 
@@ -367,6 +382,21 @@ func (postRepo *PostRepository) GetPostsLikedByFriends(userId uint64) ([]Post.Li
 			post.IsLikedByThisUser = false
 		}
 
+		stmt6, err := db.Prepare("SELECT repost_id FROM REPOST WHERE  post_id=?")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer stmt6.Close()
+
+		row = stmt6.QueryRow(post.Id)
+		var repostId uint64
+		err = row.Scan(&repostId)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		post.RepostId = repostId
+
 		posts = append(posts, post)
 	}
 
@@ -453,6 +483,21 @@ func (postRepo *PostRepository) GetPostsCommentedOnByFriends(userId uint64) ([]P
 		} else {
 			post.IsLikedByThisUser = false
 		}
+
+		stmt6, err := db.Prepare("SELECT repost_id FROM REPOST WHERE  post_id=?")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer stmt6.Close()
+
+		row = stmt6.QueryRow(post.Id)
+		var repostId uint64
+		err = row.Scan(&repostId)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		post.RepostId = repostId
 
 		posts = append(posts, post)
 	}
