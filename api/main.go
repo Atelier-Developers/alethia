@@ -76,6 +76,13 @@ func main() {
 		userGroup.GET("", userHandler.GetUser)
 		userGroup.POST("", userHandler.GetUserById)
 
+		postGroup := router.Group("/post")
+		{
+			postGroup.GET("/postedByFriends", postHandler.GetPostsByFriends)
+			postGroup.GET("/likedByFriends", postHandler.GetPostsLikedByFriends)
+			postGroup.GET("/commentedOnByFriends", postHandler.GetPostsCommentedOnByFriends)
+		}
+
 		inviteGroup := userGroup.Group("/invite")
 		{
 			inviteGroup.POST("", friendHandler.AddInvite)

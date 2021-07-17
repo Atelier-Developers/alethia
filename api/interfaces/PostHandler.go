@@ -183,3 +183,48 @@ func (postHandler *PostHandler) GetPostRepostsById(c *gin.Context) {
 
 	c.JSON(http.StatusOK, reposts)
 }
+
+func (postHandler *PostHandler) GetPostsByFriends(c *gin.Context) {
+	userId, exists := c.Get("user_id")
+
+	if !exists {
+		log.Fatal("User Id does not exist!")
+	}
+
+	posts, err := postHandler.postRepository.GetPostsByFriends(userId.(uint64))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	c.JSON(http.StatusOK, posts)
+}
+
+func (postHandler *PostHandler) GetPostsLikedByFriends(c *gin.Context) {
+	userId, exists := c.Get("user_id")
+
+	if !exists {
+		log.Fatal("User Id does not exist!")
+	}
+
+	posts, err := postHandler.postRepository.GetPostsLikedByFriends(userId.(uint64))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	c.JSON(http.StatusOK, posts)
+}
+
+func (postHandler *PostHandler) GetPostsCommentedOnByFriends(c *gin.Context) {
+	userId, exists := c.Get("user_id")
+
+	if !exists {
+		log.Fatal("User Id does not exist!")
+	}
+
+	posts, err := postHandler.postRepository.GetPostsCommentedOnByFriends(userId.(uint64))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	c.JSON(http.StatusOK, posts)
+}
