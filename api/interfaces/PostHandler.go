@@ -145,7 +145,7 @@ func (postHandler *PostHandler) GetPostLikesById(c *gin.Context) {
 }
 
 func (postHandler *PostHandler) GetPostCommentsById(c *gin.Context) {
-	_, exists := c.Get("user_id")
+	userId, exists := c.Get("user_id")
 
 	if !exists {
 		log.Fatal("User Id does not exist!")
@@ -156,7 +156,7 @@ func (postHandler *PostHandler) GetPostCommentsById(c *gin.Context) {
 		log.Fatal(err)
 	}
 
-	comments, err := postHandler.postRepository.GetPostComments(uint64(postId))
+	comments, err := postHandler.postRepository.GetPostComments(uint64(postId), userId.(uint64))
 	if err != nil {
 		log.Fatal(err)
 	}

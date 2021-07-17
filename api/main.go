@@ -138,7 +138,7 @@ func main() {
 		messageGroup := conversationGroup.Group("/message")
 		{
 			messageGroup.POST("", messageHandler.AddMessage)
-			messageGroup.GET("", messageHandler.GetMessages)
+			messageGroup.GET("/:conversation_id", messageHandler.GetMessages)
 			// TODO: Naming should be different
 			messageGroup.GET("/singleMessage", messageHandler.GetMessage)
 		}

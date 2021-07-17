@@ -31,7 +31,7 @@ func (messageRepository *MessageRepository) AddMessage(message Conversation.Mess
 
 func (messageRepository *MessageRepository) GetMessage(messageID uint64) (Conversation.Message, error) {
 	db := messageRepository.dbClient.GetDB()
-	stmt, err := db.Prepare("SELECT * FROM MESSAGE WHERE id=?")
+	stmt, err := db.Prepare("SELECT MESSAGE.*, USER.username FROM MESSAGE, USER WHERE MESSAGE.id=? AND MESSAGE.user_id = USER.id")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -40,7 +40,7 @@ func (messageRepository *MessageRepository) GetMessage(messageID uint64) (Conver
 	var message Conversation.Message
 	row := stmt.QueryRow(messageID)
 
-	err = row.Scan(&message.Id, &message.UserId, &message.ReplyId, &message.ConversationId, &message.Body, &message.Created)
+	err = row.Scan(&message.Id, &message.UserId, &message.ReplyId, &message.ConversationId, &message.Body, &message.Created, &message.Username)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -50,7 +50,7 @@ func (messageRepository *MessageRepository) GetMessage(messageID uint64) (Conver
 
 func (messageRepository *MessageRepository) GetMessages(conversationId uint64) ([]Conversation.Message, error) {
 	db := messageRepository.dbClient.GetDB()
-	stmt, err := db.Prepare("SELECT * FROM MESSAGE WHERE conversation_id=?")
+	stmt, err := db.Prepare("SELECT MESSAGE.*,  USER.username FROM MESSAGE, USER WHERE conversation_id=? AND MESSAGE.user_id = USER.id")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -64,7 +64,7 @@ func (messageRepository *MessageRepository) GetMessages(conversationId uint64) (
 
 	for rows.Next() {
 		var message Conversation.Message
-		err := rows.Scan(&message.Id, &message.UserId, &message.ReplyId, &message.ConversationId, &message.Body, &message.Created)
+		err := rows.Scan(&message.Id, &message.UserId, &message.ReplyId, &message.ConversationId, &message.Body, &message.Created, &message.Username)
 		if err != nil {
 			log.Fatal(err)
 		}

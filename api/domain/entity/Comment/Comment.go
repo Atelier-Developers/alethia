@@ -15,3 +15,10 @@ type Comment struct {
 	PostId            uint64        `json:"post_id"`
 	RepliedCommentId  sql.NullInt64 `json:"replied_comment_id"`
 }
+
+type CommentWithLikeAndReplyCount struct {
+	Comment
+	LikeCount         uint64 `json:"like_count"`
+	ReplyCount        uint64 `json:"reply_count"`
+	IsLikedByThisUser bool   `json:"is_liked_by_this_user"`
+}
