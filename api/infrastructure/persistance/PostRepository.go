@@ -289,11 +289,11 @@ func (postRepo *PostRepository) GetPostsByFriends(userId uint64) ([]Post.PostWit
 		row = stmt6.QueryRow(post.Id)
 		var repostId uint64
 		err = row.Scan(&repostId)
-		if err != nil {
-			log.Fatal(err)
+		if err == nil {
+			post.RepostId = repostId
+		} else {
+			post.RepostId = 0
 		}
-
-		post.RepostId = repostId
 
 		posts = append(posts, post)
 	}
@@ -391,11 +391,11 @@ func (postRepo *PostRepository) GetPostsLikedByFriends(userId uint64) ([]Post.Li
 		row = stmt6.QueryRow(post.Id)
 		var repostId uint64
 		err = row.Scan(&repostId)
-		if err != nil {
-			log.Fatal(err)
+		if err == nil {
+			post.RepostId = repostId
+		} else {
+			post.RepostId = 0
 		}
-
-		post.RepostId = repostId
 
 		posts = append(posts, post)
 	}
@@ -493,11 +493,11 @@ func (postRepo *PostRepository) GetPostsCommentedOnByFriends(userId uint64) ([]P
 		row = stmt6.QueryRow(post.Id)
 		var repostId uint64
 		err = row.Scan(&repostId)
-		if err != nil {
-			log.Fatal(err)
+		if err == nil {
+			post.RepostId = repostId
+		} else {
+			post.RepostId = 0
 		}
-
-		post.RepostId = repostId
 
 		posts = append(posts, post)
 	}
