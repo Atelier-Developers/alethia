@@ -12,7 +12,7 @@ type Post struct {
 	PosterUsername string    `json:"poster_username"`
 }
 
-type PostWithLikeAndCommentCount struct {
+type PostWithLikeAndCommentAndRepostCount struct {
 	Id                uint64    `json:"id"`
 	IsFeatured        bool      `json:"is-featured"`
 	Description       string    `json:"description"`
@@ -22,19 +22,18 @@ type PostWithLikeAndCommentCount struct {
 	PosterUsername    string    `json:"poster_username"`
 	LikeCount         uint64    `json:"like_count"`
 	CommentCount      uint64    `json:"comment_count"`
+	RepostCount       uint64    `json:"repost_count"`
 	IsLikedByThisUser bool      `json:"is_liked_by_this_user"`
 }
 
-
 type LikedPost struct {
-	PostWithLikeAndCommentCount
-	LikerId        uint64    `json:"liker_id"`
-	LikerUsername  string    `json:"like_username"`
+	PostWithLikeAndCommentAndRepostCount
+	LikerId       uint64 `json:"liker_id"`
+	LikerUsername string `json:"like_username"`
 }
 
 type CommentedOnPost struct {
-	PostWithLikeAndCommentCount
-	CommenterId       uint64    `json:"commenter_id"`
-	CommenterUsername string    `json:"commenter_username"`
+	PostWithLikeAndCommentAndRepostCount
+	CommenterId       uint64 `json:"commenter_id"`
+	CommenterUsername string `json:"commenter_username"`
 }
-
