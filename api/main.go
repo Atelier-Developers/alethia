@@ -76,7 +76,7 @@ func main() {
 		userGroup.GET("", userHandler.GetUser)
 		userGroup.POST("", userHandler.GetUserById)
 
-		postGroup := router.Group("/post")
+		postGroup := userGroup.Group("/post")
 		{
 			postGroup.GET("/postedByFriends", postHandler.GetPostsByFriends)
 			postGroup.GET("/likedByFriends", postHandler.GetPostsLikedByFriends)

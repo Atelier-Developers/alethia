@@ -13,6 +13,6 @@ type PostRepository interface {
 	GetPostComments(postId uint64) ([]entity.Comment, error)
 	GetPostReposts(postId uint64) ([]Post.Repost, error)
 	GetPostsByFriends(userId uint64) ([]Post.Post, error)
-	GetPostsLikedByFriends(userId uint64) ([]Post.Post, error)
-	GetPostsCommentedOnByFriends(userId uint64) ([]Post.Post, error)
+	GetPostsLikedByFriends(userId uint64) ([]Post.LikedPost, error)
+	GetPostsCommentedOnByFriends(userId uint64) ([]Post.CommentedOnPost, error)
 }
