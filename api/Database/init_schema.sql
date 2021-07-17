@@ -351,6 +351,50 @@ VALUES ("C++", "tools_technologies"),
        ("Communication", "interpersonal_skills");
 
 
+DELIMITER //
+
+CREATE PROCEDURE GetUsersWithMutualConnection(
+    IN userId INT
+)
+BEGIN
+    select friends2.user1_id, COUNT(*) as mutual_connections
+    from (select user1_id, user2_id
+          from FRIEND f1
+          where not exists(select *
+                           from FRIEND f2
+                           where (f2.user1_id = 1 AND f2.user2_id = f1.user1_id)
+                              OR (f2.user1_id = f1.user1_id AND f2.user2_id = userId))
+          UNION
+          select user2_id, user1_id
+          from FRIEND f1
+          where not exists(select *
+                           from FRIEND f2
+                           where (f2.user1_id = 1 AND f2.user2_id = f1.user2_id)
+                              OR (f2.user1_id = f1.user2_id AND f2.user2_id = userId))) friends1,
+         (select user1_id, user2_id
+          from FRIEND f1
+          where not exists(select *
+                           from FRIEND f2
+                           where (f2.user1_id = 1 AND f2.user2_id = f1.user1_id)
+                              OR (f2.user1_id = f1.user1_id AND f2.user2_id = userId))
+          UNION
+          select user2_id, user1_id
+          from FRIEND f1
+          where not exists(select *
+                           from FRIEND f2
+                           where (f2.user1_id = 1 AND f2.user2_id = f1.user2_id)
+                              OR (f2.user1_id = f1.user2_id AND f2.user2_id = userId))) friends2
+    WHERE friends1.user2_id = friends2.user2_id
+      AND friends1.user1_id = userId
+      AND friends2.user1_id != userId
+    GROUP BY friends2.user1_id
+    ORDER BY mutual_connections desc;
+
+END //
+
+DELIMITER ;
+
+
 
 
 
