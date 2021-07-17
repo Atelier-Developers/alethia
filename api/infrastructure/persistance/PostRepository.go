@@ -153,7 +153,7 @@ func (postRepo *PostRepository) GetPostReposts(postId uint64) ([]Post.Repost, er
 	return reposts, nil
 }
 
-func (postRepo *PostRepository) GetPostsByFriends(userId uint64) ([]Post.Post, error) {
+func (postRepo *PostRepository) GetPostsByFriends(userId uint64) ([]Post.PostWithLikeAndCommentCount, error) {
 	db := postRepo.dbClient.GetDB()
 	stmt, err := db.Prepare("SELECT POST.*, USER.username FROM POST, USER WHERE USER.id = POST.poster_id AND POST.poster_id IN ((SELECT user2_id FROM FRIEND WHERE user1_id=? ) UNION (SELECT user1_id FROM FRIEND WHERE user2_id=?)) ORDER BY POST.created DESC")
 	if err != nil {
@@ -167,10 +167,57 @@ func (postRepo *PostRepository) GetPostsByFriends(userId uint64) ([]Post.Post, e
 		log.Fatal(err)
 	}
 
-	var posts []Post.Post
+	var posts []Post.PostWithLikeAndCommentCount
 	for rows.Next() {
-		var post Post.Post
+		var post Post.PostWithLikeAndCommentCount
 		err = rows.Scan(&post.Id, &post.IsFeatured, &post.Description, &post.Created, &post.PosterId, &post.PosterUsername)
+
+		stmt2, err := db.Prepare("SELECT COUNT(*) FROM POST_LIKE WHERE post_id=?")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer stmt2.Close()
+
+		row := stmt2.QueryRow(post.Id)
+		var count uint64
+		err = row.Scan(&count)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		post.LikeCount = count
+
+		stmt3, err := db.Prepare("SELECT COUNT(*) FROM COMMENT WHERE post_id=?")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer stmt3.Close()
+
+		row = stmt3.QueryRow(post.Id)
+		err = row.Scan(&count)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		post.CommentCount = count
+
+		stmt4, err := db.Prepare("SELECT COUNT(*) FROM POST_LIKE WHERE post_id=? AND user_id=?")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer stmt4.Close()
+
+		row = stmt4.QueryRow(post.Id, userId)
+		err = row.Scan(&count)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		if count == 1 {
+			post.IsLikedByThisUser = true
+		} else {
+			post.IsLikedByThisUser = false
+		}
 
 		posts = append(posts, post)
 	}
@@ -198,6 +245,53 @@ func (postRepo *PostRepository) GetPostsLikedByFriends(userId uint64) ([]Post.Li
 		var post Post.LikedPost
 		err = rows.Scan(&post.Id, &post.IsFeatured, &post.Description, &post.Created, &post.PosterId, &post.PosterUsername, &post.LikerId, &post.LikerUsername)
 
+		stmt2, err := db.Prepare("SELECT COUNT(*) FROM POST_LIKE WHERE post_id=?")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer stmt2.Close()
+
+		row := stmt2.QueryRow(post.Id)
+		var count uint64
+		err = row.Scan(&count)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		post.LikeCount = count
+
+		stmt3, err := db.Prepare("SELECT COUNT(*) FROM COMMENT WHERE post_id=?")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer stmt3.Close()
+
+		row = stmt3.QueryRow(post.Id)
+		err = row.Scan(&count)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		post.CommentCount = count
+
+		stmt4, err := db.Prepare("SELECT COUNT(*) FROM POST_LIKE WHERE post_id=? AND user_id=?")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer stmt4.Close()
+
+		row = stmt4.QueryRow(post.Id, userId)
+		err = row.Scan(&count)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		if count == 1 {
+			post.IsLikedByThisUser = true
+		} else {
+			post.IsLikedByThisUser = false
+		}
+
 		posts = append(posts, post)
 	}
 
@@ -223,6 +317,53 @@ func (postRepo *PostRepository) GetPostsCommentedOnByFriends(userId uint64) ([]P
 	for rows.Next() {
 		var post Post.CommentedOnPost
 		err = rows.Scan(&post.Id, &post.IsFeatured, &post.Description, &post.Created, &post.PosterId, &post.PosterUsername, &post.CommenterId, &post.CommenterUsername)
+
+		stmt2, err := db.Prepare("SELECT COUNT(*) FROM POST_LIKE WHERE post_id=?")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer stmt2.Close()
+
+		row := stmt2.QueryRow(post.Id)
+		var count uint64
+		err = row.Scan(&count)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		post.LikeCount = count
+
+		stmt3, err := db.Prepare("SELECT COUNT(*) FROM COMMENT WHERE post_id=?")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer stmt3.Close()
+
+		row = stmt3.QueryRow(post.Id)
+		err = row.Scan(&count)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		post.CommentCount = count
+
+		stmt4, err := db.Prepare("SELECT COUNT(*) FROM POST_LIKE WHERE post_id=? AND user_id=?")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer stmt4.Close()
+
+		row = stmt4.QueryRow(post.Id, userId)
+		err = row.Scan(&count)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		if count == 1 {
+			post.IsLikedByThisUser = true
+		} else {
+			post.IsLikedByThisUser = false
+		}
 
 		posts = append(posts, post)
 	}

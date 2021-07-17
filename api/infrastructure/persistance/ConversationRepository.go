@@ -137,25 +137,6 @@ func (conversationRepo *ConversationRepository) DeleteConversation(conversation 
 	return nil
 }
 
-//func (conversationRepo *ConversationRepository) GetConversation(userId1 uint64, userId2 uint64) (*entity.Conversation, error) {
-//	db := conversationRepo.dbClient.GetDB()
-//	stmt, err := db.Prepare("SELECT * FROM CONVERSATION WHERE user1_id=? AND user2_id=?")
-//	if err != nil {
-//		log.Fatal(err)
-//	}
-//	defer stmt.Close()
-//
-//	row := stmt.QueryRow(userId1, userId2)
-//
-//	var convo entity.Conversation
-//	err = row.Scan(&convo.Id, &convo.UserId1, &convo.UserId2, &convo.IsArchived, &convo.IsDeleted, &convo.IsRead)
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	return &convo, nil
-//}
-//
 func (conversationRepo *ConversationRepository) GetUserConversations(userId uint64) ([]Conversation.UserConversation, error) {
 	db := conversationRepo.dbClient.GetDB()
 	stmt, err := db.Prepare("SELECT UC2.user_id, UC1.conversation_id, UC1.is_read, UC1.is_deleted, UC1.is_archived FROM USER_CONVERSATION UC1, USER_CONVERSATION UC2 WHERE UC1.user_id = ? AND UC1.is_deleted = 0 AND UC1.conversation_id = UC2.conversation_id AND UC1.user_id != UC2.user_id")
