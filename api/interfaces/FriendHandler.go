@@ -91,7 +91,7 @@ func (friendHandler *FriendHandler) AddFriend(c *gin.Context) {
 		log.Fatal("Friendship exists.")
 	}
 
-	exists, err = friendHandler.inviteRepository.IsUserInvitedById(userId.(uint64), userRequestBody.UserId)
+	exists, err = friendHandler.inviteRepository.IsUserInvitedById(userRequestBody.UserId, userId.(uint64))
 	if err != nil {
 		log.Fatal(err)
 	}
