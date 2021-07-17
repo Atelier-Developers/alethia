@@ -41,10 +41,15 @@ const routes = [
         component: () => import('@/views/User')
     },
     {
+        path: '/post/:id',
+        name: 'Post',
+        component: () => import('@/views/PostPage')
+    },
+    {
         path: '/network',
         name: 'Network',
         component: () => import("@/views/Network")
-    }
+    },
     // {
     //     path: '*',
     //     name: 'Error404',

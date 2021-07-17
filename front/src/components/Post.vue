@@ -1,49 +1,103 @@
 <template>
-  <v-card v-bind:flat="child">
-    <v-card-title>
-      <v-row>
-        <v-col cols="12" v-if="username !== ''">
-          {{ username }}
-        </v-col>
-        <v-col cols="12" v-else>
-          {{ post.user.username }}
-        </v-col>
-      </v-row>
-    </v-card-title>
-    <v-card-subtitle>
-      <v-row>
-        <v-col cols="12">
-          {{ post.date }}
-        </v-col>
-      </v-row>
-    </v-card-subtitle>
-    <v-divider/>
-    <v-container>
-      <v-row>
-        <v-col cols="12">
-          <div class="post-content">
-            {{ post.text }}
-          </div>
-        </v-col>
-      </v-row>
-    </v-container>
-  </v-card>
+  <div>
+    <v-dialog v-model="dialogLikes" max-width="500">
+      <v-card>
+        <v-card-title>
+          <h3>Likes: </h3>
+        </v-card-title>
+        <v-divider/>
+        <v-container>
+          <v-row v-for="like in likes" :key="like.id">
+            <v-col cols="12">
+              <h4>{{ like.username }}</h4>
+              <v-divider/>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card>
+    </v-dialog>
+    <v-card>
+      <v-card-title>
+        <h4>
+          {{ post.poster_username }}
+        </h4>
+        <v-spacer/>
+        <v-btn @click="sendLike()" elevation="0" icon>
+          <v-icon v-if="liked" color="red">mdi-heart</v-icon>
+          <v-icon v-else>mdi-heart-outline</v-icon>
+        </v-btn>
+        <v-btn @click="dialogLikes=true" elevation="0" icon>
+          {{ likes.length }}
+        </v-btn>
+      </v-card-title>
+      <v-card-subtitle>
+        <v-row>
+          <v-col cols="12">
+            {{ isoToDate(post.created) }}
+          </v-col>
+        </v-row>
+      </v-card-subtitle>
+      <v-divider/>
+      <v-container>
+        <v-row>
+          <v-col cols="12">
+            <div class="post-content">
+              {{ post.description }}
+            </div>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-card>
+  </div>
 </template>
 
 <script>
+import {mapActions} from "vuex";
+
 export default {
   name: "Post",
   props: {
     post: Object,
-    username: {
-      type: String,
-      default: ''
-    },
-    child: {
-      type: Boolean,
-      default: false
-    },
+    liked: Boolean,
+    likes: Array
   },
+  data: () => ({
+    dialogLikes: false,
+  }),
+  methods: {
+    ...mapActions('PostModules', ['likePost']),
+    isoToDate(iso) {
+      let date = new Date(iso);
+      let year = date.getFullYear();
+      let month = date.getMonth() + 1;
+      let dt = date.getDate();
+      let h = date.getHours();
+      let m = date.getMinutes();
+
+      if (m < 10)
+        m = '0' + m
+      if (h < 10)
+        h = '0' + h
+
+      if (dt < 10) {
+        dt = '0' + dt;
+      }
+      if (month < 10) {
+        month = '0' + month;
+      }
+
+      return year + '-' + month + '-' + dt + ' ' + h + ":" + m;
+    },
+    sendLike() {
+      if (this.liked) {
+        return; //TODO UNLIKE?1
+      } else {
+        this.likePost({
+          post_id: this.post.id
+        })
+      }
+    }
+  }
 }
 </script>
 

@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import PostsModules from './modules/posts-module'
+import PostModules from './modules/post-module'
 import NotifModules from './modules/notif-module'
 import UserModules from './modules/user-module'
 import SignupModules from './modules/sign-up-module'
@@ -16,6 +17,7 @@ export default new Vuex.Store({
         UserModules,
         SignupModules,
         AuthModules,
-        InviteFriendModules
+        InviteFriendModules,
+        PostModules
     }
 })
