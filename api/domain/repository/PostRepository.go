@@ -12,7 +12,7 @@ type PostRepository interface {
 	GetPostLikes(postId uint64) ([]Post.Like, error)
 	GetPostComments(postId uint64, userId uint64) ([]Comment.CommentWithLikeAndReplyCount, error)
 	GetPostReposts(postId uint64) ([]Post.Repost, error)
-	GetPostsByFriends(userId uint64) ([]Post.PostWithLikeAndCommentCount, error)
+	GetPostsByFriends(userId uint64) ([]Post.PostWithLikeAndCommentAndRepostCount, error)
 	GetPostsLikedByFriends(userId uint64) ([]Post.LikedPost, error)
 	GetPostsCommentedOnByFriends(userId uint64) ([]Post.CommentedOnPost, error)
 }
