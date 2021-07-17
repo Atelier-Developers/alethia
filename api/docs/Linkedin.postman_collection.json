@@ -580,6 +580,25 @@
 					"response": []
 				},
 				{
+					"name": "Get Users With Mutual Connection",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{path}}/users/mutualConnection/1",
+							"host": [
+								"{{path}}"
+							],
+							"path": [
+								"users",
+								"mutualConnection",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Register",
 					"request": {
 						"method": "POST",
@@ -1158,7 +1177,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6Ijg4NDA3MGJkLWI4MTEtNGRlZS1hOTRkLTBlMDIzNGMxOGE2MyIsImF1dGhvcml6ZWQiOnRydWUsImV4cCI6MTYyNjU1NjAyOCwidXNlcl9pZCI6IjMifQ.Q9VTg4dE66MMZ9aAcpQCbtwgklyeFH3NOffg4xzKLl8",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6ImMwYzgyNWIyLTY4MzUtNDk1MC05NjY3LWE0ZGVmNmIxOWE1MSIsImF1dGhvcml6ZWQiOnRydWUsImV4cCI6MTYyNjU2MzkzOCwidXNlcl9pZCI6IjIifQ.Oxt9RgoNdcE1UWJbnDRCGSXe2SfjkHC7TU3qt3bMlkk",
 				"type": "string"
 			}
 		]

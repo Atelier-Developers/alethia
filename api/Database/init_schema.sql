@@ -357,7 +357,7 @@ CREATE PROCEDURE GetUsersWithMutualConnection(
     IN userId INT
 )
 BEGIN
-    select USER.*, friends2.user1_id, COUNT(*) as mutual_connections
+    select USER.*, COUNT(*) as mutual_connections
     from (select user1_id, user2_id
           from FRIEND f1
           where not exists(select *
