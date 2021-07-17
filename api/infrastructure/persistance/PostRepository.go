@@ -2,6 +2,7 @@ package persistance
 
 import (
 	"github.com/Atelier-Developers/alethia/Database"
+	"github.com/Atelier-Developers/alethia/domain/entity"
 	"github.com/Atelier-Developers/alethia/domain/entity/Post"
 	"log"
 )
@@ -68,37 +69,93 @@ func (postRepo *PostRepository) LikePost(post *Post.Post, userId uint64) error {
 	return nil
 }
 
-//func (postRepo *PostRepository) GetPostLikes(postId uint64) ([]Post.PostLike, error) {
-//	db := postRepo.dbClient.GetDB()
-//	stmt, err := db.Prepare("SELECT * FROM POST_LIKE WHERE post_id=?")
-//	if err != nil {
-//		log.Fatal(err)
-//	}
-//	defer stmt.Close()
-//
-//	rows, err := stmt.Query(postId)
-//	if err != nil {
-//		log.Fatal(err)
-//	}
-//
-//	var likes []Post.PostLike
-//	for rows.Next() {
-//		var like Post.PostLike
-//		err = rows.Scan(&like.PostId, &like.UserId)
-//
-//		if err != nil {
-//			log.Fatal(err)
-//		}
-//
-//		likes = append(likes, like)
-//	}
-//
-//	return likes, nil
-//}
+func (postRepo *PostRepository) GetPostLikes(postId uint64) ([]Post.Like, error) {
+	db := postRepo.dbClient.GetDB()
+	stmt, err := db.Prepare("SELECT POST_LIKE.*, USER.username FROM POST_LIKE, USER WHERE post_id=? AND POST_LIKE.user_id=USER.id")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query(postId)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var likes []Post.Like
+	for rows.Next() {
+		var like Post.Like
+		err = rows.Scan(&like.PostId, &like.UserId, &like.Created, &like.Username)
+
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		likes = append(likes, like)
+	}
+
+	return likes, nil
+}
+
+func (postRepo *PostRepository) GetPostComments(postId uint64) ([]entity.Comment, error) {
+	db := postRepo.dbClient.GetDB()
+	stmt, err := db.Prepare("SELECT COMMENT.*, USER.username FROM COMMENT, USER WHERE post_id=? AND COMMENT.commenter_id=USER.id")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query(postId)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var comments []entity.Comment
+	for rows.Next() {
+		var comment entity.Comment
+		err = rows.Scan(&comment.Id, &comment.Text, &comment.Created, &comment.CommenterId, &comment.PostId, &comment.CommenterUsername)
+
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		comments = append(comments, comment)
+	}
+
+	return comments, nil
+}
+
+func (postRepo *PostRepository) GetPostReposts(postId uint64) ([]Post.Repost, error) {
+	db := postRepo.dbClient.GetDB()
+	stmt, err := db.Prepare("SELECT * FROM REPOST WHERE repost_id=?")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query(postId)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var reposts []Post.Repost
+	for rows.Next() {
+		var repost Post.Repost
+		err = rows.Scan(&repost.PostId, &repost.RepostId)
+
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		reposts = append(reposts, repost)
+	}
+
+	return reposts, nil
+}
 
 func (postRepo *PostRepository) GetPostById(postId uint64, post *Post.Post) error {
 	db := postRepo.dbClient.GetDB()
-	stmt, err := db.Prepare("SELECT * FROM POST WHERE id=?")
+	stmt, err := db.Prepare("SELECT POST.*, USER.username FROM POST, USER WHERE POST.id=? AND USER.id = POST.poster_id")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -106,7 +163,7 @@ func (postRepo *PostRepository) GetPostById(postId uint64, post *Post.Post) erro
 
 	row := stmt.QueryRow(postId)
 
-	err = row.Scan(&post.Id, &post.IsFeatured, &post.Description, &post.Created, &post.PosterId)
+	err = row.Scan(&post.Id, &post.IsFeatured, &post.Description, &post.Created, &post.PosterId, &post.PosterUsername)
 	if err != nil {
 		return err
 	}

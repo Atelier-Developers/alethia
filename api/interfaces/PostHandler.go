@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -100,4 +101,85 @@ func (postHandler *PostHandler) LikePost(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, nil)
+}
+
+func (postHandler *PostHandler) GetPostById(c *gin.Context) {
+	_, exists := c.Get("user_id")
+
+	if !exists {
+		log.Fatal("User Id does not exist!")
+	}
+
+	postId, err := strconv.ParseInt(c.Param("post_id"), 10, 64)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var post Post.Post
+	err = postHandler.postRepository.GetPostById(uint64(postId), &post)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	c.JSON(http.StatusOK, post)
+}
+
+func (postHandler *PostHandler) GetPostLikesById(c *gin.Context) {
+	_, exists := c.Get("user_id")
+
+	if !exists {
+		log.Fatal("User Id does not exist!")
+	}
+
+	postId, err := strconv.ParseInt(c.Param("post_id"), 10, 64)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	likes, err := postHandler.postRepository.GetPostLikes(uint64(postId))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	c.JSON(http.StatusOK, likes)
+}
+
+func (postHandler *PostHandler) GetPostCommentsById(c *gin.Context) {
+	_, exists := c.Get("user_id")
+
+	if !exists {
+		log.Fatal("User Id does not exist!")
+	}
+
+	postId, err := strconv.ParseInt(c.Param("post_id"), 10, 64)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	comments, err := postHandler.postRepository.GetPostComments(uint64(postId))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	c.JSON(http.StatusOK, comments)
+}
+
+func (postHandler *PostHandler) GetPostRepostsById(c *gin.Context) {
+	_, exists := c.Get("user_id")
+
+	if !exists {
+		log.Fatal("User Id does not exist!")
+	}
+
+	postId, err := strconv.ParseInt(c.Param("post_id"), 10, 64)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	reposts, err := postHandler.postRepository.GetPostReposts(uint64(postId))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	c.JSON(http.StatusOK, reposts)
 }

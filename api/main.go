@@ -140,6 +140,15 @@ func main() {
 	{
 		postGroup.POST("", postHandler.SavePost)
 		postGroup.POST("/like", postHandler.LikePost)
+
+		singlePostGroup := postGroup.Group("/:post_id")
+		{
+			singlePostGroup.GET("", postHandler.GetPostById)
+			singlePostGroup.GET("/likes", postHandler.GetPostLikesById)
+			singlePostGroup.GET("/comments", postHandler.GetPostCommentsById)
+			singlePostGroup.GET("/reposts", postHandler.GetPostRepostsById)
+		}
+
 		commentGroup := postGroup.Group("/comment")
 		{
 			commentGroup.POST("", commentHandler.SaveComment)

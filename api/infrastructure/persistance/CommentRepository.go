@@ -69,7 +69,7 @@ func (commentRepository *CommentRepository) ReplyComment(comment *entity.Comment
 
 func (commentRepository *CommentRepository) GetCommentByID(id uint64, comment *entity.Comment) error {
 	db := commentRepository.dbClient.GetDB()
-	stmt, err := db.Prepare("SELECT * FROM COMMENT WHERE id=?")
+	stmt, err := db.Prepare("SELECT COMMENT.*, USER.username FROM COMMENT, USER WHERE COMMENT.id=? AND COMMENT.commenter_id=USER.id")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -77,7 +77,7 @@ func (commentRepository *CommentRepository) GetCommentByID(id uint64, comment *e
 
 	row := stmt.QueryRow(id)
 
-	err = row.Scan(&comment.Id, &comment.Text, &comment.Created, &comment.CommenterId, &comment.PostId)
+	err = row.Scan(&comment.Id, &comment.Text, &comment.Created, &comment.CommenterId, &comment.PostId, &comment.CommenterUsername)
 	if err != nil {
 		return err
 	}
