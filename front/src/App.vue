@@ -45,7 +45,7 @@
     </div>
 
     <v-main class="pt-16 grey lighten-3">
-      <router-view class="fill-height"></router-view>
+      <router-view></router-view>
     </v-main>
   </v-app>
 </template>
