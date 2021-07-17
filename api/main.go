@@ -72,6 +72,7 @@ func main() {
 
 	userGroup := router.Group("/users", middleware.AuthMiddleware(redisService.Auth))
 	{
+		userGroup.GET("/:username", userHandler.GetUsersWithSimilarUsername)
 		userGroup.PUT("", userHandler.EditUser)
 		userGroup.GET("", userHandler.GetUser)
 		userGroup.POST("", userHandler.GetUserById)
