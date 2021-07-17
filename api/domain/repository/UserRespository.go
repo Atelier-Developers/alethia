@@ -11,4 +11,5 @@ type UserRepository interface {
 	GetUserByUsername(username string, user *entity.User) error
 	GetUserByID(id uint64, user *entity.User) error
 	GetUsersWithSimilarUsername(username string) ([]entity.User, error)
+	GetUsersWithMutualConnection(userId uint64) ([]entity.UserWithMutualConnection, error)
 }
