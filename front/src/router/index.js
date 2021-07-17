@@ -39,6 +39,11 @@ const routes = [
         path: '/user/:id',
         name: 'User',
         component: () => import('@/views/User')
+    },
+    {
+        path: '/network',
+        name: 'Network',
+        component: () => import("@/views/Network")
     }
     // {
     //     path: '*',
