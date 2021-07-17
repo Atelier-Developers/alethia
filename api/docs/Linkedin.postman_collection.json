@@ -460,14 +460,14 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{path}}/users/post/commentedOnByFriends",
+									"raw": "{{path}}/users/post/likedByFriends",
 									"host": [
 										"{{path}}"
 									],
 									"path": [
 										"users",
 										"post",
-										"commentedOnByFriends"
+										"likedByFriends"
 									]
 								}
 							},
@@ -556,6 +556,24 @@
 							],
 							"path": [
 								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Users By Username",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{path}}/users/mi",
+							"host": [
+								"{{path}}"
+							],
+							"path": [
+								"users",
+								"mi"
 							]
 						}
 					},

@@ -17,14 +17,14 @@ func NewUserRepository(dbClient *Database.MySQLDB) *UserRepository {
 
 func (userRepo *UserRepository) GetUsersWithSimilarUsername(username string) ([]entity.User, error) {
 	db := userRepo.dbClient.GetDB()
-	stmt, err := db.Prepare("SELECT * FROM USER WHERE username LIKE '%?%'")
+	stmt, err := db.Prepare("SELECT * FROM USER WHERE username LIKE ?")
 	if err != nil {
 
 		log.Fatal(err)
 	}
 	defer stmt.Close()
 
-	rows, err := stmt.Query(username)
+	rows, err := stmt.Query("%" + username + "%")
 
 	if err != nil {
 		log.Fatal(err)

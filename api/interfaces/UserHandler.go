@@ -11,7 +11,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
-	"strconv"
 	"time"
 )
 
@@ -138,10 +137,7 @@ func (userHandler *UserHandler) ViewProfile(c *gin.Context) {
 }
 
 func (userHandler *UserHandler) GetUsersWithSimilarUsername(c *gin.Context) {
-	username, err := strconv.ParseInt(c.Param("username"), 10, 64)
-	if err != nil {
-		log.Fatal(err)
-	}
+	username := c.Param("username")
 
 	users, err := userHandler.userRepository.GetUsersWithSimilarUsername(string(username))
 	if err != nil {
