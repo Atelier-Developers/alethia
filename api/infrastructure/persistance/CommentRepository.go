@@ -96,7 +96,7 @@ func (commentRepository *CommentRepository) GetCommentLikes(commentId uint64) ([
 
 func (commentRepository *CommentRepository) GetCommentByID(id uint64, comment *Comment.Comment) error {
 	db := commentRepository.dbClient.GetDB()
-	stmt, err := db.Prepare("SELECT COMMENT.*, USER.username FROM COMMENT, USER WHERE COMMENT.id=? AND COMMENT.commenter_id=USER.id")
+	stmt, err := db.Prepare("SELECT COMMENT.*, U.username, RC.replied_comment_id FROM COMMENT LEFT OUTER JOIN REPLY_COMMENT RC on COMMENT.id = RC.comment_id INNER JOIN USER U on COMMENT.commenter_id = U.id WHERE COMMENT.id=?")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -104,7 +104,7 @@ func (commentRepository *CommentRepository) GetCommentByID(id uint64, comment *C
 
 	row := stmt.QueryRow(id)
 
-	err = row.Scan(&comment.Id, &comment.Text, &comment.Created, &comment.CommenterId, &comment.PostId, &comment.CommenterUsername)
+	err = row.Scan(&comment.Id, &comment.Text, &comment.Created, &comment.CommenterId, &comment.PostId, &comment.CommenterUsername, &comment.RepliedCommentId)
 	if err != nil {
 		return err
 	}
