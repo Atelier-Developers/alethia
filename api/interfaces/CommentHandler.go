@@ -1,7 +1,7 @@
 package interfaces
 
 import (
-	"github.com/Atelier-Developers/alethia/domain/entity"
+	"github.com/Atelier-Developers/alethia/domain/entity/Comment"
 	"github.com/Atelier-Developers/alethia/domain/entity/Post"
 	"github.com/Atelier-Developers/alethia/domain/entity/notification"
 	"github.com/Atelier-Developers/alethia/domain/repository"
@@ -41,7 +41,7 @@ func (commentHandler *CommentHandler) SaveComment(c *gin.Context) {
 		log.Fatal("User Id does not exist!")
 	}
 
-	comment := entity.Comment{
+	comment := Comment.Comment{
 		Text:        commentCreateRequestBody.Text,
 		CommenterId: userId.(uint64),
 		PostId:      commentCreateRequestBody.PostId,
@@ -87,7 +87,7 @@ func (commentHandler *CommentHandler) LikeComment(c *gin.Context) {
 		log.Fatal("User Id does not exist!")
 	}
 
-	var comment entity.Comment
+	var comment Comment.Comment
 	err := commentHandler.commentRepository.GetCommentByID(commentLikeRequestBody.CommentId, &comment)
 	if err != nil {
 		c.JSON(http.StatusConflict, err)
@@ -116,7 +116,7 @@ func (commentHandler *CommentHandler) LikeComment(c *gin.Context) {
 	c.JSON(http.StatusOK, nil)
 }
 
-func (commentHandler *CommentHandler) GetCommentNumberOfLikes(c *gin.Context) {
+func (commentHandler *CommentHandler) GetCommentLikesById(c *gin.Context) {
 	_, exists := c.Get("user_id")
 	if !exists {
 		log.Fatal("User Id does not exist!")
@@ -127,12 +127,12 @@ func (commentHandler *CommentHandler) GetCommentNumberOfLikes(c *gin.Context) {
 		log.Fatal(err)
 	}
 
-	count, err := commentHandler.commentRepository.GetCommentNumberOfLikes(uint64(commentId))
+	commentLikes, err := commentHandler.commentRepository.GetCommentLikes(uint64(commentId))
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	c.JSON(http.StatusOK, count)
+	c.JSON(http.StatusOK, commentLikes)
 }
 
 func (commentHandler *CommentHandler) ReplyComment(c *gin.Context) {
@@ -150,14 +150,14 @@ func (commentHandler *CommentHandler) ReplyComment(c *gin.Context) {
 		log.Fatal("User Id does not exist!")
 	}
 
-	var repliedComment entity.Comment
+	var repliedComment Comment.Comment
 	err := commentHandler.commentRepository.GetCommentByID(commentReplyRequestBody.RepliedCommentId, &repliedComment)
 	if err != nil {
 		c.JSON(http.StatusConflict, err)
 		return
 	}
 
-	comment := entity.Comment{
+	comment := Comment.Comment{
 		Text:        commentReplyRequestBody.Text,
 		CommenterId: userId.(uint64),
 		PostId:      commentReplyRequestBody.PostId,

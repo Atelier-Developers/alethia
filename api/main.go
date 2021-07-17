@@ -160,7 +160,7 @@ func main() {
 
 		commentGroup := postGroup.Group("/comment")
 		{
-			commentGroup.GET("/:comment_id/likes", commentHandler.GetCommentNumberOfLikes)
+			commentGroup.GET("/:comment_id/likes", commentHandler.GetCommentLikesById)
 			commentGroup.POST("", commentHandler.SaveComment)
 			commentGroup.POST("/reply", commentHandler.ReplyComment)
 			//TODO multiple like not allowed
