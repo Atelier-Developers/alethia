@@ -66,7 +66,7 @@ const getters = {
             all.push(...state.myPosts)
         }
         all.sort(function (a, b) {
-            return (a.created < b.created) ? -1 : ((a.created > b.created) ? 1 : 0);
+            return (a.created < b.created) ? 1 : ((a.created > b.created) ? -1 : 0);
         });
         return all;
     },

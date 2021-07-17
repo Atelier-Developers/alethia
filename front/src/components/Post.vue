@@ -16,18 +16,67 @@
         </v-container>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="dialogRepost" max-width="750">
+      <v-card>
+        <v-card-title>
+          <h3>Repost: </h3>
+        </v-card-title>
+        <v-divider/>
+        <v-container>
+          <v-row>
+            <v-col cols="12">
+              <v-textarea
+                  label="Repost content"
+                  v-model="newRepost"
+              />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12">
+              <v-card>
+                <v-card-title>
+                  <h4>
+                    {{ post.poster_username }}
+                  </h4>
+                </v-card-title>
+                <v-divider/>
+                <v-container>
+                  <v-row>
+                    <v-col cols="12">
+                      <div class="post-content">
+                        {{ post.description }}
+                      </div>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12">
+              <v-btn color="success" @click="sendRepost()">
+                Repost
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card>
+    </v-dialog>
     <v-card>
       <v-card-title>
         <h4>
           {{ post.poster_username }}
         </h4>
         <v-spacer/>
+        <v-btn @click="dialogRepost=true" elevation="0" icon>
+          <v-icon>mdi-repeat</v-icon>
+        </v-btn>
         <v-btn @click="sendLike()" elevation="0" icon>
           <v-icon v-if="liked" color="red">mdi-heart</v-icon>
           <v-icon v-else>mdi-heart-outline</v-icon>
         </v-btn>
         <v-btn @click="dialogLikes=true" elevation="0" icon>
-          {{ likes.length }}
+          {{ likes === null ? 0 : likes.length }}
         </v-btn>
       </v-card-title>
       <v-card-subtitle>
@@ -63,9 +112,11 @@ export default {
   },
   data: () => ({
     dialogLikes: false,
+    dialogRepost: false,
+    newRepost: '',
   }),
   methods: {
-    ...mapActions('PostModules', ['likePost']),
+    ...mapActions('PostModules', ['likePost', "addRepost"]),
     isoToDate(iso) {
       let date = new Date(iso);
       let year = date.getFullYear();
@@ -96,6 +147,14 @@ export default {
           post_id: this.post.id
         })
       }
+    },
+    sendRepost() {
+      this.addRepost({
+        description: this.newRepost,
+        repost_id: this.post.id
+      }).then(() => {
+        this.dialogRepost = false;
+      });
     }
   }
 }

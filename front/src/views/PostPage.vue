@@ -103,6 +103,8 @@ export default {
     },
     checkAmILike() {
       let my_id = this.userId;
+      if (this.likes === null)
+        return false;
       for (let l of this.likes)
         if (+l.user_id === +my_id)
           return true;

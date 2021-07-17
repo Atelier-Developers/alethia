@@ -66,10 +66,13 @@
             <v-btn @click="dialogReply=true" elevation="0" icon>
               <v-icon>mdi-reply</v-icon>
             </v-btn>
+            {{comment.reply_count}}
             <v-btn @click="sendLikeComment()" elevation="0" icon>
-              <v-icon v-if="liked" color="red">mdi-heart</v-icon>
+              <v-icon v-if="comment.is_liked_by_this_user" color="red">mdi-heart</v-icon>
               <v-icon v-else>mdi-heart-outline</v-icon>
             </v-btn>
+            {{comment.like_count}}
+
           </v-col>
         </v-row>
       </v-container>
@@ -90,7 +93,7 @@ export default {
     dialogReply: false
   }),
   methods: {
-    ...mapActions("PostModules", ['replyComment','getCommentLikes']),
+    ...mapActions("PostModules", ['replyComment', 'getCommentLikes', "likeComment"]),
     isoToDate(iso) {
       let date = new Date(iso);
       let year = date.getFullYear();
@@ -119,6 +122,14 @@ export default {
         post_id: this.comment.post_id,
         replied_comment_id: this.comment.id
       });
+    },
+    sendLikeComment() {
+      if (this.comment.is_liked_by_this_user) {
+        return //todo unlike
+      } else {
+        this.likeComment({comment_id: this.comment.id})
+        this.comment.is_liked_by_this_user = true;
+      }
     }
   }
 }
