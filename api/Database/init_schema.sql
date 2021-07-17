@@ -144,14 +144,13 @@ CREATE TABLE MESSAGE
 (
     id              INT AUTO_INCREMENT NOT NULL,
     user_id         INT                NOT NULL,
-    reply_id        INT                NOT NULL,
+    reply_id        INT,
     conversation_id INT                NOT NULL,
     body            TEXT(1024)         NOT NULL,
     created         DATETIME DEFAULT CURRENT_TIMESTAMP,
 
     PRIMARY KEY (id),
     CONSTRAINT FK_user_message FOREIGN KEY (user_id) REFERENCES USER (id),
-    CONSTRAINT FK_reply_message FOREIGN KEY (reply_id) REFERENCES MESSAGE (id),
     CONSTRAINT FK_conversation_message FOREIGN KEY (conversation_id) REFERENCES CONVERSATION (id)
 );
 

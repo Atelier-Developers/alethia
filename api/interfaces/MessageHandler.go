@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 type MessageHandler struct {
@@ -78,8 +79,6 @@ func (messageHandler MessageHandler) GetMessage(c *gin.Context) {
 		log.Fatal("User Id does not exist!")
 	}
 
-
-
 	message, err := messageHandler.messageRepository.GetMessage(userRequestBody.MessageId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
@@ -99,21 +98,18 @@ func (messageHandler MessageHandler) GetMessage(c *gin.Context) {
 }
 
 func (messageHandler MessageHandler) GetMessages(c *gin.Context) {
-	var userRequestBody bodyTemplates.MessagesGetRequestBody
-	if err := c.ShouldBindJSON(&userRequestBody); err != nil {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			"invalid_json": "invalid json",
-		})
-		return
-	}
-
 	userId, exists := c.Get("user_id")
 
 	if !exists {
 		log.Fatal("User Id does not exist!")
 	}
 
-	conversationBelongToUser, err := messageHandler.conversationRepository.DoesConversationBelongToUser(userRequestBody.ConversationId, userId.(uint64))
+	converastionId, err := strconv.ParseInt(c.Param("conversation_id"), 10, 64)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	conversationBelongToUser, err := messageHandler.conversationRepository.DoesConversationBelongToUser(uint64(converastionId), userId.(uint64))
 
 	if err != nil {
 		log.Fatal(err)
@@ -123,7 +119,7 @@ func (messageHandler MessageHandler) GetMessages(c *gin.Context) {
 		log.Fatal("This is not this user's conversation.")
 	}
 
-	messages, err := messageHandler.messageRepository.GetMessages(userRequestBody.ConversationId)
+	messages, err := messageHandler.messageRepository.GetMessages(uint64(converastionId))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return
