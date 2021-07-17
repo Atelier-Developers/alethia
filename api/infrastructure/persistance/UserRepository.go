@@ -15,6 +15,35 @@ func NewUserRepository(dbClient *Database.MySQLDB) *UserRepository {
 	return &UserRepository{dbClient: dbClient}
 }
 
+func (userRepo *UserRepository) GetUsersWithSimilarUsername(username string) ([]entity.User, error) {
+	db := userRepo.dbClient.GetDB()
+	stmt, err := db.Prepare("SELECT * FROM USER WHERE username LIKE ?")
+	if err != nil {
+
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query("%" + username + "%")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var users []entity.User
+	for rows.Next() {
+		var user entity.User
+		err = rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Username, &user.Password, &user.Intro, &user.About, &user.Accomplishments, &user.AdditionalInfo, &user.JoinDate, &user.BirthDate)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		users = append(users, user)
+	}
+
+	return users, nil
+}
+
 func (userRepo *UserRepository) GetUserByUsername(username string, user *entity.User) error {
 	db := userRepo.dbClient.GetDB()
 	stmt, err := db.Prepare("SELECT * FROM USER WHERE username=?")

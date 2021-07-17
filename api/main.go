@@ -72,9 +72,17 @@ func main() {
 
 	userGroup := router.Group("/users", middleware.AuthMiddleware(redisService.Auth))
 	{
+		userGroup.GET("/:username", userHandler.GetUsersWithSimilarUsername)
 		userGroup.PUT("", userHandler.EditUser)
 		userGroup.GET("", userHandler.GetUser)
 		userGroup.POST("", userHandler.GetUserById)
+
+		postGroup := userGroup.Group("/post")
+		{
+			postGroup.GET("/postedByFriends", postHandler.GetPostsByFriends)
+			postGroup.GET("/likedByFriends", postHandler.GetPostsLikedByFriends)
+			postGroup.GET("/commentedOnByFriends", postHandler.GetPostsCommentedOnByFriends)
+		}
 
 		inviteGroup := userGroup.Group("/invite")
 		{

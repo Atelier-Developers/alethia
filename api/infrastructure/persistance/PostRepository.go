@@ -153,23 +153,82 @@ func (postRepo *PostRepository) GetPostReposts(postId uint64) ([]Post.Repost, er
 	return reposts, nil
 }
 
-//func (postRepo *PostRepository) GetPostsByFriends(userId uint64) ([]Post.Post, error) {
-//	db := postRepo.dbClient.GetDB()
-//	stmt, err := db.Prepare("SELECT POST.*, USER.username FROM POST, USER WHERE USER.id = POST.poster_id AND POST.poster_id IN (SELECT id FROM FRIEND WHERE  )")
-//	if err != nil {
-//		log.Fatal(err)
-//	}
-//	defer stmt.Close()
-//
-//	row := stmt.QueryRow(postId)
-//
-//	err = row.Scan(&post.Id, &post.IsFeatured, &post.Description, &post.Created, &post.PosterId, &post.PosterUsername)
-//	if err != nil {
-//		return err
-//	}
-//
-//	return nil
-//}
+func (postRepo *PostRepository) GetPostsByFriends(userId uint64) ([]Post.Post, error) {
+	db := postRepo.dbClient.GetDB()
+	stmt, err := db.Prepare("SELECT POST.*, USER.username FROM POST, USER WHERE USER.id = POST.poster_id AND POST.poster_id IN ((SELECT user2_id FROM FRIEND WHERE user1_id=? ) UNION (SELECT user1_id FROM FRIEND WHERE user2_id=?)) ORDER BY POST.created DESC")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query(userId, userId)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var posts []Post.Post
+	for rows.Next() {
+		var post Post.Post
+		err = rows.Scan(&post.Id, &post.IsFeatured, &post.Description, &post.Created, &post.PosterId, &post.PosterUsername)
+
+		posts = append(posts, post)
+	}
+
+	return posts, nil
+}
+
+func (postRepo *PostRepository) GetPostsLikedByFriends(userId uint64) ([]Post.LikedPost, error) {
+
+	db := postRepo.dbClient.GetDB()
+	stmt, err := db.Prepare("SELECT POST.*, UC1.username, POST_LIKE.user_id, UC2.username  FROM POST, USER UC1, USER UC2, POST_LIKE WHERE UC1.id = POST.poster_id AND UC2.id = POST_LIKE.user_id AND POST.id = POST_LIKE.post_id AND POST_LIKE.user_id IN ((SELECT user2_id FROM FRIEND WHERE user1_id=? ) UNION (SELECT user1_id FROM FRIEND WHERE user2_id=?)) ORDER BY POST_LIKE.created")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query(userId, userId)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var posts []Post.LikedPost
+	for rows.Next() {
+		var post Post.LikedPost
+		err = rows.Scan(&post.Id, &post.IsFeatured, &post.Description, &post.Created, &post.PosterId, &post.PosterUsername, &post.LikerId, &post.LikerUsername)
+
+		posts = append(posts, post)
+	}
+
+	return posts, nil
+}
+
+func (postRepo *PostRepository) GetPostsCommentedOnByFriends(userId uint64) ([]Post.CommentedOnPost, error) {
+
+	db := postRepo.dbClient.GetDB()
+	stmt, err := db.Prepare("SELECT POST.*, UC1.username, COMMENT.commenter_id, UC2.username FROM POST, USER UC1, USER UC2, COMMENT WHERE UC1.id = POST.poster_id AND UC2.id = COMMENT.commenter_id AND POST.id = COMMENT.post_id AND COMMENT.commenter_id IN ((SELECT user2_id FROM FRIEND WHERE user1_id=? ) UNION (SELECT user1_id FROM FRIEND WHERE user2_id=?)) ORDER BY COMMENT.created")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query(userId, userId)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var posts []Post.CommentedOnPost
+	for rows.Next() {
+		var post Post.CommentedOnPost
+		err = rows.Scan(&post.Id, &post.IsFeatured, &post.Description, &post.Created, &post.PosterId, &post.PosterUsername, &post.CommenterId, &post.CommenterUsername)
+
+		posts = append(posts, post)
+	}
+
+	return posts, nil
+}
 
 func (postRepo *PostRepository) GetPostById(postId uint64, post *Post.Post) error {
 	db := postRepo.dbClient.GetDB()

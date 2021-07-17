@@ -136,6 +136,36 @@ func (userHandler *UserHandler) ViewProfile(c *gin.Context) {
 	c.JSON(http.StatusOK, nil)
 }
 
+func (userHandler *UserHandler) GetUsersWithSimilarUsername(c *gin.Context) {
+	username := c.Param("username")
+
+	users, err := userHandler.userRepository.GetUsersWithSimilarUsername(string(username))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	var responseUsers []bodyTemplates.UserGetResponseBody
+	for _, u := range users {
+		responseUser := bodyTemplates.UserGetResponseBody{
+			UserID:          u.ID,
+			Username:        u.Username,
+			FirstName:       u.FirstName,
+			LastName:        u.LastName,
+			Intro:           u.Intro,
+			About:           u.About,
+			Accomplishments: u.Accomplishments,
+			AdditionalInfo:  u.AdditionalInfo,
+			BirthDate:       u.BirthDate,
+			JoinDate:        u.JoinDate,
+		}
+
+		responseUsers = append(responseUsers, responseUser)
+	}
+
+	c.JSON(http.StatusOK, responseUsers)
+}
+
 func (userHandler *UserHandler) GetUserById(c *gin.Context) {
 	var userRequestBody bodyTemplates.UserGetRequestBody
 	if err := c.ShouldBindJSON(&userRequestBody); err != nil {
@@ -252,5 +282,3 @@ func (userHandler *UserHandler) EditUser(c *gin.Context) {
 	}
 	c.JSON(http.StatusCreated, nil)
 }
-
-//TODO: GET USER (USER + BACKGROUND HISTORIES)
