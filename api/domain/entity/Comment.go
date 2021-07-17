@@ -11,3 +11,7 @@ type Comment struct {
 	CommenterUsername string    `json:"commenter_username"`
 	PostId            uint64    `json:"post_id"`
 }
+
+type CommentLikeCount struct {
+	LikeCount uint64 `json:"like_count"`
+}

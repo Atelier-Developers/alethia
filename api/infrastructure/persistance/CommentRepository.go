@@ -67,6 +67,25 @@ func (commentRepository *CommentRepository) ReplyComment(comment *entity.Comment
 	return nil
 }
 
+func (commentRepository *CommentRepository) GetCommentNumberOfLikes(commentId uint64) (*entity.CommentLikeCount, error) {
+	db := commentRepository.dbClient.GetDB()
+	stmt, err := db.Prepare("SELECT COUNT(*) FROM COMMENT_LIKE WHERE COMMENT_LIKE.comment_id=?")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	row := stmt.QueryRow(commentId)
+
+	var noOfLikes entity.CommentLikeCount
+	err = row.Scan(&noOfLikes)
+	if err != nil {
+		return nil, err
+	}
+
+	return &noOfLikes, nil
+}
+
 func (commentRepository *CommentRepository) GetCommentByID(id uint64, comment *entity.Comment) error {
 	db := commentRepository.dbClient.GetDB()
 	stmt, err := db.Prepare("SELECT COMMENT.*, USER.username FROM COMMENT, USER WHERE COMMENT.id=? AND COMMENT.commenter_id=USER.id")

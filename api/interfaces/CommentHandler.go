@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 type CommentHandler struct {
@@ -113,6 +114,25 @@ func (commentHandler *CommentHandler) LikeComment(c *gin.Context) {
 		}
 	}
 	c.JSON(http.StatusOK, nil)
+}
+
+func (commentHandler *CommentHandler) GetCommentNumberOfLikes(c *gin.Context) {
+	_, exists := c.Get("user_id")
+	if !exists {
+		log.Fatal("User Id does not exist!")
+	}
+
+	commentId, err := strconv.ParseInt(c.Param("comment_id"), 10, 64)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	count, err := commentHandler.commentRepository.GetCommentNumberOfLikes(uint64(commentId))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	c.JSON(http.StatusOK, count)
 }
 
 func (commentHandler *CommentHandler) ReplyComment(c *gin.Context) {

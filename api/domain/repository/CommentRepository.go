@@ -7,4 +7,5 @@ type CommentRepository interface {
 	LikeComment(comment *entity.Comment, UserId uint64) error
 	ReplyComment(comment *entity.Comment, ReplyId uint64) error
 	GetCommentByID(id uint64, comment *entity.Comment) error
+	GetCommentNumberOfLikes(commentId uint64) (*entity.CommentLikeCount, error)
 }
