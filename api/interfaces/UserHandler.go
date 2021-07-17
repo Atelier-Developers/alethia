@@ -11,7 +11,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
-	"strconv"
 	"time"
 )
 
@@ -138,17 +137,12 @@ func (userHandler *UserHandler) ViewProfile(c *gin.Context) {
 }
 
 func (userHandler *UserHandler) GetUsersWithMutualConnection(c *gin.Context) {
-	_, exists := c.Get("user_id")
+	userId, exists := c.Get("user_id")
 	if !exists {
 		log.Fatal("User Id does not exist!")
 	}
 
-	uId, err := strconv.ParseInt(c.Param("user_id"), 10, 64)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	users, err := userHandler.userRepository.GetUsersWithMutualConnection(uint64(uId))
+	users, err := userHandler.userRepository.GetUsersWithMutualConnection(userId.(uint64))
 	if err != nil {
 		log.Fatal(err)
 	}

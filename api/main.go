@@ -73,7 +73,7 @@ func main() {
 	userGroup := router.Group("/users", middleware.AuthMiddleware(redisService.Auth))
 	{
 		userGroup.GET("/:username", userHandler.GetUsersWithSimilarUsername)
-		userGroup.GET("/mutualConnection/:user_id", userHandler.GetUsersWithMutualConnection)
+		userGroup.GET("/mutualConnection", userHandler.GetUsersWithMutualConnection)
 		userGroup.PUT("", userHandler.EditUser)
 		userGroup.GET("", userHandler.GetUser)
 		userGroup.POST("", userHandler.GetUserById)
