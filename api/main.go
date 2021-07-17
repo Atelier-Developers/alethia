@@ -168,5 +168,8 @@ func main() {
 		}
 	}
 
-	router.Run(":3000")
+	err = router.Run(":3000")
+	if err != nil {
+		return
+	}
 }
