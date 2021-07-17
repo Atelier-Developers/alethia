@@ -55,7 +55,7 @@ const actions = {
     async getSkills(context, payload) {
         console.log("Get SKILLS")
         try {
-            let res = await axios.get(API.getSkills + '/' + payload.user_id,);
+            let res = await axios.get(API.getSkills + '/' + payload);
             console.log(res)
             context.commit('setSkills', res.data);
         } catch (e) {
@@ -65,7 +65,7 @@ const actions = {
     async getLanguages(context, payload) {
         console.log("Get Langs")
         try {
-            let res = await axios.get(API.getLanguages + '/' + payload.user_id, payload);
+            let res = await axios.get(API.getLanguages + '/' + payload);
             console.log(res)
             context.commit('setLanguages', res.data);
         } catch (e) {
@@ -75,7 +75,7 @@ const actions = {
     async getBackgrounds(context, payload) {
         console.log("Get Backgrounds")
         try {
-            let res = await axios.get(API.getBackground + '/' + payload.user_id, payload);
+            let res = await axios.get(API.getBackground + '/' + payload);
             console.log(res)
             context.commit('setBackgrounds', res.data);
         } catch (e) {
