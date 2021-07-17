@@ -57,7 +57,7 @@ func (inviteRepo *InviteRepository) IsUserInvitedById(userId1 uint64, userId2 ui
 	defer stmt.Close()
 
 	var count uint64
-	row := stmt.QueryRow(userId2, userId1)
+	row := stmt.QueryRow(userId1, userId2)
 	err = row.Scan(&count)
 	if err != nil {
 		log.Fatal(err)

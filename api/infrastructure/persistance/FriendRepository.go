@@ -50,13 +50,13 @@ func (friendRepository *FriendRepository) AddFriend(userId1 uint64, userId2 uint
 
 func (friendRepository *FriendRepository) DeleteFriend(userId1 uint64, userId2 uint64) error {
 	db := friendRepository.dbClient.GetDB()
-	stmt, err := db.Prepare("DELETE FROM INVITE WHERE user1_id=? AND user2_id=?")
+	stmt, err := db.Prepare("DELETE FROM FRIEND WHERE (user1_id=? AND user2_id=?) OR (user1_id=? AND user2_id=?)")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(userId1, userId2)
+	_, err = stmt.Exec(userId1, userId2, userId2, userId1)
 
 	if err != nil {
 		return err

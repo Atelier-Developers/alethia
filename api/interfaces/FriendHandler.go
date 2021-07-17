@@ -128,7 +128,7 @@ func (friendHandler *FriendHandler) DeleteInvite(c *gin.Context) {
 		log.Fatal("User Id does not exist!")
 	}
 
-	exists, err := friendHandler.inviteRepository.IsUserInvitedById(userId.(uint64), userRequestBody.UserId)
+	exists, err := friendHandler.inviteRepository.IsUserInvitedById(userRequestBody.UserId, userId.(uint64))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -137,7 +137,7 @@ func (friendHandler *FriendHandler) DeleteInvite(c *gin.Context) {
 		log.Fatal("Invite does not exist!")
 	}
 
-	err = friendHandler.inviteRepository.DeleteInvite(userId.(uint64), userRequestBody.UserId)
+	err = friendHandler.inviteRepository.DeleteInvite(userRequestBody.UserId, userId.(uint64))
 	if err != nil {
 		log.Fatal(err)
 	}
