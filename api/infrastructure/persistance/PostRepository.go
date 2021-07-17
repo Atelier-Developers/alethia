@@ -97,7 +97,7 @@ func (postRepo *PostRepository) GetPostLikes(postId uint64) ([]Post.Like, error)
 	return likes, nil
 }
 
-func (postRepo *PostRepository) GetPostComments(postId uint64) ([]Comment.Comment, error) {
+func (postRepo *PostRepository) GetPostComments(postId uint64, userId uint64) ([]Comment.CommentWithLikeAndReplyCount, error) {
 	db := postRepo.dbClient.GetDB()
 	stmt, err := db.Prepare("SELECT COMMENT.*, U.username, RC.replied_comment_id FROM COMMENT LEFT OUTER JOIN REPLY_COMMENT RC on COMMENT.id = RC.comment_id INNER JOIN USER U on COMMENT.commenter_id = U.id WHERE COMMENT.post_id=?")
 	if err != nil {
@@ -110,13 +110,60 @@ func (postRepo *PostRepository) GetPostComments(postId uint64) ([]Comment.Commen
 		log.Fatal(err)
 	}
 
-	var comments []Comment.Comment
+	var comments []Comment.CommentWithLikeAndReplyCount
 	for rows.Next() {
-		var comment Comment.Comment
+		var comment Comment.CommentWithLikeAndReplyCount
 		err = rows.Scan(&comment.Id, &comment.Text, &comment.Created, &comment.CommenterId, &comment.PostId, &comment.CommenterUsername, &comment.RepliedCommentId)
 
 		if err != nil {
 			log.Fatal(err)
+		}
+
+		stmt2, err := db.Prepare("SELECT COUNT(*) FROM COMMENT_LIKE WHERE comment_id=?")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer stmt2.Close()
+
+		row := stmt2.QueryRow(comment.Id)
+		var count uint64
+		err = row.Scan(&count)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		comment.LikeCount = count
+
+		stmt3, err := db.Prepare("SELECT COUNT(*) FROM REPLY_COMMENT WHERE replied_comment_id=?")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer stmt3.Close()
+
+		row = stmt3.QueryRow(comment.Id)
+		err = row.Scan(&count)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		comment.ReplyCount = count
+
+		stmt4, err := db.Prepare("SELECT COUNT(*) FROM COMMENT_LIKE WHERE comment_id=? AND user_id=?")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer stmt4.Close()
+
+		row = stmt4.QueryRow(comment.Id, userId)
+		err = row.Scan(&count)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		if count == 1 {
+			comment.IsLikedByThisUser = true
+		} else {
+			comment.IsLikedByThisUser = false
 		}
 
 		comments = append(comments, comment)
