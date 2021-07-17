@@ -47,8 +47,11 @@
             <v-divider/>
             <v-container>
               <v-row v-for="comment in comments" :key="comment.id">
-                <v-col cols="12">
-                  <Comment :comment="comment" :reply="false"/>
+                <v-col cols="12" v-if="comment.replied_comment_id.Valid">
+                  <Comment :comment="comment" :other="getRepliedComment(comment.replied_comment_id.Int64)"/>
+                </v-col>
+                <v-col cols="12" v-else>
+                  <Comment :comment="comment"/>
                 </v-col>
               </v-row>
             </v-container>
@@ -104,6 +107,13 @@ export default {
         if (+l.user_id === +my_id)
           return true;
       return false;
+    },
+    getRepliedComment(id) {
+      for (let c of this.comments) {
+        if (+c.id === +id)
+          return c;
+      }
+      return null;
     }
   },
   mounted() {

@@ -33,6 +33,23 @@
         {{ isoToDate(comment.created) }}
       </v-card-subtitle>
       <v-divider/>
+      <v-card v-if="comment.replied_comment_id.Valid" class="my-2 mx-16">
+        <v-card-title>
+          {{ other.commenter_username }}:
+        </v-card-title>
+        <v-card-subtitle>
+          {{ isoToDate(other.created) }}
+        </v-card-subtitle>
+        <v-container>
+          <v-row class="my-3">
+            <v-col cols="12">
+              <div class="post-content">
+                {{ other.text }}
+              </div>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card>
       <v-container>
         <v-row class="my-3">
           <v-col cols="12">
@@ -65,7 +82,7 @@ import {mapActions} from "vuex";
 
 export default {
   name: "Comment",
-  props: ["comment", 'reply'],
+  props: ["comment", 'other'],
   data: () => ({
     newReply: {
       text: '',
@@ -73,7 +90,7 @@ export default {
     dialogReply: false
   }),
   methods: {
-    ...mapActions("PostModules", ['replyComment']),
+    ...mapActions("PostModules", ['replyComment','getCommentLikes']),
     isoToDate(iso) {
       let date = new Date(iso);
       let year = date.getFullYear();

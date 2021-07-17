@@ -5,7 +5,8 @@ const state = {
     post: {},
     comments: [],
     likes: [],
-    reposts: {}
+    reposts: {},
+    commentLikes: []
 };
 
 const mutations = {
@@ -20,6 +21,9 @@ const mutations = {
     },
     setReposts(state, item) {
         state.reposts = item
+    },
+    setCommentLikes(state, item) {
+        state.commentLikes = item;
     }
 
 };
@@ -117,6 +121,7 @@ const getters = {
     likes: (state) => state.likes,
     comments: (state) => state.comments,
     reposts: (state) => state.reposts,
+    commentLikes: (state) => state.commentLikes,
 };
 
 
