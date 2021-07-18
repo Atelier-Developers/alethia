@@ -75,6 +75,7 @@
                       v-model="user.birth_date"
                       label="Date"
                       outlined
+                      readonly
                       prepend-icon="mdi-calendar"
                       v-bind="attrs"
                       @blur="date = parseDate(user.birth_date)"
