@@ -518,9 +518,11 @@ export default {
     this.newUser = this.user;
     await this.getBackgrounds(this.user.user_id)
     await this.getSkills(this.user.user_id)
-    this.selectedSkills = this.skills.map((x) => x.id)
+    if (this.selectedSkills.length > 0)
+      this.selectedSkills = this.skills.map((x) => x.id)
     await this.getLanguages(this.user.user_id)
-    this.selectedLangs = this.languages.map((x) => x.id)
+    if (this.selectedLangs.length > 0)
+      this.selectedLangs = this.languages.map((x) => x.id)
     await this.getAllLanguages()
     await this.getAllSkills()
   }

@@ -121,6 +121,8 @@ export default {
         text: this.newReply.text,
         post_id: this.comment.post_id,
         replied_comment_id: this.comment.id
+      }).then(() => {
+        this.dialogReply = false;
       });
     },
     sendLikeComment() {

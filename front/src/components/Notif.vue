@@ -48,14 +48,14 @@
                 <v-card-title class="notif-header">
                   <v-row>
                     <v-col cols="12">
-                      {{ notif.post.username }}
+                      {{ notif.post.poster_username }}
                     </v-col>
                   </v-row>
                 </v-card-title>
                 <v-card-subtitle>
                   <v-row>
                     <v-col cols="12">
-                      {{ notif.post.created }}
+                      {{ isoToDate(notif.post.created) }}
                     </v-col>
                   </v-row>
                 </v-card-subtitle>
@@ -71,7 +71,9 @@
                 </v-container>
               </v-card>
             </div>
-            has been liked by {{ notif.creator.username }}
+            <div class="my-3">
+              has been liked by {{ notif.creator.username }}
+            </div>
           </v-col>
         </v-row>
       </v-container>
@@ -91,14 +93,14 @@
                 <v-card-title class="notif-header">
                   <v-row>
                     <v-col cols="12">
-                      {{ notif.post.username }}
+                      {{ notif.post.poster_username }}
                     </v-col>
                   </v-row>
                 </v-card-title>
                 <v-card-subtitle>
                   <v-row>
                     <v-col cols="12">
-                      {{ notif.post.created }}
+                      {{ notif.isoToDate(notif.post.created) }}
                     </v-col>
                   </v-row>
                 </v-card-subtitle>
@@ -114,9 +116,11 @@
                 </v-container>
               </v-card>
             </div>
-            has been commented by {{ notif.creator.username }}:
+            <div class="my-3">
+              has been commented by {{ notif.creator.username }}:
+            </div>
             <div class="notif-content">
-              <comment :comment="notif.comment"/>
+              <Comment :comment="notif.comment" :dense="true"/>
             </div>
           </v-col>
         </v-row>
@@ -129,13 +133,16 @@
         {{ notif.creator.username }} has Liked ur comment!
       </v-card-title>
       <v-divider/>
+
       <v-container>
         <v-row>
           <v-col cols="12">
             <div class="notif-content">
-              <comment :comment="notif.comment"/>
+              <LittleComment :dense="true" :comment="notif.comment"/>
             </div>
-            has been liked by {{ notif.creator.username }}:
+            <div class="my-3">
+              has been liked by {{ notif.creator.username }}
+            </div>
           </v-col>
         </v-row>
       </v-container>
@@ -151,11 +158,13 @@
         <v-row>
           <v-col cols="12">
             <div class="notif-content">
-              <comment :comment="notif.comment"/>
+              <LittleComment :dense="true" :comment="notif.comment"/>
             </div>
-            has been replied by {{ notif.creator.username }}:
+            <div class="my-3">
+              has been replied by {{ notif.creator.username }}:
+            </div>
             <div class="notif-content">
-              <comment :comment="notif.reply"/>
+              <Comment :dense="true" :comment="notif.replied_comment"/>
             </div>
           </v-col>
         </v-row>
@@ -202,10 +211,36 @@
 
 <script>
 import Comment from "./Comment";
+import LittleComment from "./LittleComment";
+
 export default {
   name: "Notif",
-  components: {Comment},
-  props: ['notif']
+  components: {LittleComment, Comment},
+  props: ['notif'],
+  methods: {
+    isoToDate(iso) {
+      let date = new Date(iso);
+      let year = date.getFullYear();
+      let month = date.getMonth() + 1;
+      let dt = date.getDate();
+      let h = date.getHours();
+      let m = date.getMinutes();
+
+      if (m < 10)
+        m = '0' + m
+      if (h < 10)
+        h = '0' + h
+
+      if (dt < 10) {
+        dt = '0' + dt;
+      }
+      if (month < 10) {
+        month = '0' + month;
+      }
+
+      return year + '-' + month + '-' + dt + ' ' + h + ":" + m;
+    }
+  }
 }
 </script>
 

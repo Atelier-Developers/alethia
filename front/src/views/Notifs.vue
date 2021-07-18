@@ -15,7 +15,7 @@
           </v-card-title>
           <v-divider/>
           <v-container>
-            <v-row v-for="notif in notifs" :key="notif.id">
+            <v-row v-for="notif in notifs" :key="([notif.id, notif.type]).toString()">
               <v-col cols="12">
                 <Notif :notif="notif"/>
               </v-col>

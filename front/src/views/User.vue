@@ -251,7 +251,7 @@ export default {
       await this.viewProfile({id: id})
   },
   watch: {
-    '$route': async () => {
+    '$route.params.id': async () => {
       let id = +this.$route.params.id
       await this.getUserById({id: id})
       await this.getBackgrounds(id)
