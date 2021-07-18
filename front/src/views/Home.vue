@@ -1,31 +1,26 @@
 <template>
   <div>
-    <v-dialog v-model="dialogPost">
-      <v-card>
-        <v-card-title>
-          New Post
-        </v-card-title>
-        <v-divider/>
-        <v-container>
-          <v-row>
-            <v-col cols="12">
-              <v-textarea
-                  v-model="newPost.description"
-                  label="Your Content"
-              />
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="12">
-              <v-btn @click="sendPost()">
-                Post
-              </v-btn>
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-card>
-    </v-dialog>
     <v-container>
+      <v-row justify="center">
+        <v-card flat width="100%" max-width="950px" style="border-radius: 7px">
+          <v-card-title>
+            Share your ideas with your network
+          </v-card-title>
+          <v-card-text>
+            <v-textarea
+                v-model="newPost.description"
+                outlined
+                label="Your Content"
+            />
+            <v-row class="px-3 py-2">
+              <v-spacer/>
+              <v-btn @click="sendPost" color="primary">
+                Share
+              </v-btn>
+            </v-row>
+          </v-card-text>
+        </v-card>
+      </v-row>
       <v-row v-for="post in posts" :key="post.id">
         <v-col cols="12">
           <v-card>
@@ -90,15 +85,6 @@
         </v-col>
       </v-row>
     </v-container>
-    <v-btn
-        fab
-        bottom
-        right
-        class="btn-float"
-        @click="dialogPost=true"
-    >
-      <v-icon black x-large>mdi-plus</v-icon>
-    </v-btn>
   </div>
 </template>
 
@@ -111,7 +97,6 @@ export default {
   name: "Home",
   components: {Repost},
   data: () => ({
-    dialogPost: false,
     newPost: {
       text: '',
     }
@@ -122,9 +107,9 @@ export default {
   methods: {
     ...mapActions('PostsModules', ["getPosts", "addPost"]),
     ...mapActions('PostModules', ["likePost"]),
-    sendPost() {
-      this.addPost(this.newPost);
-      this.dialogPost = false;
+    async sendPost() {
+      await this.addPost(this.newPost);
+      await this.getPosts();
     },
     sendLike(post) {
       if (this.liked) {
@@ -162,11 +147,8 @@ export default {
       this.$router.push("post/" + post.id)
     }
   },
-  mounted() {
-    this.getPosts().then(() => {
-      console.log(this.posts.map((x) => [x.type, x]))
-      console.log(this.posts.map((x) => x.type))
-    });
+ async mounted() {
+    await this.getPosts();
   }
 }
 </script>
