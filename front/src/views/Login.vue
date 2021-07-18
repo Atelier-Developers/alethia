@@ -43,6 +43,9 @@
                 Sign in
               </v-btn>
             </v-row>
+            <v-row dense justify="center">
+              <a @click="gotoSignup()">create account</a>
+            </v-row>
           </v-card-text>
         </v-card>
       </v-col>
@@ -73,6 +76,9 @@ export default {
           this.status = "User or Password is invalid"
         }
       });
+    },
+    gotoSignup() {
+      this.$router.push('signup')
     }
   }
 }
