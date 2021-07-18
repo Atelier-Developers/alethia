@@ -57,7 +57,7 @@ type UserGetMutualConnectionsResponseBody struct {
 	MutualConnection uint64    `json:"mutual_connection"`
 }
 
-type UserGetByUsernameAndId struct {
+type UsersGetByUsernameResponseBody struct {
 	UserID                uint64    `json:"user_id"`
 	Username              string    `json:"username"`
 	FirstName             string    `json:"first_name"`
@@ -69,7 +69,24 @@ type UserGetByUsernameAndId struct {
 	BirthDate             time.Time `json:"birth_date"`
 	JoinDate              time.Time `json:"join_date"`
 	MutualConnection      uint64    `json:"mutual_connection"`
-	IsFriendsWithThisUser uint64      `json:"is_friends_with_this_user"`
+	IsFriendsWithThisUser uint64    `json:"is_friends_with_this_user"`
+}
+
+type UserGetByIdResponseBody struct {
+	UserID                      uint64    `json:"user_id"`
+	Username                    string    `json:"username"`
+	FirstName                   string    `json:"first_name"`
+	LastName                    string    `json:"last_name"`
+	Intro                       string    `json:"intro"`
+	About                       string    `json:"about"`
+	Accomplishments             string    `json:"accomplishments"`
+	AdditionalInfo              string    `json:"additional_info"`
+	BirthDate                   time.Time `json:"birth_date"`
+	JoinDate                    time.Time `json:"join_date"`
+	MutualConnection            uint64    `json:"mutual_connection"`
+	IsFriendsWithThisUser       uint64    `json:"is_friends_with_this_user"`
+	IsInvitedByThisUser         bool      `json:"is_invited_by_this_user"`
+	HasConversationWithThisUser bool      `json:"has_conversation_with_this_user"`
 }
 
 type UserGetRequestBody struct {
