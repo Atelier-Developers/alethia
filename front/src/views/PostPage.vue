@@ -3,34 +3,28 @@
     <v-dialog v-model="dialogComment" max-width="750px">
       <v-card flat style="border-radius: 7px;">
         <v-card-title>
-          <h3>Add New Comment</h3>
         </v-card-title>
-        <v-divider/>
-        <v-container>
+        <v-card-text>
+          <v-textarea
+              outlined
+              v-model="newComment.text"
+              label="What do you think"
+          />
           <v-row>
-            <v-col cols="12">
-              <v-textarea
-                  v-model="newComment.text"
-                  label="What do you think"
-              />
-            </v-col>
+            <v-spacer/>
+            <v-btn @click="sendComment()" color="primary">
+              Comment
+            </v-btn>
           </v-row>
-          <v-row>
-            <v-col cols="12">
-              <v-btn @click="sendComment()">
-                Comment
-              </v-btn>
-            </v-col>
-          </v-row>
-        </v-container>
+        </v-card-text>
       </v-card>
-
     </v-dialog>
     <v-container>
       <v-row>
         <v-col cols="12">
           <div @click="gotoPost(repost.id)" style="cursor: pointer">
-            <Post :post="post" :reposts="reposts" :repost="repost" :liked="liked" :likes="likes"/>
+            <Post @updatePost="getAllPostDetail" :post="post" :reposts="reposts" :repost="repost" :liked="liked"
+                  :likes="likes"/>
           </div>
         </v-col>
       </v-row>
@@ -97,12 +91,14 @@ export default {
           "getRepost",
           "getReposts"
         ]),
-    sendComment() {
+    async sendComment() {
       let id = +this.$route.params.id;
-      this.commentPost({
+      await this.commentPost({
         text: this.newComment.text,
         post_id: id
       })
+      this.dialogComment = false;
+      await this.getAllPostDetail();
     },
     checkAmILike() {
       let my_id = this.userId;
@@ -132,20 +128,20 @@ export default {
       this.getComments(id);
       this.getRepost(id);
       this.getReposts(id)
+    },
+    async getAllPostDetail() {
+      let id = +this.$route.params.id;
+      await this.getPost(id)
+      await this.getRepost(this.post.repost_id);
+      await this.getLikes(id)
+      this.liked = this.checkAmILike()
+      await this.getComments(id);
+      await this.getRepost(id);
+      await this.getReposts(id)
     }
   },
-  mounted() {
-    let id = +this.$route.params.id;
-    this.getPost(id).then(() => {
-      this.getRepost(this.post.repost_id);
-    });
-    this.getLikes(id).then(() => {
-      this.liked = this.checkAmILike()
-    });
-    this.getComments(id);
-    this.getRepost(id);
-    this.getReposts(id)
-
+  async mounted() {
+    await this.getAllPostDetail();
   }
 }
 </script>
