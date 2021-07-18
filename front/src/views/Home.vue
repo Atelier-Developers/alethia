@@ -79,6 +79,10 @@
                     <v-icon v-else>mdi-heart-outline</v-icon>
                   </v-btn>
                   {{ post.like_count }}
+                  <v-btn elevation="0" icon>
+                    <v-icon>mdi-repeat</v-icon>
+                  </v-btn>
+                  {{ post.repost_count }}
                 </v-col>
               </v-row>
             </v-container>
@@ -120,6 +124,7 @@ export default {
     ...mapActions('PostModules', ["likePost"]),
     sendPost() {
       this.addPost(this.newPost);
+      this.dialogPost = false;
     },
     sendLike(post) {
       if (this.liked) {

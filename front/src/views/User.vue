@@ -193,6 +193,7 @@ export default {
     sendCreateInvite() {
       this.inviteReq.receiver_id = +this.$route.params.id;
       this.createInvite(this.inviteReq);
+      this.dialogInvite = false
     },
     startConversation() {
       let id = +this.$route.params.id

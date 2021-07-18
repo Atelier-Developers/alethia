@@ -29,7 +29,9 @@
     <v-container>
       <v-row>
         <v-col cols="12">
-          <Post :post="post" :liked="liked" :likes="likes"/>
+          <div @click="gotoPost(repost.id)" style="cursor: pointer">
+            <Post :post="post" :reposts="reposts" :repost="repost" :liked="liked" :likes="likes"/>
+          </div>
         </v-col>
       </v-row>
       <v-row>
@@ -78,7 +80,7 @@ export default {
     liked: false,
   }),
   computed: {
-    ...mapGetters('PostModules', ["post", "likes", "comments", "reposts"]),
+    ...mapGetters('PostModules', ["post", "likes", "comments", "reposts", "repost"]),
     ...mapGetters("AuthModules", ['userId'])
   },
   methods: {
@@ -92,7 +94,8 @@ export default {
           "replyComment",
           "commentPost",
           "addRepost",
-          "getRepost"
+          "getRepost",
+          "getReposts"
         ]),
     sendComment() {
       let id = +this.$route.params.id;
@@ -116,16 +119,32 @@ export default {
           return c;
       }
       return null;
+    },
+    gotoPost(id) {
+      // console.log(id)
+      this.$router.replace({name: 'Post', params: {id: id}});
+      this.getPost(id).then(() => {
+        this.getRepost(this.post.repost_id);
+      });
+      this.getLikes(id).then(() => {
+        this.liked = this.checkAmILike()
+      });
+      this.getComments(id);
+      this.getRepost(id);
+      this.getReposts(id)
     }
   },
   mounted() {
     let id = +this.$route.params.id;
-    this.getPost(id);
+    this.getPost(id).then(() => {
+      this.getRepost(this.post.repost_id);
+    });
     this.getLikes(id).then(() => {
       this.liked = this.checkAmILike()
     });
     this.getComments(id);
     this.getRepost(id);
+    this.getReposts(id)
 
   }
 }

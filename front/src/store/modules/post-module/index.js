@@ -3,6 +3,7 @@ import axios from "axios";
 
 const state = {
     post: {},
+    repost: {},
     comments: [],
     likes: [],
     reposts: {},
@@ -24,8 +25,10 @@ const mutations = {
     },
     setCommentLikes(state, item) {
         state.commentLikes = item;
+    },
+    setRepost(state, item) {
+        state.repost = item
     }
-
 };
 
 const actions = {
@@ -104,12 +107,24 @@ const actions = {
             console.log(e);
         }
     },
-    async getRepost(context, payload) {
+    async getReposts(context, payload) {
         console.log("Get Repost");
         try {
             let res = await axios.get(API.getPost + "/" + payload + '/reposts');
             console.log(res);
             context.commit('setReposts', res.data)
+        } catch (e) {
+            console.log(e);
+        }
+    },
+    async getRepost(context, payload) {
+        console.log("Get Repost");
+        if (+payload===0)
+            return;
+        try {
+            let res = await axios.get(API.getPost + "/" + payload);
+            console.log(res);
+            context.commit('setRepost', res.data)
         } catch (e) {
             console.log(e);
         }
@@ -121,6 +136,7 @@ const getters = {
     likes: (state) => state.likes,
     comments: (state) => state.comments,
     reposts: (state) => state.reposts,
+    repost: (state) => state.repost,
     commentLikes: (state) => state.commentLikes,
 };
 

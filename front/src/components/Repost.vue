@@ -1,12 +1,6 @@
 <template>
   <v-card>
     <div @click="gotoPost()" style="cursor: pointer">
-      <v-card-subtitle v-if="post.type==='LP'">
-        <h4> {{ post.like_username }} has Liked this Post:</h4>
-      </v-card-subtitle>
-      <v-card-subtitle v-else-if="post.type==='CP'">
-        <h4> {{ post.commenter_username }} has Commented this Post:</h4>
-      </v-card-subtitle>
       <v-card-title>
         <h4>
           {{ post.poster_username }}
@@ -72,7 +66,6 @@ export default {
     }
   },
   mounted() {
-    console.log("KIIIIIIRIRIR")
     this.getPost(this.repost_id)
   }
 }

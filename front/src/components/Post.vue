@@ -71,6 +71,9 @@
         <v-btn @click="dialogRepost=true" elevation="0" icon>
           <v-icon>mdi-repeat</v-icon>
         </v-btn>
+        <v-btn @click="dialogLikes=true" elevation="0" icon>
+          {{ reposts === null ? 0 : reposts.length }}
+        </v-btn>
         <v-btn @click="sendLike()" elevation="0" icon>
           <v-icon v-if="liked" color="red">mdi-heart</v-icon>
           <v-icon v-else>mdi-heart-outline</v-icon>
@@ -96,6 +99,38 @@
           </v-col>
         </v-row>
       </v-container>
+      <v-container v-if="+post.repost_id!== 0">
+        <v-row>
+          <v-col cols="12">
+            <v-card>
+                <v-card-title>
+                  <h4>
+                    {{ repost.poster_username }}
+                  </h4>
+                  <v-spacer/>
+                </v-card-title>
+                <v-card-subtitle>
+                  <v-row>
+                    <v-col cols="12">
+                      {{ isoToDate(repost.created) }}
+                    </v-col>
+                  </v-row>
+                </v-card-subtitle>
+                <v-divider/>
+                <v-container>
+                  <v-row class="my-3">
+                    <v-col cols="12">
+                      <div class="post-content">
+                        {{ repost.description }}
+                      </div>
+                    </v-col>
+                  </v-row>
+                </v-container>
+            </v-card>
+
+          </v-col>
+        </v-row>
+      </v-container>
     </v-card>
   </div>
 </template>
@@ -107,6 +142,8 @@ export default {
   name: "Post",
   props: {
     post: Object,
+    reposts: Object,
+    repost: Object,
     liked: Boolean,
     likes: Array
   },
@@ -155,7 +192,9 @@ export default {
       }).then(() => {
         this.dialogRepost = false;
       });
-    }
+    },
+
+
   }
 }
 </script>
