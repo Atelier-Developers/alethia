@@ -113,7 +113,6 @@
                   </template>
                   <v-date-picker
                       v-model="newBack.start_date"
-                      no-title
                       @input="menu1 = false"
                   ></v-date-picker>
                 </v-menu>
@@ -142,7 +141,6 @@
                   </template>
                   <v-date-picker
                       v-model="newBack.end_date"
-                      no-title
                       @input="menu2 = false"
                   ></v-date-picker>
                 </v-menu>
@@ -488,9 +486,14 @@ export default {
       this.dialogSkill = false
     },
     async sendBackground() {
-      this.newBack.start_date = (new Date(this.newBack.start_date)).toISOString()
-      this.newBack.end_date = (new Date(this.newBack.end_date)).toISOString()
-      await this.addBackground(this.newBack)
+      const payload = {...this.newBack}
+      payload.start_date = (new Date(payload.start_date)).toISOString()
+      if (payload.end_date) {
+        payload.end_date = (new Date(payload.end_date)).toISOString()
+      } else {
+        delete payload.end_date
+      }
+      await this.addBackground(payload)
       await this.getBackgrounds(this.user.user_id)
       this.$refs["back-form"].reset()
       this.dialogBack = false

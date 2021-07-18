@@ -162,6 +162,13 @@ func (userBackgroundHistoryHandler *UserBackgroundHistoryHandler) DeleteBackgrou
 		return
 	}
 
+	backgroundId, err := strconv.ParseInt(c.Param("background_id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusUnprocessableEntity, nil)
+		return
+	}
+	userRequestBody.ID = uint64(backgroundId)
+
 	_, exists := c.Get("user_id")
 
 	if !exists {
@@ -172,7 +179,7 @@ func (userBackgroundHistoryHandler *UserBackgroundHistoryHandler) DeleteBackgrou
 		ID: userRequestBody.ID,
 	}
 
-	err := userBackgroundHistoryHandler.backgroundHistoryRepository.DeleteBackgroundHistory(&backgroundHistory)
+	err = userBackgroundHistoryHandler.backgroundHistoryRepository.DeleteBackgroundHistory(&backgroundHistory)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return

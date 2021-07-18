@@ -109,7 +109,7 @@ func main() {
 		{
 			backgroundGroup.POST("", userBackgroundHistoryHandler.AddBackgroundHistory)
 			backgroundGroup.PUT("", userBackgroundHistoryHandler.EditBackgroundHistory)
-			backgroundGroup.DELETE("", userBackgroundHistoryHandler.DeleteBackgroundHistory)
+			backgroundGroup.DELETE("/:background_id", userBackgroundHistoryHandler.DeleteBackgroundHistory)
 			backgroundGroup.GET("/:user_id", userBackgroundHistoryHandler.GetUserBackgroundHistories)
 		}
 
