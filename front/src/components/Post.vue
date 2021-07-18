@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-dialog v-model="dialogLikes" max-width="500">
-      <v-card>
+      <v-card flat style="border-radius: 7px;">
         <v-card-title>
           <h3>Likes: </h3>
         </v-card-title>

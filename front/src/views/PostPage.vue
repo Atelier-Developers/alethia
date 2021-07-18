@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-dialog v-model="dialogComment" max-width="750px">
-      <v-card>
+      <v-card flat style="border-radius: 7px;">
         <v-card-title>
           <h3>Add New Comment</h3>
         </v-card-title>

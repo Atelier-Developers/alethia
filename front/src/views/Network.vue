@@ -2,88 +2,86 @@
   <v-container>
     <v-row>
       <v-col cols="12">
-        <v-card>
+        <v-card flat style="border-radius: 7px;">
           <v-card-title>
-            <h2>
+            <h4>
               Invites
-            </h2>
+            </h4>
           </v-card-title>
           <v-divider/>
-          <v-container fluid>
+          <v-card-text>
             <v-row v-for="invite in allInvites" :key="invite.other_user_id">
               <v-col cols="8">
-                <v-row dense>
-                  <v-col cols="12">
-                    <h3>
-                      {{ invite.other_user_name }}
-                    </h3>
-                  </v-col>
-                </v-row>
-                <v-row dense>
-                  <v-col cols="12">
-                    {{ invite.body }}
-                  </v-col>
-
-                </v-row>
-              </v-col>
-              <v-col v-if="invite.am_i_sender" cols="4" style="display: flex" class="pr-5">
-                <v-spacer/>
                 <div>
-                  Pending...
+                  <h3>
+                    {{ invite.other_user_name }}
+                  </h3>
                 </div>
+                <p>
+                  {{ invite.body }}
+                </p>
               </v-col>
-              <v-col v-else cols="4" style="display: flex" class="pr-5">
-                <v-spacer/>
+              <v-spacer/>
+              <div v-if="invite.am_i_sender" class="mr-5 mt-5">
+                <p class="body-1">
+                  PENDING
+                  <v-icon right>mdi-clock</v-icon>
+                </p>
+              </div>
+              <div v-else style="display: flex" class="pr-5">
                 <v-btn
                     @click="sendAcceptInvite(invite.other_user_id)"
                     color="success"
-                    class="mr-3"
+                    fab
+                    icon
                 >
                   <v-icon>mdi-check</v-icon>
                 </v-btn>
                 <v-btn
                     color="error"
+                    fab
+                    icon
                     @click="sendDeleteInvite(invite.other_user_id)"
                 >
                   <v-icon>mdi-delete</v-icon>
                 </v-btn>
-              </v-col>
+              </div>
             </v-row>
-          </v-container>
+          </v-card-text>
         </v-card>
       </v-col>
     </v-row>
     <v-row>
       <v-col cols="12">
-        <v-card>
+        <v-card flat style="border-radius: 7px;">
           <v-card-title>
-            <h2>
+            <h3>
               Friends
-            </h2>
+            </h3>
           </v-card-title>
           <v-divider/>
-          <v-container fluid>
-            <v-row v-for="friend in allFriends" :key="friend.other_user_id">
-              <v-col cols="8">
-                <v-row>
-                    <v-col cols="12">
-                      <h3>
-                        {{ friend.other_user_name }}
-                      </h3>
-                    </v-col>
-                </v-row>
-              </v-col>
-              <v-col cols="4" style="display: flex">
+          <v-card-text>
+            <div v-for="friend in allFriends" :key="friend.other_user_id">
+              <v-row>
+                <v-col cols="8">
+                  <div>
+                    <h3>
+                      {{ friend.other_user_name }}
+                    </h3>
+                  </div>
+                </v-col>
                 <v-spacer/>
                 <v-btn
                     @click="sendDeleteFriend(friend.other_user_id)"
                     color="error"
+                    fab
+                    icon
                 >
                   <v-icon>mdi-delete</v-icon>
                 </v-btn>
-              </v-col>
-            </v-row>
-          </v-container>
+              </v-row>
+            </div>
+          </v-card-text>
         </v-card>
       </v-col>
     </v-row>
@@ -156,14 +154,18 @@ export default {
           "addFriend",
           "deleteFriend",
           "deleteInvite"]),
-    sendAcceptInvite(id) {
-      this.addFriend({user_id: id})
+    async sendAcceptInvite(id) {
+      await this.addFriend({user_id: id})
+      await this.getFriends();
+      await this.getInvites();
     },
-    sendDeleteFriend(id){
-      this.deleteFriend({user_id: id})
+    async sendDeleteFriend(id) {
+      await this.deleteFriend({user_id: id})
+      await this.getFriends();
     },
-    sendDeleteInvite(id){
-      this.deleteInvite({user_id: id})
+    async sendDeleteInvite(id) {
+      await this.deleteInvite({user_id: id})
+      await this.getInvites();
     }
 
   },
