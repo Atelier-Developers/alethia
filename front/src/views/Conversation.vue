@@ -15,13 +15,14 @@
         <v-row v-for="message in messages" :key="message.id" class="my-5">
           <v-spacer v-if="+userId===+message.user_id"/>
           <v-col cols="4" class="message" @click="selectMessage(message)">
-            <div v-if="message.reply_id > 0" class="mb-3 elevation-3" style="padding: 3px;">
+            <div v-if="message.reply_id > 0" class="mb-3 elevation-3" style="padding: 3px; border-radius: 3px">
               <h6>reply: {{ message.replied_message_username }}</h6>
-             <span style="font-size: 12px">{{ message.replied_message_body }}</span>
+              <span style="font-size: 12px">{{ message.replied_message_body }}</span>
             </div>
             <div>
               {{ message.body }}
             </div>
+            <span style="font-size: 12px">{{ isoToDate(message.created) }}</span>
           </v-col>
         </v-row>
       </v-col>
@@ -97,6 +98,28 @@ export default {
           message_body: this.newMessage,
         })
       }
+    },
+    isoToDate(iso) {
+      let date = new Date(iso);
+      let year = date.getFullYear();
+      let month = date.getMonth() + 1;
+      let dt = date.getDate();
+      let h = date.getHours();
+      let m = date.getMinutes();
+
+      if (m < 10)
+        m = '0' + m
+      if (h < 10)
+        h = '0' + h
+
+      if (dt < 10) {
+        dt = '0' + dt;
+      }
+      if (month < 10) {
+        month = '0' + month;
+      }
+
+      return year + '-' + month + '-' + dt + ' ' + h + ":" + m;
     },
     selectMessage(message) {
       if (message.id === this.selectedMessage.id)
