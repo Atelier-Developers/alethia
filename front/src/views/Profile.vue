@@ -279,7 +279,7 @@
                 @{{ user.username }}
               </h4>
               <v-spacer/>
-              <v-btn @click="dialogUser=true" elevation="0" icon>
+              <v-btn @click="dialogUser=true" icon>
                 <v-icon>mdi-pencil</v-icon>
               </v-btn>
             </v-card-title>
