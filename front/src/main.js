@@ -12,6 +12,10 @@ if (token) {
     Vue.prototype.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
 }
 
+import Chat from 'vue-beautiful-chat'
+
+Vue.use(Chat)
+
 new Vue({
     vuetify,
     store,

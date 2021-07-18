@@ -17,60 +17,24 @@ const mutations = {
 
 const actions = {
     async getConversations(context,) {
-        console.log("GET Conversations");
-        try {
-            let res = await axios.get(API.conversation);
-            console.log(res);
-            context.commit("setConversatoins", res.data);
-        } catch (e) {
-            console.log(e);
-        }
+        let res = await axios.get(API.conversation);
+        context.commit("setConversatoins", res.data);
     },
     async getMessages(context, payload) {
-        console.log("GET Messages");
-        try {
-            let res = await axios.get(API.conversation + '/message/' + payload);
-            console.log(res);
-            context.commit("setMessages", res.data);
-        } catch (e) {
-            console.log(e);
-        }
+        let res = await axios.get(API.conversation + '/message/' + payload);
+        context.commit("setMessages", res.data);
     },
     async updateConversation(context, payload) {
-        console.log("update Conversations");
-        try {
-            let res = await axios.put(API.conversation, payload);
-            console.log(res);
-        } catch (e) {
-            console.log(e);
-        }
+        await axios.put(API.conversation, payload);
     },
     async deleteConversation(context, payload) {
-        console.log("delete Conversations");
-        try {
-            let res = await axios.delete(API.conversation, payload);
-            console.log(res);
-        } catch (e) {
-            console.log(e);
-        }
+        await axios.delete(API.conversation, payload);
     },
     async createConversation(context, payload) {
-        console.log("create Conversations");
-        try {
-            let res = await axios.post(API.conversation, payload);
-            console.log(res);
-        } catch (e) {
-            console.log(e);
-        }
+        await axios.post(API.conversation, payload);
     },
     async createMessage(context, payload) {
-        console.log("add Message");
-        try {
-            let res = await axios.post(API.conversation + '/message', payload);
-            console.log(res);
-        } catch (e) {
-            console.log(e);
-        }
+        await axios.post(API.conversation + '/message', payload);
     },
 
 
@@ -79,7 +43,7 @@ const actions = {
 const getters = {
     conversations: (state) => state.conversations,
     messages: (state) => {
-        if (state.messages === null){
+        if (state.messages === null) {
             return state.messages
         }
         state.messages.sort(function (a, b) {
