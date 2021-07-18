@@ -1,8 +1,8 @@
 package interfaces
 
 import (
+	"fmt"
 	"github.com/Atelier-Developers/alethia/domain/entity"
-	"github.com/Atelier-Developers/alethia/domain/entity/notification"
 	"github.com/Atelier-Developers/alethia/domain/repository"
 	"github.com/Atelier-Developers/alethia/interfaces/bodyTemplates"
 	"github.com/gin-gonic/gin"
@@ -34,54 +34,56 @@ func (userBackgroundHistoryHandler *UserBackgroundHistoryHandler) AddBackgroundH
 		return
 	}
 
-	userId, exists := c.Get("user_id")
+	_, exists := c.Get("user_id")
 
 	if !exists {
 		log.Fatal("User Id does not exist!")
 	}
 
-	backgroundHistory := entity.BackgroundHistory{
-		UserID:      userId.(uint64),
-		StartDate:   userRequestBody.StartDate,
-		EndDate:     userRequestBody.EndDate,
-		Category:    userRequestBody.Category,
-		Title:       userRequestBody.Title,
-		Description: userRequestBody.Description,
-		Location:    userRequestBody.Location,
-	}
+	fmt.Println(userRequestBody)
 
-	err := userBackgroundHistoryHandler.backgroundHistoryRepository.SaveBackgroundHistory(&backgroundHistory)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, err)
-		return
-	}
-
-	friends, err := userBackgroundHistoryHandler.friendRepository.GetFriends(backgroundHistory.UserID)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, err)
-		return
-	}
-
-	for _, f := range friends {
-		var recieverId uint64
-		if f.UserId1 == backgroundHistory.UserID {
-			recieverId = f.UserId2
-		} else {
-			recieverId = f.UserId1
-		}
-		n := notification.ChangeWork{
-			UserHistoryId: backgroundHistory.ID,
-			Type:          "add",
-			Notification: notification.Notification{
-				ReceiverId: recieverId,
-			},
-		}
-		err = userBackgroundHistoryHandler.notificationRepository.CreateChangeWorkNotification(&n)
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, err)
-			return
-		}
-	}
+	//backgroundHistory := entity.BackgroundHistory{
+	//	UserID:      userId.(uint64),
+	//	StartDate:   userRequestBody.StartDate,
+	//	EndDate:     userRequestBody.EndDate.,
+	//	Category:    userRequestBody.Category,
+	//	Title:       userRequestBody.Title,
+	//	Description: userRequestBody.Description,
+	//	Location:    userRequestBody.Location,
+	//}
+	//
+	//err := userBackgroundHistoryHandler.backgroundHistoryRepository.SaveBackgroundHistory(&backgroundHistory)
+	//if err != nil {
+	//	c.JSON(http.StatusInternalServerError, err)
+	//	return
+	//}
+	//
+	//friends, err := userBackgroundHistoryHandler.friendRepository.GetFriends(backgroundHistory.UserID)
+	//if err != nil {
+	//	c.JSON(http.StatusInternalServerError, err)
+	//	return
+	//}
+	//
+	//for _, f := range friends {
+	//	var recieverId uint64
+	//	if f.UserId1 == backgroundHistory.UserID {
+	//		recieverId = f.UserId2
+	//	} else {
+	//		recieverId = f.UserId1
+	//	}
+	//	n := notification.ChangeWork{
+	//		UserHistoryId: backgroundHistory.ID,
+	//		Type:          "add",
+	//		Notification: notification.Notification{
+	//			ReceiverId: recieverId,
+	//		},
+	//	}
+	//	err = userBackgroundHistoryHandler.notificationRepository.CreateChangeWorkNotification(&n)
+	//	if err != nil {
+	//		c.JSON(http.StatusInternalServerError, err)
+	//		return
+	//	}
+	//}
 	c.JSON(http.StatusCreated, nil)
 }
 
@@ -94,61 +96,62 @@ func (userBackgroundHistoryHandler *UserBackgroundHistoryHandler) EditBackground
 		return
 	}
 
-	userId, exists := c.Get("user_id")
+	_, exists := c.Get("user_id")
 
 	if !exists {
 		log.Fatal("User Id does not exist!")
 	}
-	bh, err := userBackgroundHistoryHandler.backgroundHistoryRepository.GetBackgroundHistory(userRequestBody.ID)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, err)
-		return
-	}
-	//TODO TEST this
-	if bh.UserID != userId.(uint64) {
-		c.JSON(http.StatusForbidden, err)
-		return
-	}
-	backgroundHistory := entity.BackgroundHistory{
-		ID:          userRequestBody.ID,
-		StartDate:   userRequestBody.StartDate,
-		EndDate:     userRequestBody.EndDate,
-		Category:    userRequestBody.Category,
-		Title:       userRequestBody.Title,
-		Description: userRequestBody.Description,
-		Location:    userRequestBody.Location,
-	}
 
-	err = userBackgroundHistoryHandler.backgroundHistoryRepository.UpdateBackgroundHistory(&backgroundHistory)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, err)
-		return
-	}
-	friends, err := userBackgroundHistoryHandler.friendRepository.GetFriends(backgroundHistory.UserID)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, err)
-		return
-	}
-	for _, f := range friends {
-		var recieverId uint64
-		if f.UserId1 == backgroundHistory.UserID {
-			recieverId = f.UserId2
-		} else {
-			recieverId = f.UserId1
-		}
-		n := notification.ChangeWork{
-			UserHistoryId: backgroundHistory.ID,
-			Type:          "update",
-			Notification: notification.Notification{
-				ReceiverId: recieverId,
-			},
-		}
-		err = userBackgroundHistoryHandler.notificationRepository.CreateChangeWorkNotification(&n)
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, err)
-			return
-		}
-	}
+	//bh, err := userBackgroundHistoryHandler.backgroundHistoryRepository.GetBackgroundHistory(userRequestBody.ID)
+	//if err != nil {
+	//	c.JSON(http.StatusInternalServerError, err)
+	//	return
+	//}
+	////TODO TEST this
+	//if bh.UserID != userId.(uint64) {
+	//	c.JSON(http.StatusForbidden, err)
+	//	return
+	//}
+	//backgroundHistory := entity.BackgroundHistory{
+	//	ID:          userRequestBody.ID,
+	//	StartDate:   userRequestBody.StartDate,
+	//	EndDate:     userRequestBody.EndDate,
+	//	Category:    userRequestBody.Category,
+	//	Title:       userRequestBody.Title,
+	//	Description: userRequestBody.Description,
+	//	Location:    userRequestBody.Location,
+	//}
+	//
+	//err = userBackgroundHistoryHandler.backgroundHistoryRepository.UpdateBackgroundHistory(&backgroundHistory)
+	//if err != nil {
+	//	c.JSON(http.StatusInternalServerError, err)
+	//	return
+	//}
+	//friends, err := userBackgroundHistoryHandler.friendRepository.GetFriends(backgroundHistory.UserID)
+	//if err != nil {
+	//	c.JSON(http.StatusInternalServerError, err)
+	//	return
+	//}
+	//for _, f := range friends {
+	//	var recieverId uint64
+	//	if f.UserId1 == backgroundHistory.UserID {
+	//		recieverId = f.UserId2
+	//	} else {
+	//		recieverId = f.UserId1
+	//	}
+	//	n := notification.ChangeWork{
+	//		UserHistoryId: backgroundHistory.ID,
+	//		Type:          "update",
+	//		Notification: notification.Notification{
+	//			ReceiverId: recieverId,
+	//		},
+	//	}
+	//	err = userBackgroundHistoryHandler.notificationRepository.CreateChangeWorkNotification(&n)
+	//	if err != nil {
+	//		c.JSON(http.StatusInternalServerError, err)
+	//		return
+	//	}
+	//}
 
 	c.JSON(http.StatusCreated, nil)
 }
