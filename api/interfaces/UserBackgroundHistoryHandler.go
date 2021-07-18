@@ -1,14 +1,16 @@
 package interfaces
 
 import (
-	"fmt"
+	"database/sql"
 	"github.com/Atelier-Developers/alethia/domain/entity"
+	"github.com/Atelier-Developers/alethia/domain/entity/notification"
 	"github.com/Atelier-Developers/alethia/domain/repository"
 	"github.com/Atelier-Developers/alethia/interfaces/bodyTemplates"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 type UserBackgroundHistoryHandler struct {
@@ -34,56 +36,67 @@ func (userBackgroundHistoryHandler *UserBackgroundHistoryHandler) AddBackgroundH
 		return
 	}
 
-	_, exists := c.Get("user_id")
+	userId, exists := c.Get("user_id")
 
 	if !exists {
 		log.Fatal("User Id does not exist!")
 	}
 
-	fmt.Println(userRequestBody)
+	//fmt.Println(time.Time{})
 
-	//backgroundHistory := entity.BackgroundHistory{
-	//	UserID:      userId.(uint64),
-	//	StartDate:   userRequestBody.StartDate,
-	//	EndDate:     userRequestBody.EndDate.,
-	//	Category:    userRequestBody.Category,
-	//	Title:       userRequestBody.Title,
-	//	Description: userRequestBody.Description,
-	//	Location:    userRequestBody.Location,
-	//}
-	//
-	//err := userBackgroundHistoryHandler.backgroundHistoryRepository.SaveBackgroundHistory(&backgroundHistory)
-	//if err != nil {
-	//	c.JSON(http.StatusInternalServerError, err)
-	//	return
-	//}
-	//
-	//friends, err := userBackgroundHistoryHandler.friendRepository.GetFriends(backgroundHistory.UserID)
-	//if err != nil {
-	//	c.JSON(http.StatusInternalServerError, err)
-	//	return
-	//}
-	//
-	//for _, f := range friends {
-	//	var recieverId uint64
-	//	if f.UserId1 == backgroundHistory.UserID {
-	//		recieverId = f.UserId2
-	//	} else {
-	//		recieverId = f.UserId1
-	//	}
-	//	n := notification.ChangeWork{
-	//		UserHistoryId: backgroundHistory.ID,
-	//		Type:          "add",
-	//		Notification: notification.Notification{
-	//			ReceiverId: recieverId,
-	//		},
-	//	}
-	//	err = userBackgroundHistoryHandler.notificationRepository.CreateChangeWorkNotification(&n)
-	//	if err != nil {
-	//		c.JSON(http.StatusInternalServerError, err)
-	//		return
-	//	}
-	//}
+	backgroundHistory := entity.BackgroundHistory{
+		UserID:      userId.(uint64),
+		StartDate:   userRequestBody.StartDate,
+		Category:    userRequestBody.Category,
+		Title:       userRequestBody.Title,
+		Description: userRequestBody.Description,
+		Location:    userRequestBody.Location,
+	}
+
+	if (userRequestBody.EndDate != time.Time{}) {
+		backgroundHistory.EndDate = sql.NullTime{
+			Time:  userRequestBody.EndDate,
+			Valid: true,
+		}
+	} else {
+		backgroundHistory.EndDate = sql.NullTime{
+			Time:  userRequestBody.EndDate,
+			Valid: false,
+		}
+	}
+
+	err := userBackgroundHistoryHandler.backgroundHistoryRepository.SaveBackgroundHistory(&backgroundHistory)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	friends, err := userBackgroundHistoryHandler.friendRepository.GetFriends(backgroundHistory.UserID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	for _, f := range friends {
+		var recieverId uint64
+		if f.UserId1 == backgroundHistory.UserID {
+			recieverId = f.UserId2
+		} else {
+			recieverId = f.UserId1
+		}
+		n := notification.ChangeWork{
+			UserHistoryId: backgroundHistory.ID,
+			Type:          "add",
+			Notification: notification.Notification{
+				ReceiverId: recieverId,
+			},
+		}
+		err = userBackgroundHistoryHandler.notificationRepository.CreateChangeWorkNotification(&n)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+	}
 	c.JSON(http.StatusCreated, nil)
 }
 
