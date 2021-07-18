@@ -12,26 +12,29 @@
         </v-card-title>
         <v-divider/>
         <v-card-text>
-          <v-row dense>
-            <v-col cols="12" sm="4" v-for="lang in allLanguages" :key="lang.id">
-              <v-checkbox
-                  v-model="selectedLangs"
-                  :label="lang.language"
-                  :value="lang.id"
-              />
-            </v-col>
-            <v-col cols="12">
-              <v-row class="px-3 py-2">
-                <v-spacer/>
-                <v-btn
-                    color="primary"
-                    dark
-                    @click="sendLangs()">
-                  Add
-                </v-btn>
-              </v-row>
-            </v-col>
-          </v-row>
+          <v-form @submit.prevent="sendLangs">
+            <v-row dense>
+              <v-col cols="12" sm="4" v-for="lang in allLanguages" :key="lang.id">
+                <v-checkbox
+                    v-model="selectedLangs"
+                    :label="lang.language"
+                    :value="lang.id"
+                />
+              </v-col>
+              <v-col cols="12">
+                <v-row class="px-3 py-2">
+                  <v-spacer/>
+                  <v-btn
+                      color="primary"
+                      dark
+                      type="submit"
+                  >
+                    Add
+                  </v-btn>
+                </v-row>
+              </v-col>
+            </v-row>
+          </v-form>
         </v-card-text>
       </v-card>
     </v-dialog>
@@ -47,138 +50,146 @@
         </v-card-title>
         <v-divider/>
         <v-card-text>
-          <v-row dense>
-            <v-col cols="12" sm="4" v-for="skill in allSkills" :key="skill.id">
-              <v-checkbox
-                  v-model="selectedSkills"
-                  :label="skill.title"
-                  :value="skill.id"
-              />
-            </v-col>
-            <v-col cols="12">
-              <v-row class="px-3 py-2">
-                <v-spacer/>
-                <v-btn
-                    color="primary"
-                    dark
-                    @click="sendSkills()">
-                  Add
-                </v-btn>
-              </v-row>
-            </v-col>
-          </v-row>
+          <v-form @submit.prevent="sendSkills">
+            <v-row dense>
+              <v-col cols="12" sm="4" v-for="skill in allSkills" :key="skill.id">
+                <v-checkbox
+                    v-model="selectedSkills"
+                    :label="skill.title"
+                    :value="skill.id"
+                />
+              </v-col>
+              <v-col cols="12">
+                <v-row class="px-3 py-2">
+                  <v-spacer/>
+                  <v-btn
+                      color="primary"
+                      dark
+                      type="submit">
+                    Add
+                  </v-btn>
+                </v-row>
+              </v-col>
+            </v-row>
+          </v-form>
         </v-card-text>
       </v-card>
     </v-dialog>
     <v-dialog v-model="dialogBack" max-width="750px">
-      <v-card>
+      <v-card flat style="border-radius: 7px;">
         <v-card-title>
-          <h3>Add Background</h3>
+          <v-icon left>
+            mdi-note-plus-outline
+          </v-icon>
+          <h4>
+            Background
+          </h4>
         </v-card-title>
-        <v-divider/>
-        <v-container>
-          <v-row>
-            <v-col cols="6">
-              <v-menu
-                  ref="menu1"
-                  v-model="menu1"
-                  :close-on-content-click="false"
-                  transition="scale-transition"
-                  offset-y
-                  max-width="290px"
-                  min-width="auto"
-              >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
+        <v-card-text>
+          <v-form
+              ref="back-form"
+              @submit.prevent="sendBackground">
+            <v-row dense>
+              <v-col cols="12" md="6">
+                <v-menu
+                    ref="menu1"
+                    v-model="menu1"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                    offset-y
+                    max-width="290px"
+                    min-width="auto"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                        v-model="newBack.start_date"
+                        label="Start Date"
+                        outlined
+                        prepend-icon="mdi-calendar"
+                        v-bind="attrs"
+                        @blur="date = parseDate(newBack.start_date)"
+                        v-on="on"
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker
                       v-model="newBack.start_date"
-                      label="Start Date"
-                      hint="MM/DD/YYYY format"
-                      persistent-hint
-                      prepend-icon="mdi-calendar"
-                      v-bind="attrs"
-                      @blur="date = parseDate(newBack.start_date)"
-                      v-on="on"
-                  ></v-text-field>
-                </template>
-                <v-date-picker
-                    v-model="newBack.start_date"
-                    no-title
-                    @input="menu1 = false"
-                ></v-date-picker>
-              </v-menu>
+                      no-title
+                      @input="menu1 = false"
+                  ></v-date-picker>
+                </v-menu>
 
-            </v-col>
-            <v-col cols="6">
-              <v-menu
-                  ref="menu2"
-                  v-model="menu2"
-                  :close-on-content-click="false"
-                  transition="scale-transition"
-                  offset-y
-                  max-width="290px"
-                  min-width="auto"
-              >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
+              </v-col>
+              <v-col cols="12" md="6">
+                <v-menu
+                    ref="menu2"
+                    v-model="menu2"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                    offset-y
+                    max-width="290px"
+                    min-width="auto"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                        v-model="newBack.end_date"
+                        label="End Date"
+                        outlined
+                        prepend-icon="mdi-calendar"
+                        v-bind="attrs"
+                        @blur="date = parseDate(newBack.end_date)"
+                        v-on="on"
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker
                       v-model="newBack.end_date"
-                      label="End Date"
-                      hint="MM/DD/YYYY format"
-                      persistent-hint
-                      prepend-icon="mdi-calendar"
-                      v-bind="attrs"
-                      @blur="date = parseDate(newBack.end_date)"
-                      v-on="on"
-                  ></v-text-field>
-                </template>
-                <v-date-picker
-                    v-model="newBack.end_date"
-                    no-title
-                    @input="menu2 = false"
-                ></v-date-picker>
-              </v-menu>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="12">
-              <v-select
-                  label="Category"
-                  :items="['work_experience', 'xx']"
-                  v-model="newBack.category"
-              />
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="12">
-              <v-text-field
-                  label="Location"
-                  v-model="newBack.location"
-              />
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="12">
-              <v-text-field
-                  label="Description"
-                  v-model="newBack.description"
-              />
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="12">
-              <v-text-field
-                  label="Title"
-                  v-model="newBack.title"
-              />
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="12">
-              <v-btn @click="sendBackground()">
-                Add
-              </v-btn>
-            </v-col>
-          </v-row>
-        </v-container>
+                      no-title
+                      @input="menu2 = false"
+                  ></v-date-picker>
+                </v-menu>
+              </v-col>
+              <v-col cols="12">
+                <v-select
+                    label="Category"
+                    outlined
+                    :items="['work_experience', 'xx']"
+                    v-model="newBack.category"
+                />
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                    label="Location"
+                    outlined
+                    v-model="newBack.location"
+                />
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                    outlined
+                    label="Description"
+                    v-model="newBack.description"
+                />
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                    label="Title"
+                    outlined
+                    v-model="newBack.title"
+                />
+              </v-col>
+              <v-col cols="12">
+                <v-row class="px-3 py-2">
+                  <v-spacer/>
+                  <v-btn
+                      color="primary"
+                      dark
+                      type="submit">
+                    Add
+                  </v-btn>
+                </v-row>
+              </v-col>
+            </v-row>
+          </v-form>
+        </v-card-text>
       </v-card>
     </v-dialog>
     <v-dialog v-model="dialogUser" max-width="750px">
@@ -458,32 +469,33 @@ export default {
           "getBackgrounds",
           "getSkills",
           "getLanguages",
-          "addLanguage",
-          "addSkill",
+          "updateUserLanguage",
+          "updateUserSkill",
           "addBackground",
           "getAllLanguages",
           'getAllSkills',
           "editUser"]),
-    sendLangs() {
-      console.log(this.selectedLangs);
-      this.addLanguage(this.selectedLangs)
+    async sendLangs() {
+      await this.updateUserLanguage(this.selectedLangs)
+      await this.getLanguages(this.user.user_id)
+      this.selectedLangs = this.languages.map((x) => x.id)
       this.dialogLang = false
     },
-    sendSkills() {
-      console.log(this.selectedSkills);
-      this.addSkill(this.selectedSkills)
+    async sendSkills() {
+      await this.updateUserSkill(this.selectedSkills)
+      await this.getSkills(this.user.user_id)
+      this.selectedSkills = this.skills.map((x) => x.id)
       this.dialogSkill = false
     },
-    sendBackground() {
+    async sendBackground() {
       this.newBack.start_date = (new Date(this.newBack.start_date)).toISOString()
       this.newBack.end_date = (new Date(this.newBack.end_date)).toISOString()
-      this.addBackground(this.newBack)
+      await this.addBackground(this.newBack)
+      await this.getBackgrounds(this.user.user_id)
+      this.$refs["back-form"].reset()
       this.dialogBack = false
     },
     parseDate(date) {
-      let x = new Date(date)
-      console.log(x.toUTCString())
-      console.log(x.toISOString())
       return date;
     },
     sendEditUser() {
@@ -497,20 +509,16 @@ export default {
       this.dialogUser = false;
     }
   },
-  mounted() {
-    this.getUser().then(() => {
-      this.newUser = this.user;
-      this.getBackgrounds(this.user.user_id)
-      this.getSkills(this.user.user_id).then(() => {
-        this.selectedSkills = this.skills.map((x) => x.id)
-      })
-      this.getLanguages(this.user.user_id).then(() => {
-        this.selectedLangs = this.languages.map((x) => x.id)
-      })
-    })
-
-    this.getAllLanguages()
-    this.getAllSkills()
+  async mounted() {
+    await this.getUser()
+    this.newUser = this.user;
+    await this.getBackgrounds(this.user.user_id)
+    await this.getSkills(this.user.user_id)
+    this.selectedSkills = this.skills.map((x) => x.id)
+    await this.getLanguages(this.user.user_id)
+    this.selectedLangs = this.languages.map((x) => x.id)
+    await this.getAllLanguages()
+    await this.getAllSkills()
   }
 }
 </script>
