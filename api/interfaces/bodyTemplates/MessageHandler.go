@@ -3,9 +3,9 @@ package bodyTemplates
 import "time"
 
 type MessageCreateRequestBody struct {
-	ReplyId        uint64 `json:"reply_id" binding:"required"`
+	ReplyId        uint64 `json:"reply_id"`
 	ConversationId uint64 `json:"conversation_id" binding:"required"`
-	MessageBody           string `json:"message_body" binding:"required"`
+	MessageBody    string `json:"message_body" binding:"required"`
 }
 
 type MessagesGetRequestBody struct {
