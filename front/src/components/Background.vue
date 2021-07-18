@@ -1,5 +1,5 @@
 <template>
-  <v-card >
+  <v-card flat style="border-radius: 7px" color="grey lighten-4">
     <v-card-title>
       {{ back.title }} at {{ back.location }}
       <v-spacer/>

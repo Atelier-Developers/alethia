@@ -60,7 +60,7 @@ export default {
       },
       {
         icon: 'mdi-comment',
-        path: 'conversations',
+        path: 'conversation',
       },
       {
         icon: 'mdi-account',
@@ -75,7 +75,9 @@ export default {
   methods: {
     ...mapActions("AuthModules", ['logout']),
     goto(path) {
-      this.$router.push(path)
+      if (this.$route.path !== `/${path}`) {
+        this.$router.push(`/${path}`)
+      }
     },
     sendLogout() {
       this.logout();

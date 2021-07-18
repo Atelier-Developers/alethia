@@ -25,7 +25,6 @@
         </v-container>
       </v-card>
     </v-dialog>
-
     <v-container>
       <v-row>
         <v-col cols="12">
@@ -82,61 +81,151 @@
             </v-container>
           </v-card>
         </v-col>
-        <v-col cols="12">
-          <v-card>
-            <v-card-title>
-              <h2>
-                Skills
-              </h2>
-            </v-card-title>
-            <v-divider/>
-            <v-container>
-              <v-row>
-                <v-col cols="6" v-for="skill in skills" :key="skill.id">
-                  <Skill :skill="skill"/>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-card>
-        </v-col>
-        <v-col cols="12">
-          <v-card>
-            <v-card-title>
-              <h2>
-                Languages
-              </h2>
-            </v-card-title>
-            <v-divider/>
-            <v-container>
-              <v-row>
-                <v-col cols="12">
-                  <v-list>
-                    <v-list-item v-for="lang in languages" :key="lang.id">
-                      {{ lang.language }}
-                    </v-list-item>
-                  </v-list>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-card>
-        </v-col>
-        <v-col cols="12">
-          <v-card>
-            <v-card-title>
-              <h2>
-                Backgrounds
-              </h2>
-            </v-card-title>
-            <v-divider/>
-            <v-container>
-              <v-row>
-                <v-col cols="6" v-for="back in backgrounds" :key="back.id">
-                  <Background :back="back"/>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-card>
-        </v-col>
+            <v-col cols="12">
+              <v-card flat style="border-radius: 7px">
+                <v-card-title>
+                  <h2 class="pr-2">
+                    {{ user.first_name }} {{ user.last_name }}
+                  </h2>
+                  <h4 class="font-weight-light">
+                    @{{ user.username }}
+                  </h4>
+                  <v-spacer/>
+                  <v-btn @click="dialogUser=true" icon>
+                    <v-icon>mdi-pencil</v-icon>
+                  </v-btn>
+                </v-card-title>
+                <v-card-subtitle>
+                  {{ user.about }}
+                </v-card-subtitle>
+                <v-divider/>
+                <v-card-text>
+                  {{ user.intro }}
+                </v-card-text>
+              </v-card>
+            </v-col>
+            <v-col cols="12">
+              <v-card flat style="border-radius: 7px">
+                <v-card-title>
+                  <v-icon left>
+                    mdi-trophy-outline
+                  </v-icon>
+                  <h4>
+                    Accomplishments
+                  </h4>
+                </v-card-title>
+                <v-divider/>
+                <v-card-text>
+                  {{ user.accomplishments }}
+                </v-card-text>
+              </v-card>
+            </v-col>
+            <v-col cols="12">
+              <v-card flat style="border-radius: 7px">
+                <v-card-title>
+                  <v-icon left>
+                    mdi-information-outline
+                  </v-icon>
+                  <h4>
+                    Additional Info
+                  </h4>
+                </v-card-title>
+                <v-divider/>
+                <v-card-text>
+                  {{ user.additional_info }}
+                </v-card-text>
+              </v-card>
+            </v-col>
+            <v-col cols="12">
+              <v-card flat style="border-radius: 7px">
+                <v-card-title>
+                  <v-icon left>
+                    mdi-swim
+                  </v-icon>
+                  <h4>
+                    Skills
+                  </h4>
+                  <v-spacer/>
+                  <v-btn @click="dialogSkill=true" elevation="0" icon>
+                    <v-icon>mdi-plus</v-icon>
+                  </v-btn>
+                </v-card-title>
+                <v-divider/>
+                <v-container>
+                  <v-row dense>
+                    <v-col cols="6" v-for="skill in skills" :key="skill.id">
+                      <Skill :skill="skill"/>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card>
+            </v-col>
+            <v-col cols="12">
+              <v-card flat style="border-radius: 7px">
+                <v-card-title>
+                  <v-icon left>
+                    mdi-translate
+                  </v-icon>
+                  <h4>
+                    Languages
+                  </h4>
+                  <v-spacer/>
+                  <v-btn @click="dialogLang=true" elevation="0" icon>
+                    <v-icon>mdi-plus</v-icon>
+                  </v-btn>
+                </v-card-title>
+                <v-divider/>
+                <v-container>
+                  <v-row dense>
+                    <v-col cols="6" v-for="lang in languages" :key="lang.id">
+                      <v-list-item>
+                        <v-list-item-content>
+                          <v-list-item-title>
+                            {{ lang.language }}
+                          </v-list-item-title>
+                        </v-list-item-content>
+                      </v-list-item>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card>
+            </v-col>
+            <v-col cols="12">
+              <v-card flat style="border-radius: 7px">
+                <v-card-title>
+                  <h2>
+                    Backgrounds
+                  </h2>
+                  <v-spacer/>
+                  <v-icon @click="dialogBack=true">mdi-plus</v-icon>
+                </v-card-title>
+                <v-divider/>
+                <v-container>
+                  <v-row>
+                    <v-col cols="12" md="6" v-for="back in backgrounds" :key="back.id">
+                      <Background :deletable="false" :back="back"/>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card>
+            </v-col>
+            <v-col cols="12">
+              <v-card color="grey lighten-2">
+                <v-card-title style="background-color: white">
+                  <h2>
+                    Featured Posts
+                  </h2>
+                </v-card-title>
+                <v-divider/>
+                <v-container>
+                  <v-row v-for="post in user.posts" :key="post.id">
+                    <v-col cols="12">
+                      <Post :post="post" :username="user.username"/>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card>
+            </v-col>
         <v-col cols="12">
           <v-card color="grey lighten-2">
             <v-card-title style="background-color: white">
@@ -163,10 +252,11 @@
 import {mapActions, mapGetters} from "vuex";
 import Skill from "../components/Skill";
 import Background from "../components/Background";
+import Post from "@/components/Post";
 
 export default {
   name: "User",
-  components: {Background, Skill},
+  components: {Post, Background, Skill},
   data: () => ({
     inviteReq: {
       receiver_id: 0,
