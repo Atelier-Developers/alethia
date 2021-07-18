@@ -87,7 +87,7 @@ func (userHandler *UserHandler) GetUser(c *gin.Context) {
 		log.Fatal("User Id does not exist!")
 	}
 
-	var user entity.UserWithMutualConnection
+	var user entity.UserWithMutualConnectionAndFriendshipStatus
 	err := userHandler.userRepository.GetUserByID(userId.(uint64), userId.(uint64), &user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
@@ -185,34 +185,8 @@ func (userHandler *UserHandler) GetUsersWithSimilarUsername(c *gin.Context) {
 		return
 	}
 
-	var responseUsers []bodyTemplates.UserGetByUsernameAndId
-	for _, u := range users {
 
-		isFriend, err := userHandler.friendRepository.FriendExists(userId.(uint64), u.ID)
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, err)
-			return
-		}
-
-		responseUser := bodyTemplates.UserGetByUsernameAndId{
-			UserID:                u.ID,
-			Username:              u.Username,
-			FirstName:             u.FirstName,
-			LastName:              u.LastName,
-			Intro:                 u.Intro,
-			About:                 u.About,
-			Accomplishments:       u.Accomplishments,
-			AdditionalInfo:        u.AdditionalInfo,
-			BirthDate:             u.BirthDate,
-			JoinDate:              u.JoinDate,
-			MutualConnection:      uint64(u.MutualConnection.Int64),
-			IsFriendsWithThisUser: isFriend,
-		}
-
-		responseUsers = append(responseUsers, responseUser)
-	}
-
-	c.JSON(http.StatusOK, responseUsers)
+	c.JSON(http.StatusOK, users)
 }
 
 func (userHandler *UserHandler) GetUserById(c *gin.Context) {
@@ -229,34 +203,15 @@ func (userHandler *UserHandler) GetUserById(c *gin.Context) {
 		log.Fatal("User Id does not exist!")
 	}
 
-	var user entity.UserWithMutualConnection
+	var user entity.UserWithMutualConnectionAndFriendshipStatus
 	err := userHandler.userRepository.GetUserByID(userId.(uint64), userRequestBody.Id, &user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
 
-	isFriend, err := userHandler.friendRepository.FriendExists(userId.(uint64), userRequestBody.Id)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, err)
-		return
-	}
 
-	response := bodyTemplates.UserGetByUsernameAndId{
-		UserID:                user.ID,
-		Username:              user.Username,
-		FirstName:             user.FirstName,
-		LastName:              user.LastName,
-		Intro:                 user.Intro,
-		About:                 user.About,
-		Accomplishments:       user.Accomplishments,
-		AdditionalInfo:        user.AdditionalInfo,
-		BirthDate:             user.BirthDate,
-		JoinDate:              user.JoinDate,
-		MutualConnection:      uint64(user.MutualConnection.Int64),
-		IsFriendsWithThisUser: isFriend,
-	}
-	c.JSON(http.StatusOK, response)
+	c.JSON(http.StatusOK, user)
 }
 
 func (userHandler *UserHandler) Login(c *gin.Context) {

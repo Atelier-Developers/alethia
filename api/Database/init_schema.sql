@@ -390,7 +390,7 @@ BEGIN
       AND USER.id = friends2.user1_id
     GROUP BY USER.id, USER.first_name, USER.last_name, USER.username, USER.password, USER.intro, USER.about,
              USER.accomplishments, USER.additional_information, USER.join_date, USER.birthdate, friends2.user1_id
-    ORDER BY mutual_connections desc;
+    ORDER BY mutual_connections desc LIMIT 15;
 
 END //
 
@@ -403,7 +403,14 @@ CREATE PROCEDURE GetUsersWithMutualConnectionByUsername(
     IN usernameString varchar(50)
 )
 BEGIN
-    select USER.*, tmp.mutual_connections
+    select USER.*,
+           tmp.mutual_connections,
+           CASE
+               WHEN EXISTS(SELECT *
+                           FROM FRIEND
+                           WHERE (FRIEND.user1_id = userId AND FRIEND.user2_id = USER.id)
+                              OR (FRIEND.user1_id = USER.id AND FRIEND.user2_id = userId)) THEN 1
+               ELSE 0 END AS is_friends_with_this_user
     From USER
              LEFT OUTER JOIN (select friends2.user1_id, COUNT(*) as mutual_connections
                               from (select user1_id, user2_id
@@ -421,7 +428,7 @@ BEGIN
                               GROUP BY friends2.user1_id
                               ORDER BY mutual_connections DESC) tmp ON USER.id = tmp.user1_id
     where USER.username LIKE usernameString
-    ORDER BY tmp.mutual_connections DESC;
+    ORDER BY is_friends_with_this_user DESC, tmp.mutual_connections DESC LIMIT 15;
 END //
 
 DELIMITER ;
@@ -433,7 +440,14 @@ CREATE PROCEDURE GetUserWithMutualConnectionByUId(
     IN userId2 INT
 )
 BEGIN
-    select USER.*, tmp.mutual_connections
+    select USER.*,
+           tmp.mutual_connections,
+           CASE
+               WHEN EXISTS(SELECT *
+                           FROM FRIEND
+                           WHERE (FRIEND.user1_id = userId AND FRIEND.user2_id = USER.id)
+                              OR (FRIEND.user1_id = USER.id AND FRIEND.user2_id = userId)) THEN 1
+               ELSE 0 END AS is_friends_with_this_user
     From USER
              LEFT OUTER JOIN (select friends2.user1_id, COUNT(*) as mutual_connections
                               from (select user1_id, user2_id
