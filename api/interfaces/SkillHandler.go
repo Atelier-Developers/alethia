@@ -22,7 +22,7 @@ func NewSkillHandler(skillRepository repository.SkillRepository, notificationRep
 	}
 }
 
-func (skillHandler *SkillHandler) EndorseSkill(c *gin.Context) {
+func (skillHandler *SkillHandler) EndorseOrUnendorseSkill(c *gin.Context) {
 	var endorseSkillRequestBody bodyTemplates.EndorseSkillRequestBody
 	if err := c.ShouldBindJSON(&endorseSkillRequestBody); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{
@@ -42,23 +42,39 @@ func (skillHandler *SkillHandler) EndorseSkill(c *gin.Context) {
 		return
 	}
 
-	err := skillHandler.skillRepository.EndorseSkill(endorseSkillRequestBody.SkillId, endorseSkillRequestBody.UserId, userId.(uint64))
+	isEndorsed, err := skillHandler.skillRepository.IsThisUserSkillEndorsed(endorseSkillRequestBody.SkillId, endorseSkillRequestBody.UserId, userId.(uint64))
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, err)
+		c.JSON(http.StatusInternalServerError, nil)
 		return
 	}
-	n := notification.EndorseSkill{
-		UserId:           userId.(uint64),
-		UserSkillUserId:  endorseSkillRequestBody.UserId,
-		UserSkillSkillId: endorseSkillRequestBody.SkillId,
-		Notification: notification.Notification{
-			ReceiverId: endorseSkillRequestBody.UserId,
-		},
-	}
-	err = skillHandler.notificationRepository.CreateEndorseSkillNotification(&n)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, err)
-		return
+
+	if isEndorsed {
+		err = skillHandler.skillRepository.UnEndorseSkill(endorseSkillRequestBody.SkillId, endorseSkillRequestBody.UserId, userId.(uint64))
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, nil)
+			return
+		}
+
+	} else {
+		err := skillHandler.skillRepository.EndorseSkill(endorseSkillRequestBody.SkillId, endorseSkillRequestBody.UserId, userId.(uint64))
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+		n := notification.EndorseSkill{
+			UserId:           userId.(uint64),
+			UserSkillUserId:  endorseSkillRequestBody.UserId,
+			UserSkillSkillId: endorseSkillRequestBody.SkillId,
+			Notification: notification.Notification{
+				ReceiverId: endorseSkillRequestBody.UserId,
+			},
+		}
+		err = skillHandler.notificationRepository.CreateEndorseSkillNotification(&n)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
 	}
 	c.JSON(http.StatusOK, nil)
 }
@@ -141,7 +157,7 @@ func (skillHandler *SkillHandler) DeleteUserSkill(c *gin.Context) {
 }
 
 func (skillHandler *SkillHandler) GetUserSkills(c *gin.Context) {
-	_, exists := c.Get("user_id")
+	userId, exists := c.Get("user_id")
 	if !exists {
 		log.Fatal("User Id does not exist!")
 	}
@@ -151,7 +167,7 @@ func (skillHandler *SkillHandler) GetUserSkills(c *gin.Context) {
 		log.Fatal(err)
 	}
 
-	skills, err := skillHandler.skillRepository.GetUserSkills(uint64(uId))
+	skills, err := skillHandler.skillRepository.GetUserSkills(userId.(uint64), uint64(uId))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return

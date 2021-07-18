@@ -118,7 +118,7 @@ func main() {
 			userSkillGroup.GET("/:user_id", skillHandler.GetUserSkills)
 			userSkillGroup.POST("", skillHandler.AddUserSkill)
 			userSkillGroup.DELETE("/:skill_id", skillHandler.DeleteUserSkill)
-			userSkillGroup.POST("/endorse", skillHandler.EndorseSkill)
+			userSkillGroup.POST("/endorse", skillHandler.EndorseOrUnendorseSkill)
 		}
 
 		userNotificationGroup := userGroup.Group("/notification")

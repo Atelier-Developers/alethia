@@ -149,7 +149,9 @@
                 <v-select
                     label="Category"
                     outlined
-                    :items="['work_experience', 'xx']"
+                    :items="items"
+                    item-text="text"
+                    item-value="value"
                     v-model="newBack.category"
                 />
               </v-col>
@@ -429,6 +431,24 @@ export default {
   name: "Profile",
   components: {Background, Post, Skill},
   data: () => ({
+    items: [
+      {
+        value: 'work_experience',
+        text: 'Work Experience'
+      },
+      {
+        value: 'education',
+        text: 'Education'
+      },
+      {
+        value: 'licenses_and_certificates',
+        text: 'Licenses And Certificates'
+      },
+      {
+        value: 'volunteer_experience',
+        text: 'Volunteer Experience'
+      }
+    ],
     dialogLang: false,
     dialogSkill: false,
     dialogBack: false,
@@ -471,8 +491,11 @@ export default {
           'getAllSkills',
           "editUser"]),
     async sendLangs() {
+      console.log(this.selectedLangs)
       await this.updateUserLanguage(this.selectedLangs)
+      console.log('yo')
       await this.getLanguages(this.user.user_id)
+      console.log('yo2')
       this.selectedLangs = this.languages.map((x) => x.id)
       this.dialogLang = false
     },
@@ -518,9 +541,11 @@ export default {
     this.newUser = this.user;
     await this.getBackgrounds(this.user.user_id)
     await this.getSkills(this.user.user_id)
-    this.selectedSkills = this.skills.map((x) => x.id)
+    if (this.selectedSkills.length > 0)
+      this.selectedSkills = this.skills.map((x) => x.id)
     await this.getLanguages(this.user.user_id)
-    this.selectedLangs = this.languages.map((x) => x.id)
+    if (this.selectedLangs.length > 0)
+      this.selectedLangs = this.languages.map((x) => x.id)
     await this.getAllLanguages()
     await this.getAllSkills()
   }

@@ -4,6 +4,7 @@ import (
 	"github.com/Atelier-Developers/alethia/domain/entity"
 	"github.com/Atelier-Developers/alethia/domain/entity/Comment"
 	"github.com/Atelier-Developers/alethia/domain/entity/Post"
+	"github.com/Atelier-Developers/alethia/domain/entity/Skill"
 	"time"
 )
 
@@ -34,7 +35,7 @@ type NotificationCommentResponseBody struct {
 
 type NotificationEndorseResponseBody struct {
 	NotificationResponseBody
-	UserSkill entity.Skill        `json:"user_skill"`
+	UserSkill Skill.Skill         `json:"user_skill"`
 	Creator   UserGetResponseBody `json:"creator"`
 }
 

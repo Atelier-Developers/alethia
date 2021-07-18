@@ -2,7 +2,7 @@ package persistance
 
 import (
 	"github.com/Atelier-Developers/alethia/Database"
-	"github.com/Atelier-Developers/alethia/domain/entity"
+	"github.com/Atelier-Developers/alethia/domain/entity/Skill"
 	"log"
 )
 
@@ -43,7 +43,7 @@ func (skillRepository *SkillRepository) AddUserSkill(skillId uint64, userId uint
 	return nil
 }
 
-func (skillRepository *SkillRepository) GetSkillById(id uint64) (entity.Skill, error) {
+func (skillRepository *SkillRepository) GetSkillById(id uint64) (Skill.Skill, error) {
 	db := skillRepository.dbClient.GetDB()
 
 	stmt, err := db.Prepare("SELECT * FROM SKILL WHERE id=?")
@@ -55,7 +55,7 @@ func (skillRepository *SkillRepository) GetSkillById(id uint64) (entity.Skill, e
 
 	row := stmt.QueryRow(id)
 
-	var skill entity.Skill
+	var skill Skill.Skill
 	err = row.Scan(&skill.Id, &skill.Title, &skill.Category)
 
 	if err != nil {
@@ -65,7 +65,7 @@ func (skillRepository *SkillRepository) GetSkillById(id uint64) (entity.Skill, e
 	return skill, nil
 }
 
-func (skillRepository *SkillRepository) GetSkills() ([]entity.Skill, error) {
+func (skillRepository *SkillRepository) GetSkills() ([]Skill.Skill, error) {
 	db := skillRepository.dbClient.GetDB()
 
 	stmt, err := db.Prepare("SELECT * FROM SKILL")
@@ -75,14 +75,14 @@ func (skillRepository *SkillRepository) GetSkills() ([]entity.Skill, error) {
 
 	defer stmt.Close()
 
-	var skills []entity.Skill
+	var skills []Skill.Skill
 	rows, err := stmt.Query()
 	if err != nil {
 		return nil, err
 	}
 
 	for rows.Next() {
-		var skill entity.Skill
+		var skill Skill.Skill
 		err = rows.Scan(&skill.Id, &skill.Title, &skill.Category)
 		if err != nil {
 			log.Fatal(err)
@@ -128,7 +128,43 @@ func (skillRepository *SkillRepository) DeleteUserSkill(skillId uint64, userId u
 	return nil
 }
 
-func (skillRepository *SkillRepository) GetUserSkills(userId uint64) ([]entity.Skill, error) {
+func (skillRepository *SkillRepository) UnEndorseSkill(userSkillId uint64, userId uint64, endorserId uint64) error {
+	db := skillRepository.dbClient.GetDB()
+	stmt, err := db.Prepare("DELETE FROM ENDORSE WHERE user_skill_skill_id=? AND user_skill_user_id=? AND endorser_id=?")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(userSkillId, userId, endorserId)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return nil
+}
+
+func (skillRepository *SkillRepository) IsThisUserSkillEndorsed(userSkillId uint64, userId uint64, endorserId uint64) (bool, error) {
+	db := skillRepository.dbClient.GetDB()
+	stmt, err := db.Prepare("SELECT Count(*) FROM ENDORSE WHERE user_skill_skill_id=? AND user_skill_user_id=? AND endorser_id=?")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	row := stmt.QueryRow(userSkillId, userId, endorserId)
+
+	var count uint64
+	err = row.Scan(&count)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return count > 0, nil
+}
+
+func (skillRepository *SkillRepository) GetUserSkills(visitorId uint64, userId uint64) ([]Skill.UserSkill, error) {
 	db := skillRepository.dbClient.GetDB()
 	stmt, err := db.Prepare("SELECT SKILL.* FROM SKILL, USER_SKILL WHERE SKILL.id = USER_SKILL.skill_id AND USER_SKILL.user_id = ?")
 	if err != nil {
@@ -141,12 +177,41 @@ func (skillRepository *SkillRepository) GetUserSkills(userId uint64) ([]entity.S
 		log.Fatal(err)
 	}
 
-	var skills []entity.Skill
+	var skills []Skill.UserSkill
 	for rows.Next() {
-		var skill entity.Skill
+		var skill Skill.UserSkill
 		if err := rows.Scan(&skill.Id, &skill.Title, &skill.Category); err != nil {
 			log.Fatal(err)
 		}
+
+		stmt, err := db.Prepare("SELECT COUNT(*) FROM ENDORSE WHERE user_skill_skill_id=? AND user_skill_user_id=?")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer stmt.Close()
+
+		row := stmt.QueryRow(skill.Id, userId)
+		var endorseCount uint64
+		err = row.Scan(&endorseCount)
+
+		skill.EndorseCount = endorseCount
+
+		stmt2, err := db.Prepare("SELECT COUNT(*) FROM ENDORSE WHERE user_skill_skill_id=? AND user_skill_user_id=? AND endorser_id=?")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer stmt2.Close()
+
+		row = stmt2.QueryRow(skill.Id, userId, visitorId)
+		var count uint64
+		err = row.Scan(&count)
+
+		if count > 0 {
+			skill.IsEndorsedByThisUser = true
+		} else {
+			skill.IsEndorsedByThisUser = false
+		}
+
 		skills = append(skills, skill)
 	}
 

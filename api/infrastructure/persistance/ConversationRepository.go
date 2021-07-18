@@ -85,6 +85,49 @@ func (conversationRepo *ConversationRepository) SaveConversation(userId1 uint64,
 	return nil
 }
 
+func (conversationRepo *ConversationRepository) GetConversationCorrespondents(conversationId uint64) (uint64, uint64, error) {
+	db := conversationRepo.dbClient.GetDB()
+
+	stmt, err := db.Prepare("SELECT UC1.user_id, UC2.user_id FROM USER_CONVERSATION UC1, USER_CONVERSATION UC2 WHERE UC1.user_id < UC2.user_id AND UC1.conversation_id = UC2.conversation_id AND UC1.conversation_id=?")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer stmt.Close()
+
+	row := stmt.QueryRow(conversationId)
+
+	var userId1, userId2 uint64
+	err = row.Scan(&userId1, &userId2)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return userId1, userId2, nil
+}
+
+func (conversationRepo *ConversationRepository) GetUserConversation(conversationId uint64, userId uint64) (Conversation.UserConversation, error) {
+	db := conversationRepo.dbClient.GetDB()
+
+	stmt, err := db.Prepare("SELECT USER_CONVERSATION.*, USER.username FROM USER_CONVERSATION, USER WHERE USER_CONVERSATION.conversation_id=? AND USER_CONVERSATION.user_id=? AND USER.id = USER_CONVERSATION.user_id")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer stmt.Close()
+
+	row := stmt.QueryRow(conversationId, userId)
+
+	var conversation Conversation.UserConversation
+	err = row.Scan(&conversation.UserId, &conversation.ConversationId, &conversation.IsArchived, &conversation.IsDeleted, &conversation.IsRead, &conversation.Username)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return conversation, err
+}
+
 func (conversationRepo *ConversationRepository) UpdateUserConversation(userConversation Conversation.UserConversation) error {
 
 	db := conversationRepo.dbClient.GetDB()

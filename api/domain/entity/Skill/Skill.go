@@ -1,4 +1,4 @@
-package entity
+package Skill
 
 type Skill struct {
 	Id       uint64 `json:"id"`

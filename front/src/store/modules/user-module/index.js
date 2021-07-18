@@ -3,6 +3,7 @@ import axios from "axios";
 
 const state = {
     user: {},
+    users: [],
     skills: [],
     backgrounds: [],
     languages: [],
@@ -13,6 +14,9 @@ const state = {
 const mutations = {
     setUser(state, item) {
         state.user = item;
+    },
+    setUsers(state, item) {
+        state.users = item;
     },
     setSkills(state, item) {
         state.skills = item;
@@ -36,24 +40,34 @@ const actions = {
         let res = await axios.get(API.getUser);
         context.commit('setUser', res.data);
     },
+    async getUsersByUsername(context, payload) {
+        console.log("Get USERS BY USERNAME")
+        let res = await axios.get(API.getUser + '/' + payload);
+        console.log(res);
+        context.commit('setUsers', res.data);
+    },
+    clearUsers(context,) {
+        context.commit('setUsers', [])
+    },
     async getUserById(context, payload) {
         let res = await axios.post(API.getUser, payload);
         context.commit('setUser', res.data);
     },
     async getSkills(context, payload) {
         let res = await axios.get(API.getSkills + '/' + payload);
-        context.commit('setSkills', res.data);
+        context.commit('setSkills', res.data ?? []);
     },
     async getLanguages(context, payload) {
         let res = await axios.get(API.getLanguages + '/' + payload);
-        context.commit('setLanguages', res.data);
+        context.commit('setLanguages', res.data ?? []);
     },
     async getBackgrounds(context, payload) {
         const res = await axios.get(API.getBackground + '/' + payload);
-        context.commit('setBackgrounds', res.data);
+        context.commit('setBackgrounds', res.data ?? []);
     },
     async updateUserLanguage(context, payload) {
         const mappedLanguage = context.getters.languages.map((x) => x.id)
+        console.log(payload)
 
         for (const p of payload) {
             if (!mappedLanguage.includes(p)) {
@@ -106,11 +120,14 @@ const actions = {
     async editUser(context, payload) {
         await axios.put(API.editUser, payload);
     },
-
+    async endorseSkill(context, payload) {
+        await axios.post(API.endorse, payload);
+    }
 };
 
 const getters = {
     user: (state) => state.user,
+    users: (state) => state.users,
     skills: (state) => state.skills,
     backgrounds: (state) => state.backgrounds,
     languages: (state) => state.languages,
