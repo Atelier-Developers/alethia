@@ -4,6 +4,7 @@ import axios from "axios";
 const state = {
     invites: [],
     friends: [],
+    mutual: [],
 };
 
 const mutations = {
@@ -12,6 +13,9 @@ const mutations = {
     },
     setInvites(state, item) {
         state.invites = item;
+    },
+    setMutual(state, item) {
+        state.mutual = item;
     }
 
 };
@@ -41,11 +45,18 @@ const actions = {
             data: payload
         });
     },
+    async getMutualConnections(context) {
+        console.log("get mutual")
+        let res = await axios.get(API.mutual)
+        console.log(res);
+        context.commit('setMutual', res.data);
+    }
 };
 
 const getters = {
     invites: (state) => state.invites,
     friends: (state) => state.friends,
+    mutual: (state) => state.mutual,
 };
 
 

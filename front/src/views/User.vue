@@ -108,7 +108,7 @@
             <v-container>
               <v-row dense>
                 <v-col cols="6" v-for="skill in skills" :key="skill.id">
-                  <Skill :skill="skill"/>
+                  <Skill :skill="skill" :user_id="user_id"/>
                 </v-col>
               </v-row>
             </v-container>
@@ -211,6 +211,7 @@ export default {
       body: '',
     },
     dialogInvite: false,
+    user_id: 0
   }),
   computed: {
     ...mapGetters("UserModules",
@@ -243,12 +244,25 @@ export default {
   },
   async mounted() {
     let id = +this.$route.params.id
+    this.user_id = id;
     await this.getUserById({id: id})
     await this.getBackgrounds(id)
     await this.getSkills(id)
     await this.getLanguages(id)
     if (id !== +this.userId)
       await this.viewProfile({id: id})
+  },
+  watch: {
+    '$route.params.id': async () => {
+      let id = +this.$route.params.id
+      this.user_id = id;
+      await this.getUserById({id: id})
+      await this.getBackgrounds(id)
+      await this.getSkills(id)
+      await this.getLanguages(id)
+      if (id !== +this.userId)
+        await this.viewProfile({id: id})
+    }
   }
 }
 </script>

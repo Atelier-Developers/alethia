@@ -96,6 +96,8 @@ export default {
       await this.commentPost({
         text: this.newComment.text,
         post_id: id
+      }).then(()=>{
+        this.dialogComment = false;
       })
       this.dialogComment = false;
       await this.getAllPostDetail();
