@@ -3,6 +3,7 @@ import axios from "axios";
 
 const state = {
     user: {},
+    users: [],
     skills: [],
     backgrounds: [],
     languages: [],
@@ -13,6 +14,9 @@ const state = {
 const mutations = {
     setUser(state, item) {
         state.user = item;
+    },
+    setUsers(state, item) {
+        state.users = item;
     },
     setSkills(state, item) {
         state.skills = item;
@@ -35,6 +39,12 @@ const actions = {
     async getUser(context,) {
         let res = await axios.get(API.getUser);
         context.commit('setUser', res.data);
+    },
+    async getUsersByUsername(context, payload) {
+        console.log("Get USERS BY USERNAME")
+        let res = await axios.get(API.getUser + '/' + payload);
+        console.log(res);
+        context.commit('setUsers', res.data);
     },
     async getUserById(context, payload) {
         let res = await axios.post(API.getUser, payload);
@@ -111,6 +121,7 @@ const actions = {
 
 const getters = {
     user: (state) => state.user,
+    users: (state) => state.users,
     skills: (state) => state.skills,
     backgrounds: (state) => state.backgrounds,
     languages: (state) => state.languages,
