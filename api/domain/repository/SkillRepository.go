@@ -9,4 +9,5 @@ type SkillRepository interface {
 	GetUserSkills(userId uint64) ([]entity.Skill, error)
 	UserSkillExist(skillId uint64, userId uint64) (bool, error)
 	GetSkills() ([]entity.Skill, error)
+	GetSkillById(id uint64) (entity.Skill, error)
 }

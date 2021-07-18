@@ -1,28 +1,31 @@
 <template>
   <div>
-    <v-dialog v-model="dialogInvite">
-      <v-card>
+    <v-dialog max-width="700px" v-model="dialogInvite">
+      <v-card flat style="border-radius: 7px">
         <v-card-title>
-          <h3>Invitation</h3>
+          <h4>Invitation</h4>
         </v-card-title>
-        <v-divider/>
-        <v-container>
-          <v-row>
-            <v-col cols="12">
-              <v-textarea
-                  lable="Invite Message"
-                  v-model="inviteReq.body"
-              />
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="12">
-              <v-btn @click="sendCreateInvite()">
-                Send
-              </v-btn>
-            </v-col>
-          </v-row>
-        </v-container>
+        <v-card-text>
+          <v-form @submit.prevent="sendCreateInvite">
+            <v-row>
+              <v-col cols="12">
+                <v-textarea
+                    outlined
+                    lable="Invite Message"
+                    v-model="inviteReq.body"
+                />
+              </v-col>
+              <v-col cols="12">
+                <v-row>
+                  <v-spacer/>
+                  <v-btn class="mx-2" color="primary" type="submit">
+                    Send
+                  </v-btn>
+                </v-row>
+              </v-col>
+            </v-row>
+          </v-form>
+        </v-card-text>
       </v-card>
     </v-dialog>
     <v-container>
@@ -100,10 +103,6 @@
               <h4>
                 Skills
               </h4>
-              <v-spacer/>
-              <v-btn @click="dialogSkill=true" elevation="0" icon>
-                <v-icon>mdi-plus</v-icon>
-              </v-btn>
             </v-card-title>
             <v-divider/>
             <v-container>
@@ -124,10 +123,6 @@
               <h4>
                 Languages
               </h4>
-              <v-spacer/>
-              <v-btn @click="dialogLang=true" elevation="0" icon>
-                <v-icon>mdi-plus</v-icon>
-              </v-btn>
             </v-card-title>
             <v-divider/>
             <v-container>
@@ -151,8 +146,6 @@
               <h2>
                 Backgrounds
               </h2>
-              <v-spacer/>
-              <v-icon @click="dialogBack=true">mdi-plus</v-icon>
             </v-card-title>
             <v-divider/>
             <v-container>

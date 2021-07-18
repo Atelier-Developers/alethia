@@ -22,40 +22,28 @@ const mutations = {
 
 const actions = {
     async getFriends(context,) {
-        console.log("GET FRIENDS");
         let res = await axios.get(API.getFriends);
-        console.log(res);
         context.commit('setFriends', res.data);
     },
     async getInvites(context,) {
-        console.log("GET Invites");
-        let res = await axios.get(API.getInvites);
-        console.log(res);
+        const res = await axios.get(API.getInvites);
         context.commit('setInvites', res.data);
     },
     async createInvite(context, payload) {
-        console.log("Create Invites");
-        let res = await axios.post(API.getInvites, payload);
-        console.log(res);
+        await axios.post(API.getInvites, payload);
     },
     async deleteInvite(context, payload) {
-        console.log("Delete Invites");
-        let res = await axios.delete(API.getInvites, {
+        await axios.delete(API.getInvites, {
             data: payload
         });
-        console.log(res);
     },
     async addFriend(context, payload) {
-        console.log("add Friend");
-        let res = await axios.post(API.getFriends, payload);
-        console.log(res);
+        await axios.post(API.getFriends, payload);
     },
     async deleteFriend(context, payload) {
-        console.log("Delete Friend");
-        let res = await axios.delete(API.getFriends, {
+        await axios.delete(API.getFriends, {
             data: payload
         });
-        console.log(res);
     },
     async getMutualConnections(context) {
         console.log("get mutual")

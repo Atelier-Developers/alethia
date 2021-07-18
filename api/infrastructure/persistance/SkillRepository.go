@@ -43,6 +43,28 @@ func (skillRepository *SkillRepository) AddUserSkill(skillId uint64, userId uint
 	return nil
 }
 
+func (skillRepository *SkillRepository) GetSkillById(id uint64) (entity.Skill, error) {
+	db := skillRepository.dbClient.GetDB()
+
+	stmt, err := db.Prepare("SELECT * FROM SKILL WHERE id=?")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer stmt.Close()
+
+	row := stmt.QueryRow(id)
+
+	var skill entity.Skill
+	err = row.Scan(&skill.Id, &skill.Title, &skill.Category)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return skill, nil
+}
+
 func (skillRepository *SkillRepository) GetSkills() ([]entity.Skill, error) {
 	db := skillRepository.dbClient.GetDB()
 
