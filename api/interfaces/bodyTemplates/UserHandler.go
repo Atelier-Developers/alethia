@@ -31,6 +31,19 @@ type UserLoginRequestBody struct {
 }
 
 type UserGetResponseBody struct {
+	UserID          uint64    `json:"user_id"`
+	Username        string    `json:"username"`
+	FirstName       string    `json:"first_name"`
+	LastName        string    `json:"last_name"`
+	Intro           string    `json:"intro"`
+	About           string    `json:"about"`
+	Accomplishments string    `json:"accomplishments"`
+	AdditionalInfo  string    `json:"additional_info"`
+	BirthDate       time.Time `json:"birth_date"`
+	JoinDate        time.Time `json:"join_date"`
+}
+
+type UserGetMutualConnectionsResponseBody struct {
 	UserID           uint64    `json:"user_id"`
 	Username         string    `json:"username"`
 	FirstName        string    `json:"first_name"`
@@ -42,6 +55,21 @@ type UserGetResponseBody struct {
 	BirthDate        time.Time `json:"birth_date"`
 	JoinDate         time.Time `json:"join_date"`
 	MutualConnection uint64    `json:"mutual_connection"`
+}
+
+type UserGetByUsernameAndId struct {
+	UserID                uint64    `json:"user_id"`
+	Username              string    `json:"username"`
+	FirstName             string    `json:"first_name"`
+	LastName              string    `json:"last_name"`
+	Intro                 string    `json:"intro"`
+	About                 string    `json:"about"`
+	Accomplishments       string    `json:"accomplishments"`
+	AdditionalInfo        string    `json:"additional_info"`
+	BirthDate             time.Time `json:"birth_date"`
+	JoinDate              time.Time `json:"join_date"`
+	MutualConnection      uint64    `json:"mutual_connection"`
+	IsFriendsWithThisUser bool      `json:"is_friends_with_this_user"`
 }
 
 type UserGetRequestBody struct {

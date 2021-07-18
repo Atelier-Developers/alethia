@@ -53,7 +53,7 @@ func main() {
 	messageHandler := interfaces.NewMessageHandler(conversationRepo, messageRepo)
 	userBackgroundHistoryHandler := interfaces.NewUserBackgroundHistoryHandler(backgroundHistoryRepo, notificationRepo, friendRepo)
 	userLanguageHandler := interfaces.NewUserLanguageHandler(languageRepo)
-	userHandler := interfaces.NewUserHandler(userRepo, redisService.Auth, token, notificationRepo)
+	userHandler := interfaces.NewUserHandler(userRepo, friendRepo, redisService.Auth, token, notificationRepo)
 	postHandler := interfaces.NewPostHandler(postRepo, notificationRepo)
 	commentHandler := interfaces.NewCommentHandler(commentRepo, notificationRepo, postRepo)
 	skillHandler := interfaces.NewSkillHandler(skillRepo, notificationRepo)

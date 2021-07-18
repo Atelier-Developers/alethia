@@ -15,15 +15,17 @@ import (
 )
 
 type UserHandler struct {
+	friendRepository       repository.FriendRepository
 	userRepository         repository.UserRepository
 	authInterface          auth.AuthInterface
 	tokenInterface         auth.TokenInterface
 	notificationRepository repository.NotificationRepository
 }
 
-func NewUserHandler(userRepository repository.UserRepository, authInterface auth.AuthInterface, tokenInterface auth.TokenInterface, notificationRepository repository.NotificationRepository) UserHandler {
+func NewUserHandler(userRepository repository.UserRepository, friendRepository repository.FriendRepository, authInterface auth.AuthInterface, tokenInterface auth.TokenInterface, notificationRepository repository.NotificationRepository) UserHandler {
 	return UserHandler{
 		userRepository:         userRepository,
+		friendRepository:       friendRepository,
 		authInterface:          authInterface,
 		tokenInterface:         tokenInterface,
 		notificationRepository: notificationRepository,
@@ -147,9 +149,9 @@ func (userHandler *UserHandler) GetUsersWithMutualConnection(c *gin.Context) {
 		log.Fatal(err)
 	}
 
-	var responseUsers []bodyTemplates.UserGetResponseBody
+	var responseUsers []bodyTemplates.UserGetMutualConnectionsResponseBody
 	for _, u := range users {
-		responseUser := bodyTemplates.UserGetResponseBody{
+		responseUser := bodyTemplates.UserGetMutualConnectionsResponseBody{
 			UserID:           u.ID,
 			Username:         u.Username,
 			FirstName:        u.FirstName,
@@ -183,20 +185,28 @@ func (userHandler *UserHandler) GetUsersWithSimilarUsername(c *gin.Context) {
 		return
 	}
 
-	var responseUsers []bodyTemplates.UserGetResponseBody
+	var responseUsers []bodyTemplates.UserGetByUsernameAndId
 	for _, u := range users {
-		responseUser := bodyTemplates.UserGetResponseBody{
-			UserID:           u.ID,
-			Username:         u.Username,
-			FirstName:        u.FirstName,
-			LastName:         u.LastName,
-			Intro:            u.Intro,
-			About:            u.About,
-			Accomplishments:  u.Accomplishments,
-			AdditionalInfo:   u.AdditionalInfo,
-			BirthDate:        u.BirthDate,
-			JoinDate:         u.JoinDate,
-			MutualConnection: uint64(u.MutualConnection.Int64),
+
+		isFriend, err := userHandler.friendRepository.FriendExists(userId.(uint64), u.ID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+
+		responseUser := bodyTemplates.UserGetByUsernameAndId{
+			UserID:                u.ID,
+			Username:              u.Username,
+			FirstName:             u.FirstName,
+			LastName:              u.LastName,
+			Intro:                 u.Intro,
+			About:                 u.About,
+			Accomplishments:       u.Accomplishments,
+			AdditionalInfo:        u.AdditionalInfo,
+			BirthDate:             u.BirthDate,
+			JoinDate:              u.JoinDate,
+			MutualConnection:      uint64(u.MutualConnection.Int64),
+			IsFriendsWithThisUser: isFriend,
 		}
 
 		responseUsers = append(responseUsers, responseUser)
@@ -226,18 +236,25 @@ func (userHandler *UserHandler) GetUserById(c *gin.Context) {
 		return
 	}
 
-	response := bodyTemplates.UserGetResponseBody{
-		UserID:           user.ID,
-		Username:         user.Username,
-		FirstName:        user.FirstName,
-		LastName:         user.LastName,
-		Intro:            user.Intro,
-		About:            user.About,
-		Accomplishments:  user.Accomplishments,
-		AdditionalInfo:   user.AdditionalInfo,
-		BirthDate:        user.BirthDate,
-		JoinDate:         user.JoinDate,
-		MutualConnection: uint64(user.MutualConnection.Int64),
+	isFriend, err := userHandler.friendRepository.FriendExists(userId.(uint64), userRequestBody.Id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	response := bodyTemplates.UserGetByUsernameAndId{
+		UserID:                user.ID,
+		Username:              user.Username,
+		FirstName:             user.FirstName,
+		LastName:              user.LastName,
+		Intro:                 user.Intro,
+		About:                 user.About,
+		Accomplishments:       user.Accomplishments,
+		AdditionalInfo:        user.AdditionalInfo,
+		BirthDate:             user.BirthDate,
+		JoinDate:              user.JoinDate,
+		MutualConnection:      uint64(user.MutualConnection.Int64),
+		IsFriendsWithThisUser: isFriend,
 	}
 	c.JSON(http.StatusOK, response)
 }
