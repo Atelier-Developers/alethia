@@ -3,13 +3,15 @@ package Post
 import "time"
 
 type Post struct {
-	Id             uint64    `json:"id"`
-	IsFeatured     bool      `json:"is-featured"`
-	Description    string    `json:"description"`
-	Created        time.Time `json:"created"`
-	RepostId       uint64    `json:"repost_id"`
-	PosterId       uint64    `json:"poster_id"`
-	PosterUsername string    `json:"poster_username"`
+	Id              uint64    `json:"id"`
+	IsFeatured      bool      `json:"is-featured"`
+	Description     string    `json:"description"`
+	Created         time.Time `json:"created"`
+	RepostId        uint64    `json:"repost_id"`
+	PosterId        uint64    `json:"poster_id"`
+	PosterUsername  string    `json:"poster_username"`
+	PosterFirstname string    `json:"poster_firstname"`
+	PosterLastname  string    `json:"poster_lastname"`
 }
 
 type PostWithLikeAndCommentAndRepostCount struct {
@@ -20,6 +22,8 @@ type PostWithLikeAndCommentAndRepostCount struct {
 	RepostId          uint64    `json:"repost_id"`
 	PosterId          uint64    `json:"poster_id"`
 	PosterUsername    string    `json:"poster_username"`
+	PosterFirstname   string    `json:"poster_firstname"`
+	PosterLastname    string    `json:"poster_lastname"`
 	LikeCount         uint64    `json:"like_count"`
 	CommentCount      uint64    `json:"comment_count"`
 	RepostCount       uint64    `json:"repost_count"`
