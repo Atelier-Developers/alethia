@@ -5,6 +5,9 @@
       <v-card-title class="notif-header">
         {{ notif.creator.username }}'s Birthday!
       </v-card-title>
+      <v-card-subtitle>
+        {{isoToDate(notif.created)}}
+      </v-card-subtitle>
       <v-divider/>
       <v-container>
         <v-row>
@@ -22,6 +25,9 @@
       <v-card-title class="notif-header">
         {{ notif.creator.username }}'s viewed ur profile!
       </v-card-title>
+      <v-card-subtitle>
+        {{isoToDate(notif.created)}}
+      </v-card-subtitle>
       <v-divider/>
       <v-container>
         <v-row>
@@ -39,6 +45,9 @@
       <v-card-title class="notif-header">
         {{ notif.creator.username }} has Liked ur post!
       </v-card-title>
+      <v-card-subtitle>
+        {{isoToDate(notif.created)}}
+      </v-card-subtitle>
       <v-divider/>
       <v-container>
         <v-row>
@@ -84,6 +93,9 @@
       <v-card-title class="notif-header">
         {{ notif.creator.username }} has commented under ur post!
       </v-card-title>
+      <v-card-subtitle>
+        {{isoToDate(notif.created)}}
+      </v-card-subtitle>
       <v-divider/>
       <v-container>
         <v-row>
@@ -132,6 +144,9 @@
       <v-card-title class="notif-header">
         {{ notif.creator.username }} has Liked ur comment!
       </v-card-title>
+      <v-card-subtitle>
+        {{isoToDate(notif.created)}}
+      </v-card-subtitle>
       <v-divider/>
 
       <v-container>
@@ -153,6 +168,9 @@
       <v-card-title class="notif-header">
         {{ notif.creator.username }} has replied ur comment!
       </v-card-title>
+      <v-card-subtitle>
+        {{isoToDate(notif.created)}}
+      </v-card-subtitle>
       <v-divider/>
       <v-container>
         <v-row>
@@ -164,7 +182,7 @@
               has been replied by {{ notif.creator.username }}:
             </div>
             <div class="notif-content">
-              <Comment :dense="true" :comment="notif.replied_comment"/>
+              <LittleComment :dense="true" :comment="notif.replied_comment"/>
             </div>
           </v-col>
         </v-row>
@@ -176,12 +194,15 @@
       <v-card-title class="notif-header">
         {{ notif.creator.username }} has endorsed ur skill!
       </v-card-title>
+      <v-card-subtitle>
+        {{isoToDate(notif.created)}}
+      </v-card-subtitle>
       <v-divider/>
       <v-container>
         <v-row>
           <v-col cols="12">
             <div class="notif-content">
-              ur {{ notif.skill.text }} has been
+              ur {{ notif.user_skill.title }} has been
               endorsed by {{ notif.creator.username }}:
             </div>
           </v-col>
@@ -194,13 +215,16 @@
       <v-card-title class="notif-header">
         {{ notif.creator.username }} has changed his company!
       </v-card-title>
+      <v-card-subtitle>
+        {{isoToDate(notif.created)}}
+      </v-card-subtitle>
       <v-divider/>
       <v-container>
         <v-row>
           <v-col cols="12">
             <div class="notif-content">
               {{ notif.creator.username }} has changed his company
-              to {{ notif.new_work }}
+              to {{ notif.background_history.location }}
             </div>
           </v-col>
         </v-row>

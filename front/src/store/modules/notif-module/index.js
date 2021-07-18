@@ -28,7 +28,7 @@ const actions = {
 
 const getters = {
     notifs: (state) => {
-        if (state.notifs.length ===0)
+        if (state.notifs.length === 0)
             return [];
         let all = [];
         if (state.notifs.birthday !== null) {
@@ -63,6 +63,9 @@ const getters = {
             state.notifs.view_profile.forEach((x) => x.type = 'VP')
             all.push(...state.notifs.view_profile)
         }
+        all.sort(function (a, b) {
+            return (a.created < b.created) ? 1 : ((a.created > b.created) ? -1 : 0);
+        });
         return all;
     },
 };

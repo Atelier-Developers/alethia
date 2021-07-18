@@ -6,8 +6,9 @@
     <v-list-item-action>
       <div>
         <v-btn icon @click="likeSkill()">
-          <v-icon v-bind:color="skill.liked? 'red': 'grey lighten-1'">mdi-heart</v-icon>
+          <v-icon v-bind:color="skill.is_endorsed_by_this_user? 'red': 'grey lighten-1'">mdi-heart</v-icon>
         </v-btn>
+        {{skill.endorse_count}}
       </div>
     </v-list-item-action>
   </v-list-item>
@@ -26,7 +27,7 @@ export default {
         skill_id: this.skill.id,
         user_id: this.user_id
       }).then(() => {
-        this.skill.liked = !this.skill.liked
+        this.skill.is_endorsed_by_this_user = !this.skill.liked
       })
     }
   }

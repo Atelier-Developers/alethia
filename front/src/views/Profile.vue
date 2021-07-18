@@ -149,7 +149,9 @@
                 <v-select
                     label="Category"
                     outlined
-                    :items="['work_experience', 'xx']"
+                    :items="items"
+                    item-text="text"
+                    item-value="value"
                     v-model="newBack.category"
                 />
               </v-col>
@@ -429,6 +431,24 @@ export default {
   name: "Profile",
   components: {Background, Post, Skill},
   data: () => ({
+    items: [
+      {
+        value: 'work_experience',
+        text: 'Work Experience'
+      },
+      {
+        value: 'education',
+        text: 'Education'
+      },
+      {
+        value: 'licenses_and_certificates',
+        text: 'Licenses And Certificates'
+      },
+      {
+        value: 'volunteer_experience',
+        text: 'Volunteer Experience'
+      }
+    ],
     dialogLang: false,
     dialogSkill: false,
     dialogBack: false,
