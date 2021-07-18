@@ -102,14 +102,14 @@ func main() {
 		languageGroup := userGroup.Group("/language")
 		{
 			languageGroup.POST("", userLanguageHandler.AddUserLanguage)
-			languageGroup.DELETE("", userLanguageHandler.DeleteUserLanguage)
+			languageGroup.DELETE("/:language_id", userLanguageHandler.DeleteUserLanguage)
 			languageGroup.GET("/:user_id", userLanguageHandler.GetUserLanguages)
 		}
 		backgroundGroup := userGroup.Group("/background")
 		{
 			backgroundGroup.POST("", userBackgroundHistoryHandler.AddBackgroundHistory)
 			backgroundGroup.PUT("", userBackgroundHistoryHandler.EditBackgroundHistory)
-			backgroundGroup.DELETE("", userBackgroundHistoryHandler.DeleteBackgroundHistory)
+			backgroundGroup.DELETE("/:background_id", userBackgroundHistoryHandler.DeleteBackgroundHistory)
 			backgroundGroup.GET("/:user_id", userBackgroundHistoryHandler.GetUserBackgroundHistories)
 		}
 
@@ -117,7 +117,7 @@ func main() {
 		{
 			userSkillGroup.GET("/:user_id", skillHandler.GetUserSkills)
 			userSkillGroup.POST("", skillHandler.AddUserSkill)
-			userSkillGroup.DELETE("", skillHandler.DeleteUserSkill)
+			userSkillGroup.DELETE("/:skill_id", skillHandler.DeleteUserSkill)
 			userSkillGroup.POST("/endorse", skillHandler.EndorseSkill)
 		}
 

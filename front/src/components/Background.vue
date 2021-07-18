@@ -1,34 +1,37 @@
 <template>
-  <v-card>
+  <v-card >
     <v-card-title>
-      {{ back.category }}
+      {{ back.title }} at {{ back.location }}
+      <v-spacer/>
+      <v-btn icon v-if="deletable" @click="deleteBackground" color="red">
+        <v-icon>
+          mdi-delete
+        </v-icon>
+      </v-btn>
     </v-card-title>
-    <v-divider/>
-    <v-list>
-      <v-list-item>
-        <span class="font-weight-bold mr-5">Start Date:</span>{{ isoToDate(back.start_date) }}
-      </v-list-item>
-      <v-list-item>
-        <span class="font-weight-bold mr-5">End Date:</span> {{ isoToDate(back.end_date) }}
-      </v-list-item>
-      <v-list-item>
-        <span class="font-weight-bold mr-5">Title: </span>{{ back.title }}
-      </v-list-item>
-      <v-list-item>
-        <span class="font-weight-bold mr-5">Location: </span>{{ back.location }}
-      </v-list-item>
-      <v-list-item>
-        <span class="font-weight-bold mr-5">Description: </span>{{ back.description }}
-      </v-list-item>
-    </v-list>
+    <v-card-subtitle>
+      From {{ isoToDate(back.start_date) }} to
+      <template v-if="back.end_date">
+        {{ isoToDate(back.end_date) }}
+      </template>
+      <template v-else>
+        Present
+      </template>
+    </v-card-subtitle>
+    <v-card-text>
+      {{ back.description }}
+    </v-card-text>
   </v-card>
 </template>
 
 <script>
 export default {
   name: "Background",
-  props: ['back'],
+  props: ['back', 'deletable'],
   methods: {
+    deleteBackground() {
+      this.$emit('delete', this.back.id)
+    },
     isoToDate(iso) {
       let date = new Date(iso);
       let year = date.getFullYear();

@@ -33,118 +33,78 @@ const mutations = {
 
 const actions = {
     async getUser(context,) {
-        console.log("Get User")
-        try {
-            let res = await axios.get(API.getUser);
-            console.log(res)
-            context.commit('setUser', res.data);
-        } catch (e) {
-            console.log(e);
-        }
+        let res = await axios.get(API.getUser);
+        context.commit('setUser', res.data);
     },
     async getUserById(context, payload) {
-        console.log("Get User")
-        try {
-            let res = await axios.post(API.getUser, payload);
-            console.log(res)
-            context.commit('setUser', res.data);
-        } catch (e) {
-            console.log(e);
-        }
+        let res = await axios.post(API.getUser, payload);
+        context.commit('setUser', res.data);
     },
     async getSkills(context, payload) {
-        console.log("Get SKILLS")
-        try {
-            let res = await axios.get(API.getSkills + '/' + payload);
-            console.log(res)
-            context.commit('setSkills', res.data);
-        } catch (e) {
-            console.log(e);
-        }
+        let res = await axios.get(API.getSkills + '/' + payload);
+        context.commit('setSkills', res.data);
     },
     async getLanguages(context, payload) {
-        console.log("Get Langs")
-        try {
-            let res = await axios.get(API.getLanguages + '/' + payload);
-            console.log(res)
-            context.commit('setLanguages', res.data);
-        } catch (e) {
-            console.log(e);
-        }
+        let res = await axios.get(API.getLanguages + '/' + payload);
+        context.commit('setLanguages', res.data);
     },
     async getBackgrounds(context, payload) {
-        console.log("Get Backgrounds")
-        try {
-            let res = await axios.get(API.getBackground + '/' + payload);
-            console.log(res)
-            context.commit('setBackgrounds', res.data);
-        } catch (e) {
-            console.log(e);
-        }
+        const res = await axios.get(API.getBackground + '/' + payload);
+        context.commit('setBackgrounds', res.data);
     },
-    async addLanguage(context, payload) {
-        console.log("Add Lang")
+    async updateUserLanguage(context, payload) {
+        const mappedLanguage = context.getters.languages.map((x) => x.id)
+
         for (const p of payload) {
-            try {
-                let res = await axios.post(API.addLanguage, {
+            if (!mappedLanguage.includes(p)) {
+                await axios.post(API.userLanguage, {
                     language_id: p
                 });
-                console.log(res);
-            } catch (e) {
-                console.log(e);
+            }
+        }
+
+        for (const p of mappedLanguage) {
+            if (!payload.includes(p)) {
+                await axios.delete(`${API.userLanguage}/${p}`, {
+                    language_id: p
+                });
             }
         }
     },
     async addBackground(context, payload) {
-        console.log("Add Back")
-        try {
-            let res = await axios.post(API.addBackground, payload);
-            console.log(res);
-        } catch (e) {
-            console.log(e);
-        }
+        await axios.post(API.userBackground, payload);
     },
-    async addSkill(context, payload) {
-        console.log("Add Skill")
+    async deleteBackground(context, id) {
+        await axios.delete(`${API.userBackground}/${id}`);
+    },
+    async updateUserSkill(context, payload) {
+        const mappedSkills = context.getters.skills.map((x) => x.id)
         for (const p of payload) {
-            try {
-                let res = await axios.post(API.addSkill, {
+            if (!mappedSkills.includes(p)) {
+                await axios.post(API.userSkill, {
                     skill_id: p
                 });
-                console.log(res);
-            } catch (e) {
-                console.log(e);
+            }
+        }
+        for (const p of mappedSkills) {
+            if (!payload.includes(p)) {
+                await axios.delete(`${API.userSkill}/${p}`, {
+                    skill_id: p
+                });
             }
         }
     },
     async getAllLanguages(context,) {
-        console.log("Get All LAngs")
-        try {
-            let res = await axios.get(API.getAllLanguages);
-            console.log(res)
-            context.commit("setAllLanguages", res.data);
-        } catch (e) {
-            console.log(e);
-        }
+        const res = await axios.get(API.getAllLanguages);
+        context.commit("setAllLanguages", res.data);
     },
     async getAllSkills(context,) {
-        console.log("Get All Skills")
-        try {
-            let res = await axios.get(API.getAllSkills);
-            console.log(res)
-            context.commit("setAllSkills", res.data);
-        } catch (e) {
-            console.log(e);
-        }
+        let res = await axios.get(API.getAllSkills);
+        console.log(res)
+        context.commit("setAllSkills", res.data);
     },
     async editUser(context, payload) {
-        console.log("PUT User")
-        try {
-            let res = await axios.put(API.editUser, payload);
-            console.log(res)
-        } catch (e) {
-            console.log(e);
-        }
+        await axios.put(API.editUser, payload);
     },
 
 };
