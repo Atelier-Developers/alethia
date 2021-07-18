@@ -105,9 +105,9 @@
                         v-model="newBack.start_date"
                         label="Start Date"
                         outlined
+                        readonly
                         prepend-icon="mdi-calendar"
                         v-bind="attrs"
-                        @blur="date = parseDate(newBack.start_date)"
                         v-on="on"
                     ></v-text-field>
                   </template>
@@ -134,8 +134,8 @@
                         label="End Date"
                         outlined
                         prepend-icon="mdi-calendar"
+                        readonly
                         v-bind="attrs"
-                        @blur="date = parseDate(newBack.end_date)"
                         v-on="on"
                     ></v-text-field>
                   </template>
@@ -196,9 +196,9 @@
           <h4>Edit Info</h4>
         </v-card-title>
         <v-divider/>
-        <v-container>
-          <v-form @submit="sendEditUser">
-            <v-row>
+        <v-card-text>
+          <v-form class="mt-5" @submit.prevent="sendEditUser">
+            <v-row dense>
               <v-col cols="6">
                 <v-menu
                     ref="menu3"
@@ -214,9 +214,9 @@
                         v-model="newUser.birth_date"
                         label="Start Date"
                         outlined
+                        readonly
                         prepend-icon="mdi-calendar"
                         v-bind="attrs"
-                        @blur="date = parseDate(newUser.birth_date)"
                         v-on="on"
                     ></v-text-field>
                   </template>
@@ -230,12 +230,12 @@
                 <v-text-field
                     v-model="newUser.intro"
                     outlined
-
                     label="Intro"
                 />
               </v-col>
               <v-col cols="12">
                 <v-text-field
+                    outlined
                     v-model="newUser.about"
                     label="About"
                 />
@@ -255,13 +255,16 @@
                 />
               </v-col>
               <v-col cols="12">
-                <v-btn type="submit">
-                  Edit
-                </v-btn>
+                <v-row>
+                  <v-spacer/>
+                  <v-btn type="submit" color="primary">
+                    Edit
+                  </v-btn>
+                </v-row>
               </v-col>
             </v-row>
           </v-form>
-        </v-container>
+        </v-card-text>
       </v-card>
     </v-dialog>
     <v-container>
@@ -321,7 +324,6 @@
             </v-card-text>
           </v-card>
         </v-col>
-        <!--        TODO remove 409 conflict when adding new skill-->
         <v-col cols="12">
           <v-card flat style="border-radius: 7px">
             <v-card-title>
