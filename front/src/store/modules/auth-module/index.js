@@ -1,6 +1,6 @@
 import axios from 'axios';
 import {API} from "@/api/api";
-
+import VueJwtDecode from 'vue-jwt-decode'
 
 const state = {
     token: localStorage.getItem("userToken") || '',
@@ -9,7 +9,7 @@ const state = {
 const mutations = {
     setToken(state, payload) {
         state.token = payload;
-    },
+    }
 };
 
 const actions = {
@@ -36,6 +36,9 @@ const getters = {
     isAuthenticated: (state) => {
         return state.token !== ""
     },
+    userId: (state) => {
+        return VueJwtDecode.decode(state.token).user_id;
+    }
 };
 
 

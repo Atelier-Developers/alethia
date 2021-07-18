@@ -17,57 +17,62 @@ const mutations = {
 };
 
 const actions = {
-    getFriends(context,) {
+    async getFriends(context,) {
         console.log("GET FRIENDS");
         try {
-            let res = axios.get(API.getFriends);
+            let res = await axios.get(API.getFriends);
             console.log(res);
             context.commit('setFriends', res.data);
         } catch (e) {
             console.log(e);
         }
     },
-    getInvites(context,) {
+    async getInvites(context,) {
         console.log("GET Invites");
         try {
-            let res = axios.get(API.getInvites);
+            let res = await axios.get(API.getInvites);
             console.log(res);
             context.commit('setInvites', res.data);
         } catch (e) {
             console.log(e);
         }
     },
-    createInvite(context, payload){
+    async createInvite(context, payload) {
         console.log("Create Invites");
         try {
-            let res = axios.post(API.getInvites, payload);
+            let res = await axios.post(API.getInvites, payload);
             console.log(res);
         } catch (e) {
             console.log(e);
         }
     },
-    deleteInvite(context, payload){
+    async deleteInvite(context, payload) {
         console.log("Delete Invites");
+        console.log(payload)
         try {
-            let res = axios.delete(API.getInvites, payload);
+            let res = await axios.delete(API.getInvites, {
+                data: payload
+            });
             console.log(res);
         } catch (e) {
             console.log(e);
         }
     },
-    addFriend(context, payload){
-        console.log("Delete Invites");
+    async addFriend(context, payload) {
+        console.log("add Friend");
         try {
-            let res = axios.post(API.getFriends, payload);
+            let res = await axios.post(API.getFriends, payload);
             console.log(res);
         } catch (e) {
             console.log(e);
         }
     },
-    deleteFriend(context, payload){
-        console.log("Delete Invites");
+    async deleteFriend(context, payload) {
+        console.log("Delete Friend");
         try {
-            let res = axios.delete(API.getFriends, payload);
+            let res = await axios.delete(API.getFriends,  {
+                data: payload
+            });
             console.log(res);
         } catch (e) {
             console.log(e);

@@ -70,7 +70,7 @@
         </v-card-text>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="dialogBack">
+    <v-dialog v-model="dialogBack" max-width="750px">
       <v-card>
         <v-card-title>
           <h3>Add Background</h3>
@@ -181,7 +181,7 @@
         </v-container>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="dialogUser">
+    <v-dialog v-model="dialogUser" max-width="750px">
       <v-card>
         <v-card-title>
           <h3>Edit Info</h3>

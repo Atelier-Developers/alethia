@@ -2,75 +2,74 @@ import {API} from '@/api/api'
 import axios from "axios";
 
 const state = {
-    posts: [],
+    myPosts: [],
+    likedPosts: [],
+    commentedPosts: [],
 };
 
 const mutations = {
-    setPosts(state, item) {
-        state.posts = item;
+    setMyPosts(state, item) {
+        state.myPosts = item;
+    },
+    setLikedPosts(state, item) {
+        state.likedPosts = item;
+    },
+    setCommentedPosts(state, item) {
+        state.commentedPosts = item;
     }
 };
 
 const actions = {
-    getPosts(context,) {
-        let posts = [
-            {
-                user: {
-                    username: "Ali",
-                },
-                text: 'امروز خیلی هوا کیری بود. افتاب به صورت افقی تا ما تحت ادم میرفت. من خیلی شاخم خلاصه.',
-                date: '11/1/1 12:12',
-                // media: ''
-            },
-            {
-                user: {
-                    username: "Ali REZA",
-                },
-                text: 'امروز خیلی هوا کیری بود. افتاب به صورت افقی تا ما تحت ادم میرفت. من خیفتاب به صورت افقی تا ما تحت ادم میرفت. من خیفتاب به صورت افقی تا ما تحت ادم میرفت. من خیفتاب به صورت افقی تا ما تحت ادم میرفت. من خیفتاب به صورت افقی تا ما تحت ادم میرفت. من خیفتاب به صورت افقی تا ما تحت ادم میرفت. من خیفتاب به صورت افقی تا ما تحت ادم میرفت. من خیفتاب به صورت افقی تا ما تحت ادم میرفت. من خیفتاب به صورت افقی تا ما تحت ادم میرفت. من خیفتاب به صورت افقی تا ما تحت ادم میرفت. من خیلی شاخم خلاصه.',
-                date: '11/1/1 12:12',
-                // media: ''
-            },
-            {
-                user: {
-                    username: "ASQAR",
-                },
-                text: 'امروز خیلی هوا کیری بود. افتاب به صورت افقی تا ما تحت ادم میرفت. افتاب به صورت افقی تا ما تحت ادم میرفت. من خیلی شاخم خلاصه.',
-                date: '11/1/1 12:12',
-                // media: ''
-            },
-            {
-                user: {
-                    username: "gorbeye tak shakh",
-                },
-                text: 'امروز خیلی هوا کیری تحت ادم میرفتدم میرفت. من خیلی شامروز خیلی هوا کیری تحت ادم میرفتدم میرفت. من خیلی شامروز خیلی هوا کیری تحت ادم میرفتدم میرفت. من خیلی شامروز خیلی هوا کیری تحت ادم میرفتدم میرفت. من خیلی شاخم خلاصه.',
-                date: '11/1/1 12:12',
-                // media: ''
-            },
-            {
-                user: {
-                    username: "rangin kamune siah",
-                },
-                text: 'امروز خیلی هوا کیری بود. افتاب به صورت افقی تا ما تحت ادم میرفت تحت ادم میرفت تحت ادم میرفت تحت ادم میرفت. من خیلی شاخم خلاصه.',
-                date: '11/1/1 12:12',
-                // media: ''
-            },
-        ];
-        context.commit('setPosts', posts);
+    async getPosts(context,) {
+        console.log("Get POSTs");
+        try {
+            let res = await axios.get(API.getPosts + '/postedByFriends');
+            context.commit("setMyPosts", res.data);
+
+            let res2 = await axios.get(API.getPosts + '/likedByFriends');
+            context.commit("setLikedPosts", res2.data);
+
+            let res3 = await axios.get(API.getPosts + '/commentedOnByFriends');
+            context.commit("setCommentedPosts", res3.data);
+
+            console.log(res)
+            console.log(res2)
+            console.log(res3)
+        } catch (e) {
+            console.log(e);
+        }
     },
     async addPost(context, payload) {
         console.log("ADD POST");
         try {
             let res = await axios.post(API.addPost, payload);
             console.log(res)
-        }
-        catch(e){
+        } catch (e) {
             console.log(e);
         }
     }
 };
 
 const getters = {
-    posts: (state) => state.posts,
+    posts: (state) => {
+        let all = []
+        if (state.commentedPosts != null) {
+            state.commentedPosts.forEach((x) => x.type = 'CP')
+            all.push(...state.commentedPosts)
+        }
+        if (state.likedPosts != null) {
+            state.likedPosts.forEach((x) => x.type = 'LP')
+            all.push(...state.likedPosts)
+        }
+        if (state.myPosts != null) {
+            state.myPosts.forEach((x) => x.type = 'FP')
+            all.push(...state.myPosts)
+        }
+        all.sort(function (a, b) {
+            return (a.created < b.created) ? 1 : ((a.created > b.created) ? -1 : 0);
+        });
+        return all;
+    },
 };
 
 

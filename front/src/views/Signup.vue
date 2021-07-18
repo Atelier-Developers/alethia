@@ -138,6 +138,7 @@ export default {
       // TODO FIx this birth_date
       this.user.birth_date = (new Date(this.user.birth_date)).toISOString();
       this.signup(this.user);
+      this.$router.replace({name: 'Login'})
     }
   }
 }
