@@ -15,7 +15,7 @@ func NewUserRepository(dbClient *Database.MySQLDB) *UserRepository {
 	return &UserRepository{dbClient: dbClient}
 }
 
-func (userRepo *UserRepository) GetUsersWithSimilarUsername(userId uint64, username string) ([]entity.UserWithMutualConnection, error) {
+func (userRepo *UserRepository) GetUsersWithSimilarUsername(userId uint64, username string) ([]entity.UserWithMutualConnectionAndFriendshipStatus, error) {
 	db := userRepo.dbClient.GetDB()
 	stmt, err := db.Prepare("CALL GetUsersWithMutualConnectionByUsername(?, ?)")
 	if err != nil {
@@ -30,10 +30,10 @@ func (userRepo *UserRepository) GetUsersWithSimilarUsername(userId uint64, usern
 		log.Fatal(err)
 	}
 
-	var users []entity.UserWithMutualConnection
+	var users []entity.UserWithMutualConnectionAndFriendshipStatus
 	for rows.Next() {
-		var user entity.UserWithMutualConnection
-		err = rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Username, &user.Password, &user.Intro, &user.About, &user.Accomplishments, &user.AdditionalInfo, &user.JoinDate, &user.BirthDate, &user.MutualConnection)
+		var user entity.UserWithMutualConnectionAndFriendshipStatus
+		err = rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Username, &user.Password, &user.Intro, &user.About, &user.Accomplishments, &user.AdditionalInfo, &user.JoinDate, &user.BirthDate, &user.MutualConnection, &user.IsFriendsWithThisUser)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -91,7 +91,7 @@ func (userRepo *UserRepository) GetUsersWithMutualConnection(userId uint64) ([]e
 	return users, nil
 }
 
-func (userRepo *UserRepository) GetUserByID(userId uint64, id uint64, user *entity.UserWithMutualConnection) error {
+func (userRepo *UserRepository) GetUserByID(userId uint64, id uint64, user *entity.UserWithMutualConnectionAndFriendshipStatus) error {
 	db := userRepo.dbClient.GetDB()
 	stmt, err := db.Prepare("CALL GetUserWithMutualConnectionByUId(?, ?)")
 	if err != nil {
@@ -101,7 +101,7 @@ func (userRepo *UserRepository) GetUserByID(userId uint64, id uint64, user *enti
 
 	row := stmt.QueryRow(userId, id)
 
-	err = row.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Username, &user.Password, &user.Intro, &user.About, &user.Accomplishments, &user.AdditionalInfo, &user.JoinDate, &user.BirthDate, &user.MutualConnection)
+	err = row.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Username, &user.Password, &user.Intro, &user.About, &user.Accomplishments, &user.AdditionalInfo, &user.JoinDate, &user.BirthDate, &user.MutualConnection, &user.IsFriendsWithThisUser)
 	if err != nil {
 		return err
 	}

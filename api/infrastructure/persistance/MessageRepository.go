@@ -68,7 +68,7 @@ func (messageRepository *MessageRepository) GetMessage(messageID uint64) (Conver
 
 func (messageRepository *MessageRepository) GetMessages(conversationId uint64) ([]Conversation.Message, error) {
 	db := messageRepository.dbClient.GetDB()
-	stmt, err := db.Prepare("SELECT MESSAGE.*,  USER.username FROM MESSAGE, USER WHERE conversation_id=? AND MESSAGE.user_id = USER.id")
+	stmt, err := db.Prepare("SELECT MESSAGE.*,  USER.username FROM MESSAGE, USER WHERE conversation_id=? AND MESSAGE.user_id = USER.id ORDER BY created DESC LIMIT 20")
 	if err != nil {
 		log.Fatal(err)
 	}
