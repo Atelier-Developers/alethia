@@ -520,5 +520,20 @@ func (postRepo *PostRepository) GetPostById(postId uint64, post *Post.Post) erro
 		return err
 	}
 
+	stmt2, err := db.Prepare("SELECT repost_id FROM REPOST WHERE  post_id=?")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt2.Close()
+
+	row = stmt2.QueryRow(post.Id)
+	var repostId uint64
+	err = row.Scan(&repostId)
+	if err == nil {
+		post.RepostId = repostId
+	} else {
+		post.RepostId = 0
+	}
+
 	return nil
 }
