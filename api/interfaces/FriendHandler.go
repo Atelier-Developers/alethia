@@ -36,6 +36,10 @@ func (friendHandler *FriendHandler) AddInvite(c *gin.Context) {
 		log.Fatal("User Id does not exist!")
 	}
 
+	if userRequestBody.ReceiverId == userId.(uint64) {
+		log.Fatal("User can't invite themselves.")
+	}
+
 	exists, err := friendHandler.friendRepository.FriendExists(userId.(uint64), userRequestBody.ReceiverId)
 
 	if exists {
