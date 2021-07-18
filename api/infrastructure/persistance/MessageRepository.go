@@ -45,6 +45,24 @@ func (messageRepository *MessageRepository) GetMessage(messageID uint64) (Conver
 		log.Fatal(err)
 	}
 
+	if message.ReplyId != 0 {
+		stmt, err := db.Prepare("SELECT MESSAGE.*,  USER.username FROM MESSAGE, USER WHERE MESSAGE.id=? AND MESSAGE.user_id = USER.id")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer stmt.Close()
+
+		var repliedMessage Conversation.Message
+		row := stmt.QueryRow(message.ReplyId)
+		err = row.Scan(&repliedMessage.Id, &repliedMessage.UserId, &repliedMessage.ReplyId, &repliedMessage.ConversationId, &repliedMessage.Body, &repliedMessage.Created, &repliedMessage.Username)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		message.RepliedMessageBody = repliedMessage.Body
+		message.RepliedMessageUsername = repliedMessage.Username
+	}
+
 	return message, nil
 }
 
@@ -67,6 +85,24 @@ func (messageRepository *MessageRepository) GetMessages(conversationId uint64) (
 		err := rows.Scan(&message.Id, &message.UserId, &message.ReplyId, &message.ConversationId, &message.Body, &message.Created, &message.Username)
 		if err != nil {
 			log.Fatal(err)
+		}
+
+		if message.ReplyId != 0 {
+			stmt, err := db.Prepare("SELECT MESSAGE.*,  USER.username FROM MESSAGE, USER WHERE MESSAGE.id=? AND MESSAGE.user_id = USER.id")
+			if err != nil {
+				log.Fatal(err)
+			}
+			defer stmt.Close()
+
+			var repliedMessage Conversation.Message
+			row := stmt.QueryRow(message.ReplyId)
+			err = row.Scan(&repliedMessage.Id, &repliedMessage.UserId, &repliedMessage.ReplyId, &repliedMessage.ConversationId, &repliedMessage.Body, &repliedMessage.Created, &repliedMessage.Username)
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			message.RepliedMessageBody = repliedMessage.Body
+			message.RepliedMessageUsername = repliedMessage.Username
 		}
 
 		messages = append(messages, message)
