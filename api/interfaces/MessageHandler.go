@@ -60,6 +60,34 @@ func (messageHandler MessageHandler) AddMessage(c *gin.Context) {
 		return
 	}
 
+	id1, id2, err := messageHandler.conversationRepository.GetConversationCorrespondents(userRequestBody.ConversationId)
+
+	var correspondentId uint64
+	if id1 == userId.(uint64) {
+		correspondentId = id2
+	} else {
+		correspondentId = id1
+	}
+
+	conversation, err := messageHandler.conversationRepository.GetUserConversation(userRequestBody.ConversationId, correspondentId)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	newConversation := Conversation.UserConversation{
+		UserId:         conversation.UserId,
+		Username:       conversation.Username,
+		ConversationId: conversation.ConversationId,
+		IsArchived:     conversation.IsArchived,
+		IsDeleted:      conversation.IsDeleted,
+		IsRead:         false,
+	}
+
+	err = messageHandler.conversationRepository.UpdateUserConversation(newConversation)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	c.JSON(http.StatusCreated, nil)
 }
 
