@@ -53,7 +53,7 @@ func main() {
 	messageHandler := interfaces.NewMessageHandler(conversationRepo, messageRepo)
 	userBackgroundHistoryHandler := interfaces.NewUserBackgroundHistoryHandler(backgroundHistoryRepo, notificationRepo, friendRepo)
 	userLanguageHandler := interfaces.NewUserLanguageHandler(languageRepo)
-	userHandler := interfaces.NewUserHandler(userRepo, friendRepo, redisService.Auth, token, notificationRepo)
+	userHandler := interfaces.NewUserHandler(conversationRepo, inviteRepo, userRepo, friendRepo, redisService.Auth, token, notificationRepo)
 	postHandler := interfaces.NewPostHandler(postRepo, notificationRepo)
 	commentHandler := interfaces.NewCommentHandler(commentRepo, notificationRepo, postRepo)
 	skillHandler := interfaces.NewSkillHandler(skillRepo, notificationRepo)
@@ -148,7 +148,7 @@ func main() {
 	postGroup := router.Group("/post", middleware.AuthMiddleware(redisService.Auth))
 	{
 		postGroup.POST("", postHandler.SavePost)
-		postGroup.POST("/like", postHandler.LikePost)
+		postGroup.POST("/like", postHandler.LikeOrUnlikePost)
 
 		singlePostGroup := postGroup.Group("/:post_id")
 		{

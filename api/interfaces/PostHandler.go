@@ -55,7 +55,7 @@ func (postHandler *PostHandler) SavePost(c *gin.Context) {
 	c.JSON(http.StatusCreated, nil)
 }
 
-func (postHandler *PostHandler) LikePost(c *gin.Context) {
+func (postHandler *PostHandler) LikeOrUnlikePost(c *gin.Context) {
 	var postLikeRequestBody bodyTemplates.PostLikeRequestBody
 	if err := c.ShouldBindJSON(&postLikeRequestBody); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{
@@ -70,36 +70,45 @@ func (postHandler *PostHandler) LikePost(c *gin.Context) {
 		log.Fatal("User Id does not exist!")
 	}
 
-	var likedPost Post.Post
-	err := postHandler.postRepository.GetPostById(postLikeRequestBody.PostId, &likedPost)
+	var targetPost Post.Post
+	err := postHandler.postRepository.GetPostById(postLikeRequestBody.PostId, &targetPost)
 	if err != nil {
 		c.JSON(http.StatusConflict, err)
 		return
 	}
 
-	post := Post.Post{
-		Id: postLikeRequestBody.PostId,
-	}
+	hasLikedThisPost, err := postHandler.postRepository.IsPostLikedByThisUser(userId.(uint64), targetPost.Id)
 
-	err = postHandler.postRepository.LikePost(&post, userId.(uint64))
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, err)
-		return
-	}
+	if hasLikedThisPost {
+		err = postHandler.postRepository.UnlikePost(userId.(uint64), targetPost.Id)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+	} else {
+		post := Post.Post{
+			Id: postLikeRequestBody.PostId,
+		}
 
-	n := notification.LikePost{
-		UserId: userId.(uint64),
-		PostId: likedPost.Id,
-		Notification: notification.Notification{
-			ReceiverId: likedPost.PosterId,
-		},
-	}
-	err = postHandler.notificationRepository.CreateLikePostNotification(&n)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, err)
-		return
-	}
+		err = postHandler.postRepository.LikePost(&post, userId.(uint64))
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
 
+		n := notification.LikePost{
+			UserId: userId.(uint64),
+			PostId: targetPost.Id,
+			Notification: notification.Notification{
+				ReceiverId: targetPost.PosterId,
+			},
+		}
+		err = postHandler.notificationRepository.CreateLikePostNotification(&n)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+	}
 	c.JSON(http.StatusOK, nil)
 }
 

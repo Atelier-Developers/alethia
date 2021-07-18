@@ -1,65 +1,40 @@
 <template>
   <div>
-    <v-dialog v-model="dialogLikes" max-width="500">
-      <v-card flat style="border-radius: 7px;">
-        <v-card-title>
-          <h3>Likes: </h3>
-        </v-card-title>
-        <v-divider/>
-        <v-container>
-          <v-row v-for="like in likes" :key="like.id">
-            <v-col cols="12">
-              <h4>{{ like.username }}</h4>
-              <v-divider/>
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-card>
-    </v-dialog>
     <v-dialog v-model="dialogRepost" max-width="750">
       <v-card>
         <v-card-title>
-          <h3>Repost: </h3>
+
         </v-card-title>
-        <v-divider/>
-        <v-container>
-          <v-row>
-            <v-col cols="12">
-              <v-textarea
-                  label="Repost content"
-                  v-model="newRepost"
-              />
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="12">
-              <v-card>
-                <v-card-title>
-                  <h4>
-                    {{ post.poster_username }}
-                  </h4>
-                </v-card-title>
-                <v-divider/>
-                <v-container>
-                  <v-row>
-                    <v-col cols="12">
-                      <div class="post-content">
-                        {{ post.description }}
-                      </div>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-card>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="12">
-              <v-btn color="success" @click="sendRepost()">
+        <v-card-text>
+          <v-form @submit.prevent="sendRepost">
+            <v-textarea
+                label="Share your thoughts"
+                v-model="newRepost"
+                outlined
+            />
+            <v-row>
+              <v-col cols="12">
+                <v-card flat color="grey lighten-4">
+                  <v-card-title>
+                    <h4>
+                      {{ post.poster_username }}
+                    </h4>
+                  </v-card-title>
+                  <v-divider/>
+                  <v-card-text>
+                    {{ post.description }}
+                  </v-card-text>
+                </v-card>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-spacer/>
+              <v-btn color="primary" type="submit">
                 Repost
               </v-btn>
-            </v-col>
-          </v-row>
-        </v-container>
+            </v-row>
+          </v-form>
+        </v-card-text>
       </v-card>
     </v-dialog>
     <v-card>
@@ -68,17 +43,13 @@
           {{ post.poster_username }}
         </h4>
         <v-spacer/>
-        <v-btn @click="dialogRepost=true" elevation="0" icon>
-          <v-icon>mdi-repeat</v-icon>
-        </v-btn>
-        <v-btn @click="dialogLikes=true" elevation="0" icon>
+        <v-btn @click="dialogRepost=true" elevation="0" icon class="mr-3">
+          <v-icon left>mdi-repeat</v-icon>
           {{ reposts === null ? 0 : reposts.length }}
         </v-btn>
-        <v-btn @click="sendLike()" elevation="0" icon>
-          <v-icon v-if="liked" color="red">mdi-heart</v-icon>
-          <v-icon v-else>mdi-heart-outline</v-icon>
-        </v-btn>
-        <v-btn @click="dialogLikes=true" elevation="0" icon>
+        <v-btn @click="sendLike" elevation="0" icon>
+          <v-icon v-if="liked" color="red" left>mdi-heart</v-icon>
+          <v-icon v-else left>mdi-heart-outline</v-icon>
           {{ likes === null ? 0 : likes.length }}
         </v-btn>
       </v-card-title>
@@ -103,29 +74,29 @@
         <v-row>
           <v-col cols="12">
             <v-card>
-                <v-card-title>
-                  <h4>
-                    {{ repost.poster_username }}
-                  </h4>
-                  <v-spacer/>
-                </v-card-title>
-                <v-card-subtitle>
-                  <v-row>
-                    <v-col cols="12">
-                      {{ isoToDate(repost.created) }}
-                    </v-col>
-                  </v-row>
-                </v-card-subtitle>
-                <v-divider/>
-                <v-container>
-                  <v-row class="my-3">
-                    <v-col cols="12">
-                      <div class="post-content">
-                        {{ repost.description }}
-                      </div>
-                    </v-col>
-                  </v-row>
-                </v-container>
+              <v-card-title>
+                <h4>
+                  {{ repost.poster_username }}
+                </h4>
+                <v-spacer/>
+              </v-card-title>
+              <v-card-subtitle>
+                <v-row>
+                  <v-col cols="12">
+                    {{ isoToDate(repost.created) }}
+                  </v-col>
+                </v-row>
+              </v-card-subtitle>
+              <v-divider/>
+              <v-container>
+                <v-row class="my-3">
+                  <v-col cols="12">
+                    <div class="post-content">
+                      {{ repost.description }}
+                    </div>
+                  </v-col>
+                </v-row>
+              </v-container>
             </v-card>
 
           </v-col>
@@ -176,22 +147,19 @@ export default {
 
       return year + '-' + month + '-' + dt + ' ' + h + ":" + m;
     },
-    sendLike() {
-      if (this.liked) {
-        return; //TODO UNLIKE?1
-      } else {
-        this.likePost({
-          post_id: this.post.id
-        })
-      }
+    async sendLike() {
+      await this.likePost({
+        post_id: this.post.id
+      })
+      this.$emit('updatePost')
     },
-    sendRepost() {
-      this.addRepost({
+    async sendRepost() {
+      await this.addRepost({
         description: this.newRepost,
         repost_id: this.post.id
-      }).then(() => {
-        this.dialogRepost = false;
-      });
+      })
+      this.$emit('updatePost')
+      this.dialogRepost = false;
     },
 
 

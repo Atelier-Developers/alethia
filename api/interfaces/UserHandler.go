@@ -15,6 +15,8 @@ import (
 )
 
 type UserHandler struct {
+	conversationRepository repository.ConversationRepository
+	inviteRepository       repository.InviteRepository
 	friendRepository       repository.FriendRepository
 	userRepository         repository.UserRepository
 	authInterface          auth.AuthInterface
@@ -22,8 +24,10 @@ type UserHandler struct {
 	notificationRepository repository.NotificationRepository
 }
 
-func NewUserHandler(userRepository repository.UserRepository, friendRepository repository.FriendRepository, authInterface auth.AuthInterface, tokenInterface auth.TokenInterface, notificationRepository repository.NotificationRepository) UserHandler {
+func NewUserHandler(conversationRepository repository.ConversationRepository, inviteRepository repository.InviteRepository, userRepository repository.UserRepository, friendRepository repository.FriendRepository, authInterface auth.AuthInterface, tokenInterface auth.TokenInterface, notificationRepository repository.NotificationRepository) UserHandler {
 	return UserHandler{
+		conversationRepository: conversationRepository,
+		inviteRepository:       inviteRepository,
 		userRepository:         userRepository,
 		friendRepository:       friendRepository,
 		authInterface:          authInterface,
@@ -185,9 +189,9 @@ func (userHandler *UserHandler) GetUsersWithSimilarUsername(c *gin.Context) {
 		return
 	}
 
-	var responseUsers []bodyTemplates.UserGetByUsernameAndId
+	var responseUsers []bodyTemplates.UsersGetByUsernameResponseBody
 	for _, u := range users {
-		responseUser := bodyTemplates.UserGetByUsernameAndId{
+		responseUser := bodyTemplates.UsersGetByUsernameResponseBody{
 			UserID:                u.ID,
 			Username:              u.Username,
 			FirstName:             u.FirstName,
@@ -229,7 +233,7 @@ func (userHandler *UserHandler) GetUserById(c *gin.Context) {
 		return
 	}
 
-	responseUser := bodyTemplates.UserGetByUsernameAndId{
+	responseUser := bodyTemplates.UserGetByIdResponseBody{
 		UserID:                u.ID,
 		Username:              u.Username,
 		FirstName:             u.FirstName,
@@ -243,6 +247,20 @@ func (userHandler *UserHandler) GetUserById(c *gin.Context) {
 		MutualConnection:      uint64(u.MutualConnection.Int64),
 		IsFriendsWithThisUser: u.IsFriendsWithThisUser,
 	}
+
+	isInvited, err := userHandler.inviteRepository.IsUserInvitedById(userId.(uint64), userRequestBody.Id)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	responseUser.IsInvitedByThisUser = isInvited
+
+	conversationExists, err := userHandler.conversationRepository.ConversationExists(userId.(uint64), userRequestBody.Id)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	responseUser.HasConversationWithThisUser = conversationExists
 
 	c.JSON(http.StatusOK, responseUser)
 }

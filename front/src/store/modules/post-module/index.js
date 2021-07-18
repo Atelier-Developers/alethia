@@ -33,101 +33,42 @@ const mutations = {
 
 const actions = {
     async getPost(context, payload) {
-        console.log("GET POST");
-        try {
-            let res = await axios.get(API.getPost + "/" + payload);
-            console.log(res);
-            context.commit("setPost", res.data);
-        } catch (e) {
-            console.log(e);
-        }
+        let res = await axios.get(API.getPost + "/" + payload);
+        console.log(res);
+        context.commit("setPost", res.data);
     },
     async getLikes(context, payload) {
-        console.log("GET Likes");
-        try {
-            let res = await axios.get(API.getPost + "/" + payload + '/likes');
-            console.log(res);
-            context.commit("setLikes", res.data);
-        } catch (e) {
-            console.log(e);
-        }
+        let res = await axios.get(API.getPost + "/" + payload + '/likes');
+        context.commit("setLikes", res.data);
     },
     async getComments(context, payload) {
-        console.log("GET POST");
-        try {
-            let res = await axios.get(API.getPost + "/" + payload + '/comments');
-            console.log(res);
-            context.commit("setComments", res.data);
-        } catch (e) {
-            console.log(e);
-        }
+        let res = await axios.get(API.getPost + "/" + payload + '/comments');
+        context.commit("setComments", res.data);
     },
     async likePost(context, payload) {
-        console.log("Like POST");
-        try {
-            let res = await axios.post(API.likePost, payload);
-            console.log(res);
-        } catch (e) {
-            console.log(e);
-        }
+        await axios.post(API.likePost, payload);
     },
     async commentPost(context, payload) {
-        console.log("Comment POST");
-        try {
-            let res = await axios.post(API.commentPost, payload);
-            console.log(res);
-        } catch (e) {
-            console.log(e);
-        }
+        await axios.post(API.commentPost, payload);
     },
     async replyComment(context, payload) {
-        console.log("Comment POST");
-        try {
-            let res = await axios.post(API.replyComment, payload);
-            console.log(res);
-        } catch (e) {
-            console.log(e);
-        }
+        await axios.post(API.replyComment, payload);
     },
     async likeComment(context, payload) {
-        console.log("Comment POST");
-        try {
-            let res = await axios.post(API.likeComment, payload);
-            console.log(res);
-        } catch (e) {
-            console.log(e);
-        }
+        await axios.post(API.likeComment, payload);
     },
     async addRepost(context, payload) {
-        console.log("Add Repost");
-        try {
-            let res = await axios.post(API.repost, payload);
-            console.log(res);
-        } catch (e) {
-            console.log(e);
-        }
+        await axios.post(API.repost, payload);
     },
     async getReposts(context, payload) {
-        console.log("Get Repost");
-        try {
-            let res = await axios.get(API.getPost + "/" + payload + '/reposts');
-            console.log(res);
-            context.commit('setReposts', res.data)
-        } catch (e) {
-            console.log(e);
-        }
+        let res = await axios.get(API.getPost + "/" + payload + '/reposts');
+        context.commit('setReposts', res.data)
     },
     async getRepost(context, payload) {
-        console.log("Get Repost");
-        if (+payload===0)
+        if (+payload === 0)
             return;
-        try {
-            let res = await axios.get(API.getPost + "/" + payload);
-            console.log(res);
-            context.commit('setRepost', res.data)
-        } catch (e) {
-            console.log(e);
-        }
+        let res = await axios.get(API.getPost + "/" + payload);
+        context.commit('setRepost', res.data)
     }
 };
 
