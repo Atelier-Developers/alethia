@@ -102,6 +102,8 @@ export default {
       this.commentPost({
         text: this.newComment.text,
         post_id: id
+      }).then(()=>{
+        this.dialogComment = false;
       })
     },
     checkAmILike() {

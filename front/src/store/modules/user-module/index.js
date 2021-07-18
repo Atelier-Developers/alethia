@@ -46,6 +46,9 @@ const actions = {
         console.log(res);
         context.commit('setUsers', res.data);
     },
+    clearUsers(context,){
+      context.commit('setUsers', [])
+    },
     async getUserById(context, payload) {
         let res = await axios.post(API.getUser, payload);
         context.commit('setUser', res.data);

@@ -249,6 +249,17 @@ export default {
     await this.getLanguages(id)
     if (id !== +this.userId)
       await this.viewProfile({id: id})
+  },
+  watch: {
+    '$route': async () => {
+      let id = +this.$route.params.id
+      await this.getUserById({id: id})
+      await this.getBackgrounds(id)
+      await this.getSkills(id)
+      await this.getLanguages(id)
+      if (id !== +this.userId)
+        await this.viewProfile({id: id})
+    }
   }
 }
 </script>

@@ -17,17 +17,32 @@
             </v-col>
           </v-row>
           <v-row dense>
-          <v-col cols="4">
-              <v-btn  @click="doSearch()">
-                Search <v-icon>mdi-magnify</v-icon>
+            <v-spacer/>
+            <v-col cols="4">
+              <v-btn @click="doSearch()" color="primary">
+                Search
+                <v-icon>mdi-magnify</v-icon>
               </v-btn>
             </v-col>
           </v-row>
         </v-container>
         <v-divider/>
         <v-container>
-          <v-row>
-
+          <v-row
+              v-for="user in users"
+              :key="user.id"
+              @click="goto('user/'+user.id);dialogSearch=false;"
+              style="border-bottom: 1px solid rgba(0, 0, 0, 0.12); cursor: pointer"
+          >
+            <v-col cols="4">
+              {{ user.username }}
+            </v-col>
+            <v-col cols="4" v-if="user.is_friends_with_this_user === 1">
+              Your Friend
+            </v-col>
+            <v-col cols="4" v-else>
+              Connections: {{ user.mutual_connection.Int64 }}
+            </v-col>
           </v-row>
         </v-container>
       </v-card>
@@ -46,7 +61,7 @@
         <v-spacer></v-spacer>
         <div v-if="isAuthenticated" style="display: flex">
           <div>
-            <v-btn icon @click="dialogSearch=true">
+            <v-btn icon @click="dialogSearch=true; clearUsers()">
               <v-icon>mdi-magnify</v-icon>
             </v-btn>
           </div>
@@ -114,7 +129,7 @@ export default {
   },
   methods: {
     ...mapActions("AuthModules", ['logout']),
-    ...mapActions("UserModules", ['getUsersByUsername']),
+    ...mapActions("UserModules", ['getUsersByUsername', 'clearUsers']),
     goto(path) {
       if (this.$route.path !== `/${path}`) {
         this.$router.push(`/${path}`)
@@ -124,7 +139,7 @@ export default {
       this.logout();
       this.goto('login');
     },
-    doSearch(){
+    doSearch() {
       this.getUsersByUsername(this.username);
     }
   }
