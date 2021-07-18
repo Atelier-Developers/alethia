@@ -29,9 +29,9 @@ const actions = {
     async getMessages(context, payload) {
         console.log("GET Messages");
         try {
-            let res = await axios.get(API.conversation + '/' + payload + '/messages');
+            let res = await axios.get(API.conversation + '/message/' + payload);
             console.log(res);
-            context.commit("setConversatoins", res.data);
+            context.commit("setMessages", res.data);
         } catch (e) {
             console.log(e);
         }
@@ -64,7 +64,7 @@ const actions = {
         }
     },
     async createMessage(context, payload) {
-        console.log("delete Conversations");
+        console.log("add Message");
         try {
             let res = await axios.post(API.conversation + '/message', payload);
             console.log(res);
@@ -78,7 +78,15 @@ const actions = {
 
 const getters = {
     conversations: (state) => state.conversations,
-    messages: (state) => state.messages,
+    messages: (state) => {
+        if (state.messages === null){
+            return state.messages
+        }
+        state.messages.sort(function (a, b) {
+            return (a.created > b.created) ? 1 : ((a.created < b.created) ? -1 : 0);
+        });
+        return state.messages
+    },
 };
 
 
