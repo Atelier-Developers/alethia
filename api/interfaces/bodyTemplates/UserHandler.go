@@ -15,6 +15,7 @@ type UserCreateRequestBody struct {
 	AdditionalInfo  string    `json:"additional_info" binding:"required"`
 	JoinDate        time.Time `json:"join_date"`
 	BirthDate       time.Time `json:"birth_date" binding:"required"`
+	Location        string    `json:"location"`
 }
 
 type UserUpdateRequestBody struct {
@@ -23,6 +24,7 @@ type UserUpdateRequestBody struct {
 	Accomplishments string    `json:"accomplishments"`
 	AdditionalInfo  string    `json:"additional_info"`
 	BirthDate       time.Time `json:"birth_date"`
+	Location        string    `json:"location"`
 }
 
 type UserLoginRequestBody struct {
@@ -40,6 +42,7 @@ type UserGetResponseBody struct {
 	Accomplishments string    `json:"accomplishments"`
 	AdditionalInfo  string    `json:"additional_info"`
 	BirthDate       time.Time `json:"birth_date"`
+	Location        string    `json:"location"`
 	JoinDate        time.Time `json:"join_date"`
 }
 
@@ -53,6 +56,7 @@ type UserGetMutualConnectionsResponseBody struct {
 	Accomplishments  string    `json:"accomplishments"`
 	AdditionalInfo   string    `json:"additional_info"`
 	BirthDate        time.Time `json:"birth_date"`
+	Location         string    `json:"location"`
 	JoinDate         time.Time `json:"join_date"`
 	MutualConnection uint64    `json:"mutual_connection"`
 }
@@ -67,6 +71,7 @@ type UsersGetByUsernameResponseBody struct {
 	Accomplishments       string    `json:"accomplishments"`
 	AdditionalInfo        string    `json:"additional_info"`
 	BirthDate             time.Time `json:"birth_date"`
+	Location              string    `json:"location"`
 	JoinDate              time.Time `json:"join_date"`
 	MutualConnection      uint64    `json:"mutual_connection"`
 	IsFriendsWithThisUser uint64    `json:"is_friends_with_this_user"`
@@ -82,6 +87,7 @@ type UserGetByIdResponseBody struct {
 	Accomplishments             string    `json:"accomplishments"`
 	AdditionalInfo              string    `json:"additional_info"`
 	BirthDate                   time.Time `json:"birth_date"`
+	Location                    string    `json:"location"`
 	JoinDate                    time.Time `json:"join_date"`
 	MutualConnection            uint64    `json:"mutual_connection"`
 	IsFriendsWithThisUser       uint64    `json:"is_friends_with_this_user"`

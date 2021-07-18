@@ -55,6 +55,7 @@ func (userHandler *UserHandler) SaveUser(c *gin.Context) {
 		AdditionalInfo:  userRequestBody.AdditionalInfo,
 		JoinDate:        userRequestBody.JoinDate,
 		BirthDate:       userRequestBody.BirthDate,
+		Location:        userRequestBody.Location,
 	}
 
 	if time.Time.IsZero(user.JoinDate) {
@@ -108,6 +109,7 @@ func (userHandler *UserHandler) GetUser(c *gin.Context) {
 		Accomplishments: user.Accomplishments,
 		AdditionalInfo:  user.AdditionalInfo,
 		BirthDate:       user.BirthDate,
+		Location:        user.Location,
 		JoinDate:        user.JoinDate,
 	}
 	c.JSON(http.StatusCreated, response)
@@ -165,6 +167,7 @@ func (userHandler *UserHandler) GetUsersWithMutualConnection(c *gin.Context) {
 			Accomplishments:  u.Accomplishments,
 			AdditionalInfo:   u.AdditionalInfo,
 			BirthDate:        u.BirthDate,
+			Location:         u.Location,
 			JoinDate:         u.JoinDate,
 			MutualConnection: uint64(u.MutualConnection.Int64),
 		}
@@ -201,6 +204,7 @@ func (userHandler *UserHandler) GetUsersWithSimilarUsername(c *gin.Context) {
 			Accomplishments:       u.Accomplishments,
 			AdditionalInfo:        u.AdditionalInfo,
 			BirthDate:             u.BirthDate,
+			Location:              u.Location,
 			JoinDate:              u.JoinDate,
 			MutualConnection:      uint64(u.MutualConnection.Int64),
 			IsFriendsWithThisUser: u.IsFriendsWithThisUser,
@@ -243,6 +247,7 @@ func (userHandler *UserHandler) GetUserById(c *gin.Context) {
 		Accomplishments:       u.Accomplishments,
 		AdditionalInfo:        u.AdditionalInfo,
 		BirthDate:             u.BirthDate,
+		Location:              u.Location,
 		JoinDate:              u.JoinDate,
 		MutualConnection:      uint64(u.MutualConnection.Int64),
 		IsFriendsWithThisUser: u.IsFriendsWithThisUser,
@@ -341,6 +346,7 @@ func (userHandler *UserHandler) EditUser(c *gin.Context) {
 		Accomplishments: userRequestBody.Accomplishments,
 		AdditionalInfo:  userRequestBody.AdditionalInfo,
 		BirthDate:       userRequestBody.BirthDate,
+		Location:        userRequestBody.Location,
 	}
 
 	err := userHandler.userRepository.UpdateUser(&user)

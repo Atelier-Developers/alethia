@@ -19,6 +19,7 @@ type User struct {
 	AdditionalInfo  string    `json:"additional-info"  `
 	JoinDate        time.Time `json:"join-date"  `
 	BirthDate       time.Time `json:"birth-date"  `
+	Location        string    `json:"location"`
 }
 
 type UserWithMutualConnection struct {

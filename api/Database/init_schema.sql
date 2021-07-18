@@ -13,7 +13,7 @@ CREATE TABLE USER
     additional_information TEXT(1024)         NOT NULL,
     join_date              DATETIME DEFAULT CURRENT_TIMESTAMP,
     birthdate              DATE               NOT NULL,
-#     languages
+    location               VARCHAR(100)       NOT NULL,
     PRIMARY KEY (id)
 );
 
@@ -390,7 +390,8 @@ BEGIN
       AND USER.id = friends2.user1_id
     GROUP BY USER.id, USER.first_name, USER.last_name, USER.username, USER.password, USER.intro, USER.about,
              USER.accomplishments, USER.additional_information, USER.join_date, USER.birthdate, friends2.user1_id
-    ORDER BY mutual_connections desc LIMIT 15;
+    ORDER BY mutual_connections desc
+    LIMIT 15;
 
 END //
 
@@ -428,7 +429,8 @@ BEGIN
                               GROUP BY friends2.user1_id
                               ORDER BY mutual_connections DESC) tmp ON USER.id = tmp.user1_id
     where USER.username LIKE usernameString
-    ORDER BY is_friends_with_this_user DESC, tmp.mutual_connections DESC LIMIT 15;
+    ORDER BY is_friends_with_this_user DESC, tmp.mutual_connections DESC
+    LIMIT 15;
 END //
 
 DELIMITER ;
