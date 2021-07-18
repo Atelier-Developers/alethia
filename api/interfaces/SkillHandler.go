@@ -141,7 +141,7 @@ func (skillHandler *SkillHandler) DeleteUserSkill(c *gin.Context) {
 }
 
 func (skillHandler *SkillHandler) GetUserSkills(c *gin.Context) {
-	_, exists := c.Get("user_id")
+	userId, exists := c.Get("user_id")
 	if !exists {
 		log.Fatal("User Id does not exist!")
 	}
@@ -151,7 +151,7 @@ func (skillHandler *SkillHandler) GetUserSkills(c *gin.Context) {
 		log.Fatal(err)
 	}
 
-	skills, err := skillHandler.skillRepository.GetUserSkills(uint64(uId))
+	skills, err := skillHandler.skillRepository.GetUserSkills(userId.(uint64), uint64(uId))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return
