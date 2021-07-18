@@ -226,6 +226,7 @@ export default {
           "languages",
           "backgrounds",
         ]),
+    ...mapGetters('AuthModules', ['userId'])
   },
   methods: {
     ...mapActions("UserModules",
@@ -235,6 +236,7 @@ export default {
           "getBackgrounds"]),
     ...mapActions("InviteFriendModules", ["createInvite"]),
     ...mapActions("ConversationModules", ["createConversation"]),
+    ...mapActions("NotifModules", ["viewProfile"]),
     async sendCreateInvite() {
       this.inviteReq.receiver_id = +this.$route.params.id;
       await this.createInvite(this.inviteReq);
@@ -246,12 +248,14 @@ export default {
       await this.$router.push({name: "Conversation"})
     }
   },
-  mounted() {
+  async mounted() {
     let id = +this.$route.params.id
-    this.getUserById({id: id})
-    this.getBackgrounds(id)
-    this.getSkills(id)
-    this.getLanguages(id)
+    await this.getUserById({id: id})
+    await this.getBackgrounds(id)
+    await this.getSkills(id)
+    await this.getLanguages(id)
+    if (id !== +this.userId)
+      await this.viewProfile({id: id})
   }
 }
 </script>

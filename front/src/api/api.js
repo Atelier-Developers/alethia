@@ -24,7 +24,8 @@ export const API = {
     replyComment: API_PERFIX + 'post/comment/reply',
     likeComment: API_PERFIX + 'post/comment/like',
     repost: API_PERFIX + 'post',
-    conversation: API_PERFIX + 'conversation'
+    conversation: API_PERFIX + 'conversation',
+    notif: API_PERFIX + 'users/notification'
 
 }
 
