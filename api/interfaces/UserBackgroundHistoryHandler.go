@@ -155,13 +155,6 @@ func (userBackgroundHistoryHandler *UserBackgroundHistoryHandler) EditBackground
 
 func (userBackgroundHistoryHandler *UserBackgroundHistoryHandler) DeleteBackgroundHistory(c *gin.Context) {
 	var userRequestBody bodyTemplates.UserBackgroundHistoryDeleteRequestBody
-	if err := c.ShouldBindJSON(&userRequestBody); err != nil {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			"invalid_json": "invalid json",
-		})
-		return
-	}
-
 	backgroundId, err := strconv.ParseInt(c.Param("background_id"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusUnprocessableEntity, nil)

@@ -72,7 +72,10 @@ const actions = {
         }
     },
     async addBackground(context, payload) {
-        await axios.post(API.addBackground, payload);
+        await axios.post(API.userBackground, payload);
+    },
+    async deleteBackground(context, id) {
+        await axios.delete(`${API.userBackground}/${id}`);
     },
     async updateUserSkill(context, payload) {
         const mappedSkills = context.getters.skills.map((x) => x.id)

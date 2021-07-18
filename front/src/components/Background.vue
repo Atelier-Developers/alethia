@@ -1,16 +1,22 @@
 <template>
-  <v-card>
+  <v-card >
     <v-card-title>
       {{ back.title }} at {{ back.location }}
       <v-spacer/>
-      <v-btn icon @click="deleteBackground">
+      <v-btn icon v-if="deletable" @click="deleteBackground" color="red">
         <v-icon>
           mdi-delete
         </v-icon>
       </v-btn>
     </v-card-title>
     <v-card-subtitle>
-      From {{ isoToDate(back.start_date) }} to {{ isoToDate(back.end_date) }}
+      From {{ isoToDate(back.start_date) }} to
+      <template v-if="back.end_date">
+        {{ isoToDate(back.end_date) }}
+      </template>
+      <template v-else>
+        Present
+      </template>
     </v-card-subtitle>
     <v-card-text>
       {{ back.description }}
@@ -21,10 +27,10 @@
 <script>
 export default {
   name: "Background",
-  props: ['back'],
+  props: ['back', 'deletable'],
   methods: {
-    async deleteBackground() {
-
+    deleteBackground() {
+      this.$emit('delete', this.back.id)
     },
     isoToDate(iso) {
       let date = new Date(iso);

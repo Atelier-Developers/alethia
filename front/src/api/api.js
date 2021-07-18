@@ -8,7 +8,7 @@ export const API = {
     getLanguages: API_PERFIX + 'users/language',
     getBackground: API_PERFIX + 'users/background',
     getUser: API_PERFIX + 'users',
-    addBackground: API_PERFIX + 'users/background',
+    userBackground: API_PERFIX + 'users/background',
     userLanguage: API_PERFIX + 'users/language',
     userSkill: API_PERFIX + 'users/skill',
     getAllLanguages: API_PERFIX + 'language',

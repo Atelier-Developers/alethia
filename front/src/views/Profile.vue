@@ -191,82 +191,76 @@
       </v-card>
     </v-dialog>
     <v-dialog v-model="dialogUser" max-width="750px">
-      <v-card>
+      <v-card flat style="border-radius: 7px;">
         <v-card-title>
-          <h3>Edit Info</h3>
+          <h4>Edit Info</h4>
         </v-card-title>
         <v-divider/>
         <v-container>
-          <v-row>
-            <v-col cols="6">
-              <v-menu
-                  ref="menu3"
-                  v-model="menu3"
-                  :close-on-content-click="false"
-                  transition="scale-transition"
-                  offset-y
-                  max-width="290px"
-                  min-width="auto"
-              >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
+          <v-form @submit="sendEditUser">
+            <v-row>
+              <v-col cols="6">
+                <v-menu
+                    ref="menu3"
+                    v-model="menu3"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                    offset-y
+                    max-width="290px"
+                    min-width="auto"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                        v-model="newUser.birth_date"
+                        label="Start Date"
+                        outlined
+                        prepend-icon="mdi-calendar"
+                        v-bind="attrs"
+                        @blur="date = parseDate(newUser.birth_date)"
+                        v-on="on"
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker
                       v-model="newUser.birth_date"
-                      label="Start Date"
-                      hint="MM/DD/YYYY format"
-                      persistent-hint
-                      prepend-icon="mdi-calendar"
-                      v-bind="attrs"
-                      @blur="date = parseDate(newUser.birth_date)"
-                      v-on="on"
-                  ></v-text-field>
-                </template>
-                <v-date-picker
-                    v-model="newUser.birth_date"
-                    no-title
-                    @input="menu3 = false"
-                ></v-date-picker>
-              </v-menu>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="12">
-              <v-text-field
-                  v-model="newUser.intro"
-                  label="Intro"
-              />
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="12">
-              <v-text-field
-                  v-model="newUser.about"
-                  label="About"
-              />
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="12">
-              <v-text-field
-                  v-model="newUser.accomplishments"
-                  label="Accomplishments"
-              />
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="12">
-              <v-text-field
-                  v-model="newUser.additional_info"
-                  label="Additional Info"
-              />
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="12">
-              <v-btn @click="sendEditUser()">
-                Change
-              </v-btn>
-            </v-col>
-          </v-row>
+                      @input="menu3 = false"
+                  ></v-date-picker>
+                </v-menu>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                    v-model="newUser.intro"
+                    outlined
+
+                    label="Intro"
+                />
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                    v-model="newUser.about"
+                    label="About"
+                />
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                    v-model="newUser.accomplishments"
+                    label="Accomplishments"
+                    outlined
+                />
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                    v-model="newUser.additional_info"
+                    label="Additional Info"
+                    outlined
+                />
+              </v-col>
+              <v-col cols="12">
+                <v-btn type="submit">
+                  Edit
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-form>
         </v-container>
       </v-card>
     </v-dialog>
@@ -383,19 +377,19 @@
           </v-card>
         </v-col>
         <v-col cols="12">
-          <v-card>
+          <v-card flat style="border-radius: 7px">
             <v-card-title>
               <h2>
                 Backgrounds
               </h2>
               <v-spacer/>
-              <v-icon color="black" @click="dialogBack=true">mdi-plus</v-icon>
+              <v-icon @click="dialogBack=true">mdi-plus</v-icon>
             </v-card-title>
             <v-divider/>
             <v-container>
               <v-row>
-                <v-col cols="6" v-for="back in backgrounds" :key="back.id">
-                  <Background :back="back"/>
+                <v-col cols="12" md="6" v-for="back in backgrounds" :key="back.id">
+                  <Background @delete="sendDeleteBackground" :deletable="true" :back="back"/>
                 </v-col>
               </v-row>
             </v-container>
@@ -470,6 +464,7 @@ export default {
           "updateUserLanguage",
           "updateUserSkill",
           "addBackground",
+          "deleteBackground",
           "getAllLanguages",
           'getAllSkills',
           "editUser"]),
@@ -497,6 +492,10 @@ export default {
       await this.getBackgrounds(this.user.user_id)
       this.$refs["back-form"].reset()
       this.dialogBack = false
+    },
+    async sendDeleteBackground(id) {
+      await this.deleteBackground(id)
+      await this.getBackgrounds(this.user.user_id)
     },
     parseDate(date) {
       return date;
