@@ -396,6 +396,67 @@ END //
 
 DELIMITER ;
 
+DELIMITER //
+
+CREATE PROCEDURE GetUsersWithMutualConnectionByUsername(
+    IN userId INT,
+    IN usernameString varchar(50)
+)
+BEGIN
+    select USER.*, tmp.mutual_connections
+    From USER
+             LEFT OUTER JOIN (select friends2.user1_id, COUNT(*) as mutual_connections
+                              from (select user1_id, user2_id
+                                    from FRIEND
+                                    UNION
+                                    select user2_id, user1_id
+                                    from FRIEND) friends1
+                                       INNER JOIN (select user1_id, user2_id
+                                                   from FRIEND
+                                                   UNION
+                                                   select user2_id, user1_id
+                                                   from FRIEND) friends2 ON friends1.user2_id = friends2.user2_id
+                              WHERE friends1.user1_id = userId
+                                AND friends2.user1_id != userId
+                              GROUP BY friends2.user1_id
+                              ORDER BY mutual_connections DESC) tmp ON USER.id = tmp.user1_id
+    where USER.username LIKE usernameString
+    ORDER BY tmp.mutual_connections DESC;
+END //
+
+DELIMITER ;
+
+DELIMITER //
+
+CREATE PROCEDURE GetUserWithMutualConnectionByUId(
+    IN userId INT,
+    IN userId2 INT
+)
+BEGIN
+    select USER.*, tmp.mutual_connections
+    From USER
+             LEFT OUTER JOIN (select friends2.user1_id, COUNT(*) as mutual_connections
+                              from (select user1_id, user2_id
+                                    from FRIEND
+                                    UNION
+                                    select user2_id, user1_id
+                                    from FRIEND) friends1
+                                       INNER JOIN (select user1_id, user2_id
+                                                   from FRIEND
+                                                   UNION
+                                                   select user2_id, user1_id
+                                                   from FRIEND) friends2 ON friends1.user2_id = friends2.user2_id
+                              WHERE friends1.user1_id = userId
+                                AND friends2.user1_id != userId
+                              GROUP BY friends2.user1_id
+                              ORDER BY mutual_connections DESC) tmp ON USER.id = tmp.user1_id
+    where USER.id = userId2
+    ORDER BY tmp.mutual_connections DESC;
+END //
+
+DELIMITER ;
+
+
 
 
 

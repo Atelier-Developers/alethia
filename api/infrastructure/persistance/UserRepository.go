@@ -15,25 +15,25 @@ func NewUserRepository(dbClient *Database.MySQLDB) *UserRepository {
 	return &UserRepository{dbClient: dbClient}
 }
 
-func (userRepo *UserRepository) GetUsersWithSimilarUsername(username string) ([]entity.User, error) {
+func (userRepo *UserRepository) GetUsersWithSimilarUsername(userId uint64, username string) ([]entity.UserWithMutualConnection, error) {
 	db := userRepo.dbClient.GetDB()
-	stmt, err := db.Prepare("SELECT * FROM USER WHERE username LIKE ?")
+	stmt, err := db.Prepare("CALL GetUsersWithMutualConnectionByUsername(?, ?)")
 	if err != nil {
 
 		log.Fatal(err)
 	}
 	defer stmt.Close()
 
-	rows, err := stmt.Query("%" + username + "%")
+	rows, err := stmt.Query(userId, "%"+username+"%")
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	var users []entity.User
+	var users []entity.UserWithMutualConnection
 	for rows.Next() {
-		var user entity.User
-		err = rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Username, &user.Password, &user.Intro, &user.About, &user.Accomplishments, &user.AdditionalInfo, &user.JoinDate, &user.BirthDate)
+		var user entity.UserWithMutualConnection
+		err = rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Username, &user.Password, &user.Intro, &user.About, &user.Accomplishments, &user.AdditionalInfo, &user.JoinDate, &user.BirthDate, &user.MutualConnection)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -91,17 +91,17 @@ func (userRepo *UserRepository) GetUsersWithMutualConnection(userId uint64) ([]e
 	return users, nil
 }
 
-func (userRepo *UserRepository) GetUserByID(id uint64, user *entity.User) error {
+func (userRepo *UserRepository) GetUserByID(userId uint64, id uint64, user *entity.UserWithMutualConnection) error {
 	db := userRepo.dbClient.GetDB()
-	stmt, err := db.Prepare("SELECT * FROM USER WHERE id=?")
+	stmt, err := db.Prepare("CALL GetUserWithMutualConnectionByUId(?, ?)")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer stmt.Close()
 
-	row := stmt.QueryRow(id)
+	row := stmt.QueryRow(userId, id)
 
-	err = row.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Username, &user.Password, &user.Intro, &user.About, &user.Accomplishments, &user.AdditionalInfo, &user.JoinDate, &user.BirthDate)
+	err = row.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Username, &user.Password, &user.Intro, &user.About, &user.Accomplishments, &user.AdditionalInfo, &user.JoinDate, &user.BirthDate, &user.MutualConnection)
 	if err != nil {
 		return err
 	}

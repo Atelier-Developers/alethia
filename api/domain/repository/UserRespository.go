@@ -9,7 +9,7 @@ type UserRepository interface {
 	UpdateUser(user *entity.User) error
 	GetUserByUsernameAndPassword(username string, password string, user *entity.User) error
 	GetUserByUsername(username string, user *entity.User) error
-	GetUserByID(id uint64, user *entity.User) error
-	GetUsersWithSimilarUsername(username string) ([]entity.User, error)
+	GetUserByID(userId uint64, id uint64, user *entity.UserWithMutualConnection) error
+	GetUsersWithSimilarUsername(userId uint64, username string) ([]entity.UserWithMutualConnection, error)
 	GetUsersWithMutualConnection(userId uint64) ([]entity.UserWithMutualConnection, error)
 }

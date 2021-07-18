@@ -85,8 +85,8 @@ func (userHandler *UserHandler) GetUser(c *gin.Context) {
 		log.Fatal("User Id does not exist!")
 	}
 
-	var user entity.User
-	err := userHandler.userRepository.GetUserByID(userId.(uint64), &user)
+	var user entity.UserWithMutualConnection
+	err := userHandler.userRepository.GetUserByID(userId.(uint64), userId.(uint64), &user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return
@@ -147,13 +147,37 @@ func (userHandler *UserHandler) GetUsersWithMutualConnection(c *gin.Context) {
 		log.Fatal(err)
 	}
 
-	c.JSON(http.StatusOK, users)
+	var responseUsers []bodyTemplates.UserGetResponseBody
+	for _, u := range users {
+		responseUser := bodyTemplates.UserGetResponseBody{
+			UserID:           u.ID,
+			Username:         u.Username,
+			FirstName:        u.FirstName,
+			LastName:         u.LastName,
+			Intro:            u.Intro,
+			About:            u.About,
+			Accomplishments:  u.Accomplishments,
+			AdditionalInfo:   u.AdditionalInfo,
+			BirthDate:        u.BirthDate,
+			JoinDate:         u.JoinDate,
+			MutualConnection: uint64(u.MutualConnection.Int64),
+		}
+
+		responseUsers = append(responseUsers, responseUser)
+	}
+
+	c.JSON(http.StatusOK, responseUsers)
 }
 
 func (userHandler *UserHandler) GetUsersWithSimilarUsername(c *gin.Context) {
 	username := c.Param("username")
 
-	users, err := userHandler.userRepository.GetUsersWithSimilarUsername(string(username))
+	userId, exists := c.Get("user_id")
+	if !exists {
+		log.Fatal("User Id does not exist!")
+	}
+
+	users, err := userHandler.userRepository.GetUsersWithSimilarUsername(userId.(uint64), string(username))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return
@@ -162,16 +186,17 @@ func (userHandler *UserHandler) GetUsersWithSimilarUsername(c *gin.Context) {
 	var responseUsers []bodyTemplates.UserGetResponseBody
 	for _, u := range users {
 		responseUser := bodyTemplates.UserGetResponseBody{
-			UserID:          u.ID,
-			Username:        u.Username,
-			FirstName:       u.FirstName,
-			LastName:        u.LastName,
-			Intro:           u.Intro,
-			About:           u.About,
-			Accomplishments: u.Accomplishments,
-			AdditionalInfo:  u.AdditionalInfo,
-			BirthDate:       u.BirthDate,
-			JoinDate:        u.JoinDate,
+			UserID:           u.ID,
+			Username:         u.Username,
+			FirstName:        u.FirstName,
+			LastName:         u.LastName,
+			Intro:            u.Intro,
+			About:            u.About,
+			Accomplishments:  u.Accomplishments,
+			AdditionalInfo:   u.AdditionalInfo,
+			BirthDate:        u.BirthDate,
+			JoinDate:         u.JoinDate,
+			MutualConnection: uint64(u.MutualConnection.Int64),
 		}
 
 		responseUsers = append(responseUsers, responseUser)
@@ -189,24 +214,30 @@ func (userHandler *UserHandler) GetUserById(c *gin.Context) {
 		return
 	}
 
-	var user entity.User
-	err := userHandler.userRepository.GetUserByID(userRequestBody.Id, &user)
+	userId, exists := c.Get("user_id")
+	if !exists {
+		log.Fatal("User Id does not exist!")
+	}
+
+	var user entity.UserWithMutualConnection
+	err := userHandler.userRepository.GetUserByID(userId.(uint64), userRequestBody.Id, &user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
 
 	response := bodyTemplates.UserGetResponseBody{
-		UserID:          user.ID,
-		Username:        user.Username,
-		FirstName:       user.FirstName,
-		LastName:        user.LastName,
-		Intro:           user.Intro,
-		About:           user.About,
-		Accomplishments: user.Accomplishments,
-		AdditionalInfo:  user.AdditionalInfo,
-		BirthDate:       user.BirthDate,
-		JoinDate:        user.JoinDate,
+		UserID:           user.ID,
+		Username:         user.Username,
+		FirstName:        user.FirstName,
+		LastName:         user.LastName,
+		Intro:            user.Intro,
+		About:            user.About,
+		Accomplishments:  user.Accomplishments,
+		AdditionalInfo:   user.AdditionalInfo,
+		BirthDate:        user.BirthDate,
+		JoinDate:         user.JoinDate,
+		MutualConnection: uint64(user.MutualConnection.Int64),
 	}
 	c.JSON(http.StatusOK, response)
 }
