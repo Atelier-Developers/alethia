@@ -26,7 +26,8 @@ export const API = {
     repost: API_PERFIX + 'post',
     conversation: API_PERFIX + 'conversation',
     notif: API_PERFIX + 'users/notification',
-    mutual: API_PERFIX + 'users/mutualConnection'
+    mutual: API_PERFIX + 'users/mutualConnection',
+    endorse: API_PERFIX + 'users/skill/endorse'
 
 }
 

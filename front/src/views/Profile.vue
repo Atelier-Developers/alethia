@@ -471,8 +471,11 @@ export default {
           'getAllSkills',
           "editUser"]),
     async sendLangs() {
+      console.log(this.selectedLangs)
       await this.updateUserLanguage(this.selectedLangs)
+      console.log('yo')
       await this.getLanguages(this.user.user_id)
+      console.log('yo2')
       this.selectedLangs = this.languages.map((x) => x.id)
       this.dialogLang = false
     },
