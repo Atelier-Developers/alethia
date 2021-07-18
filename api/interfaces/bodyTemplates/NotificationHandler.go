@@ -28,6 +28,7 @@ type NotificationChangeWorkResponseBody struct {
 type NotificationCommentResponseBody struct {
 	NotificationResponseBody
 	Comment Comment.Comment     `json:"comment"`
+	Post    Post.Post           `json:"post"`
 	Creator UserGetResponseBody `json:"creator"`
 }
 
@@ -51,8 +52,9 @@ type NotificationLikePost struct {
 
 type NotificationReply struct {
 	NotificationResponseBody
-	Comment Comment.Comment     `json:"comment"`
-	Creator UserGetResponseBody `json:"creator"`
+	Comment        Comment.Comment     `json:"comment"`
+	RepliedComment Comment.Comment     `json:"replied_comment"`
+	Creator        UserGetResponseBody `json:"creator"`
 }
 
 type NotificationViewProfile struct {
