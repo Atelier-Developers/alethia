@@ -5,6 +5,8 @@ import (
 )
 
 type SkillRepository interface {
+	IsThisUserSkillEndorsed(userSkillId uint64, userId uint64, endorserId uint64) (bool, error)
+	UnEndorseSkill(userSkillId uint64, userId uint64, endorserId uint64) error
 	EndorseSkill(userSkillId uint64, userId uint64, endorserId uint64) error
 	AddUserSkill(skillId uint64, userId uint64) error
 	DeleteUserSkill(skillId uint64, userId uint64) error

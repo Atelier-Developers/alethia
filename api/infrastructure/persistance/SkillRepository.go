@@ -128,6 +128,42 @@ func (skillRepository *SkillRepository) DeleteUserSkill(skillId uint64, userId u
 	return nil
 }
 
+func (skillRepository *SkillRepository) UnEndorseSkill(userSkillId uint64, userId uint64, endorserId uint64) error {
+	db := skillRepository.dbClient.GetDB()
+	stmt, err := db.Prepare("DELETE FROM ENDORSE WHERE user_skill_skill_id=? AND user_skill_user_id=? AND endorser_id=?")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(userSkillId, userId, endorserId)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return nil
+}
+
+func (skillRepository *SkillRepository) IsThisUserSkillEndorsed(userSkillId uint64, userId uint64, endorserId uint64) (bool, error) {
+	db := skillRepository.dbClient.GetDB()
+	stmt, err := db.Prepare("SELECT Count(*) FROM ENDORSE WHERE user_skill_skill_id=? AND user_skill_user_id=? AND endorser_id=?")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	row := stmt.QueryRow(userSkillId, userId, endorserId)
+
+	var count uint64
+	err = row.Scan(&count)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return count > 0, nil
+}
+
 func (skillRepository *SkillRepository) GetUserSkills(visitorId uint64, userId uint64) ([]Skill.UserSkill, error) {
 	db := skillRepository.dbClient.GetDB()
 	stmt, err := db.Prepare("SELECT SKILL.* FROM SKILL, USER_SKILL WHERE SKILL.id = USER_SKILL.skill_id AND USER_SKILL.user_id = ?")
