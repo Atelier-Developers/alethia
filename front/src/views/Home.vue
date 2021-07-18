@@ -60,6 +60,13 @@
                 </v-row>
               </v-container>
             </div>
+            <v-container v-if="+post.repost_id!== 0">
+              <v-row>
+                <v-col cols="12">
+                  <Repost :repost_id="post.repost_id"/>
+                </v-col>
+              </v-row>
+            </v-container>
             <v-container>
               <v-row>
                 <v-col cols="12">
@@ -94,9 +101,11 @@
 <script>
 
 import {mapActions, mapGetters} from "vuex";
+import Repost from "../components/Repost";
 
 export default {
   name: "Home",
+  components: {Repost},
   data: () => ({
     dialogPost: false,
     newPost: {
