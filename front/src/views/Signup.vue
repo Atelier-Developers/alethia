@@ -11,7 +11,7 @@
           </v-card-subtitle>
           <v-divider/>
           <v-card-text>
-            <v-form>
+            <v-form @submit.prevent="sendSignup">
               <v-text-field
                   outlined
                   prepend-icon="mdi-account-circle-outline"
@@ -75,6 +75,7 @@
                       v-model="user.birth_date"
                       label="Date"
                       outlined
+                      readonly
                       prepend-icon="mdi-calendar"
                       v-bind="attrs"
                       @blur="date = parseDate(user.birth_date)"
@@ -92,7 +93,7 @@
                 <v-btn
                     color="primary"
                     dark
-                    @click="sendSignup()"
+                    type="submit"
                 >
                   signup
                 </v-btn>

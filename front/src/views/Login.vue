@@ -9,43 +9,45 @@
           <v-card-subtitle>
             See your growth and get consulting support
           </v-card-subtitle>
-          <v-divider />
+          <v-divider/>
           <v-card-text>
-            <v-text-field
-                outlined
-                prepend-icon="mdi-account-circle-outline"
-                label="Username"
-                v-model="user.username"
-            />
-            <v-text-field
-                label="Password"
-                type="password"
-                prepend-icon="mdi-lock-outline"
-                outlined
-                v-model="user.password"
-            />
-            <template v-if="status !== ''">
-              <v-alert
-                  border="left"
-                  dense
+            <v-form @submit.prevent="sendLogin">
+              <v-text-field
                   outlined
-                  type="error"
-              >{{ this.status }}
-              </v-alert>
-            </template>
-            <v-row class="pa-3">
-              <v-spacer/>
-              <v-btn
-                  color="primary"
-                  dark
-                  @click="sendLogin()"
-              >
-                Sign in
-              </v-btn>
-            </v-row>
-            <v-row dense justify="center">
-              <a @click="gotoSignup()">create account</a>
-            </v-row>
+                  prepend-icon="mdi-account-circle-outline"
+                  label="Username"
+                  v-model="user.username"
+              />
+              <v-text-field
+                  label="Password"
+                  type="password"
+                  prepend-icon="mdi-lock-outline"
+                  outlined
+                  v-model="user.password"
+              />
+              <template v-if="status !== ''">
+                <v-alert
+                    border="left"
+                    dense
+                    outlined
+                    type="error"
+                >{{ this.status }}
+                </v-alert>
+              </template>
+              <v-row class="pa-3">
+                <v-spacer/>
+                <v-btn
+                    color="primary"
+                    dark
+                    type="submit"
+                >
+                  Sign in
+                </v-btn>
+              </v-row>
+              <v-row dense justify="center">
+                <a @click="gotoSignup()">create account</a>
+              </v-row>
+            </v-form>
           </v-card-text>
         </v-card>
       </v-col>
