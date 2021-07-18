@@ -69,7 +69,7 @@ type UserGetByUsernameAndId struct {
 	BirthDate             time.Time `json:"birth_date"`
 	JoinDate              time.Time `json:"join_date"`
 	MutualConnection      uint64    `json:"mutual_connection"`
-	IsFriendsWithThisUser bool      `json:"is_friends_with_this_user"`
+	IsFriendsWithThisUser uint64      `json:"is_friends_with_this_user"`
 }
 
 type UserGetRequestBody struct {

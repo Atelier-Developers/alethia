@@ -185,6 +185,25 @@ func (userHandler *UserHandler) GetUsersWithSimilarUsername(c *gin.Context) {
 		return
 	}
 
+	var responseUsers []bodyTemplates.UserGetByUsernameAndId
+	for _, u := range users {
+		responseUser := bodyTemplates.UserGetByUsernameAndId{
+			UserID:                u.ID,
+			Username:              u.Username,
+			FirstName:             u.FirstName,
+			LastName:              u.LastName,
+			Intro:                 u.Intro,
+			About:                 u.About,
+			Accomplishments:       u.Accomplishments,
+			AdditionalInfo:        u.AdditionalInfo,
+			BirthDate:             u.BirthDate,
+			JoinDate:              u.JoinDate,
+			MutualConnection:      uint64(u.MutualConnection.Int64),
+			IsFriendsWithThisUser: u.IsFriendsWithThisUser,
+		}
+
+		responseUsers = append(responseUsers, responseUser)
+	}
 
 	c.JSON(http.StatusOK, users)
 }
@@ -203,15 +222,29 @@ func (userHandler *UserHandler) GetUserById(c *gin.Context) {
 		log.Fatal("User Id does not exist!")
 	}
 
-	var user entity.UserWithMutualConnectionAndFriendshipStatus
-	err := userHandler.userRepository.GetUserByID(userId.(uint64), userRequestBody.Id, &user)
+	var u entity.UserWithMutualConnectionAndFriendshipStatus
+	err := userHandler.userRepository.GetUserByID(userId.(uint64), userRequestBody.Id, &u)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
 
+	responseUser := bodyTemplates.UserGetByUsernameAndId{
+		UserID:                u.ID,
+		Username:              u.Username,
+		FirstName:             u.FirstName,
+		LastName:              u.LastName,
+		Intro:                 u.Intro,
+		About:                 u.About,
+		Accomplishments:       u.Accomplishments,
+		AdditionalInfo:        u.AdditionalInfo,
+		BirthDate:             u.BirthDate,
+		JoinDate:              u.JoinDate,
+		MutualConnection:      uint64(u.MutualConnection.Int64),
+		IsFriendsWithThisUser: u.IsFriendsWithThisUser,
+	}
 
-	c.JSON(http.StatusOK, user)
+	c.JSON(http.StatusOK, responseUser)
 }
 
 func (userHandler *UserHandler) Login(c *gin.Context) {
