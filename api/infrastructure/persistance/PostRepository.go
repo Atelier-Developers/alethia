@@ -69,6 +69,42 @@ func (postRepo *PostRepository) LikePost(post *Post.Post, userId uint64) error {
 	return nil
 }
 
+func (postRepo *PostRepository) IsPostLikedByThisUser(userId uint64, postId uint64) (bool, error) {
+	db := postRepo.dbClient.GetDB()
+	stmt, err := db.Prepare("SELECT COUNT(*) FROM POST_LIKE WHERE user_id=? AND post_id=? ")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	row := stmt.QueryRow(userId, postId)
+
+	var count uint64
+	err = row.Scan(&count)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return count > 0, nil
+}
+
+func (postRepo *PostRepository) UnlikePost(userId uint64, postId uint64) error {
+	db := postRepo.dbClient.GetDB()
+	stmt, err := db.Prepare("DELETE FROM POST_LIKE WHERE user_id=? AND post_id=?")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(userId, postId)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return nil
+}
+
 func (postRepo *PostRepository) GetPostLikes(postId uint64) ([]Post.Like, error) {
 	db := postRepo.dbClient.GetDB()
 	stmt, err := db.Prepare("SELECT POST_LIKE.*, USER.username FROM POST_LIKE, USER WHERE post_id=? AND POST_LIKE.user_id=USER.id")
