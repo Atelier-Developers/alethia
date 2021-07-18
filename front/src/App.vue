@@ -12,35 +12,23 @@
         </v-toolbar-title>
 
         <v-spacer></v-spacer>
-
-        <v-btn icon>
-          <v-icon>mdi-magnify</v-icon>
-        </v-btn>
-
-        <v-menu
-            left
-            bottom
-        >
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-                icon
-                v-bind="attrs"
-                v-on="on"
-            >
-              <v-icon>mdi-dots-vertical</v-icon>
+        <div v-if="isAuthenticated" style="display: flex">
+          <div v-for="item in appBarItems" :key="item.path">
+            <v-btn icon @click="goto(item.path)">
+              <v-icon>{{ item.icon }}</v-icon>
             </v-btn>
-          </template>
-
-          <v-list>
-            <v-list-item
-                v-for="n in 5"
-                :key="n"
-                @click="() => {}"
-            >
-              <v-list-item-title>Option {{ n }}</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
+          </div>
+        </div>
+        <div v-if="isAuthenticated">
+          <v-btn icon @click="sendLogout()">
+            <v-icon>mdi-power</v-icon>
+          </v-btn>
+        </div>
+        <div v-else>
+          <v-btn icon @click="goto('login')">
+            <v-icon>mdi-login</v-icon>
+          </v-btn>
+        </div>
       </v-app-bar>
     </div>
 
@@ -52,12 +40,47 @@
 
 <script>
 
+import {mapActions, mapGetters} from "vuex";
+
 export default {
   name: 'App',
-
-
   data: () => ({
-    //
+    appBarItems: [
+      {
+        icon: 'mdi-home',
+        path: 'home',
+      },
+      {
+        icon: 'mdi-account-multiple-plus',
+        path: 'network',
+      },
+      {
+        icon: 'mdi-bell',
+        path: 'notifications',
+      },
+      {
+        icon: 'mdi-comment',
+        path: 'conversations',
+      },
+      {
+        icon: 'mdi-account',
+        path: 'profile'
+      }
+
+    ]
   }),
+  computed: {
+    ...mapGetters("AuthModules", ["isAuthenticated"]),
+  },
+  methods: {
+    ...mapActions("AuthModules", ['logout']),
+    goto(path) {
+      this.$router.push(path)
+    },
+    sendLogout() {
+      this.logout();
+      this.goto('login');
+    }
+  }
 };
 </script>
