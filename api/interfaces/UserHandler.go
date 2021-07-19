@@ -179,6 +179,14 @@ func (userHandler *UserHandler) GetUsersWithMutualConnection(c *gin.Context) {
 }
 
 func (userHandler *UserHandler) GetUsersWithSimilarUsername(c *gin.Context) {
+	var userRequestBody bodyTemplates.UsersGetByUsernameRequestBody
+	if err := c.ShouldBindJSON(&userRequestBody); err != nil {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"invalid_json": "invalid json",
+		})
+		return
+	}
+
 	username := c.Param("username")
 
 	userId, exists := c.Get("user_id")
@@ -213,7 +221,45 @@ func (userHandler *UserHandler) GetUsersWithSimilarUsername(c *gin.Context) {
 		responseUsers = append(responseUsers, responseUser)
 	}
 
-	c.JSON(http.StatusOK, users)
+	if userRequestBody.Location != "" {
+		var tmp []bodyTemplates.UsersGetByUsernameResponseBody
+		for _, u := range responseUsers {
+			if u.Location == userRequestBody.Location {
+				tmp = append(tmp, u)
+			}
+		}
+		responseUsers = tmp
+	}
+	if userRequestBody.Company != "" {
+		var tmp []bodyTemplates.UsersGetByUsernameResponseBody
+		for _, u := range responseUsers {
+			result, err := userHandler.userRepository.DoesUserWorkAtCompany(u.UserID, userRequestBody.Company)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, err)
+				return
+			}
+			if result {
+				tmp = append(tmp, u)
+			}
+		}
+		responseUsers = tmp
+	}
+	if userRequestBody.Language != "" {
+		var tmp []bodyTemplates.UsersGetByUsernameResponseBody
+		for _, u := range responseUsers {
+			result, err := userHandler.userRepository.DoesUserHaveLanguage(u.UserID, userRequestBody.Language)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, err)
+				return
+			}
+			if result {
+				tmp = append(tmp, u)
+			}
+		}
+		responseUsers = tmp
+	}
+
+	c.JSON(http.StatusOK, responseUsers)
 }
 
 func (userHandler *UserHandler) GetUserById(c *gin.Context) {

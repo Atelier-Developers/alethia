@@ -132,7 +132,7 @@ func main() {
 	{
 		conversationGroup.POST("", conversationHandler.AddConversation)
 		conversationGroup.PUT("", conversationHandler.UpdateUserConversation)
-		//conversationGroup.DELETE("", conversationHandler.DeleteConversation)
+		conversationGroup.DELETE("", conversationHandler.DeleteConversation)
 		conversationGroup.GET("", conversationHandler.GetUserConversations)
 
 		messageGroup := conversationGroup.Group("/message")

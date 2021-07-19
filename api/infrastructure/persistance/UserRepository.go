@@ -15,6 +15,46 @@ func NewUserRepository(dbClient *Database.MySQLDB) *UserRepository {
 	return &UserRepository{dbClient: dbClient}
 }
 
+func (userRepo *UserRepository) DoesUserWorkAtCompany(userId uint64, companyName string) (bool, error) {
+	db := userRepo.dbClient.GetDB()
+	stmt, err := db.Prepare("SELECT COUNT(*) FROM USER, USER_HISTORY WHERE USER.id=? AND USER_HISTORY.user_id=USER.id AND USER_HISTORY.end_date IS NULL AND USER_HISTORY.location=?")
+	if err != nil {
+
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	row := stmt.QueryRow(userId, companyName)
+
+	var count uint64
+	err = row.Scan(&count)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return count > 0, nil
+}
+
+func (userRepo *UserRepository) DoesUserHaveLanguage(userId uint64, language string) (bool, error) {
+	db := userRepo.dbClient.GetDB()
+	stmt, err := db.Prepare("SELECT COUNT(*) FROM USER, USER_LANGUAGE, LANGUAGE WHERE USER.id=? AND USER_LANGUAGE.user_id=USER.id AND USER_LANGUAGE.language_id=LANGUAGE.id AND LANGUAGE.language=?")
+	if err != nil {
+
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	row := stmt.QueryRow(userId, language)
+
+	var count uint64
+	err = row.Scan(&count)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return count > 0, nil
+}
+
 func (userRepo *UserRepository) GetUsersWithSimilarUsername(userId uint64, username string) ([]entity.UserWithMutualConnectionAndFriendshipStatus, error) {
 	db := userRepo.dbClient.GetDB()
 	stmt, err := db.Prepare("CALL GetUsersWithMutualConnectionByUsername(?, ?)")

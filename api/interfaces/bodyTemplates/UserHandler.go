@@ -99,6 +99,12 @@ type UserGetRequestBody struct {
 	Id uint64 `json:"id" binding:"required"`
 }
 
+type UsersGetByUsernameRequestBody struct {
+	Location string `json:"location"`
+	Language string `json:"language"`
+	Company  string `json:"company"`
+}
+
 type UserViewProfileRequestBody struct {
 	Id uint64 `json:"id" binding:"required"`
 }

@@ -5,6 +5,8 @@ import (
 )
 
 type UserRepository interface {
+	DoesUserWorkAtCompany(userId uint64, companyName string) (bool, error)
+	DoesUserHaveLanguage(userId uint64, language string) (bool, error)
 	SaveUser(user *entity.User) error
 	UpdateUser(user *entity.User) error
 	GetUserByUsernameAndPassword(username string, password string, user *entity.User) error
