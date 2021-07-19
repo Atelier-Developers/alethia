@@ -168,7 +168,7 @@ func (commentHandler *CommentHandler) ReplyComment(c *gin.Context) {
 		return
 	}
 
-	id, err := commentHandler.commentRepository.ReplyComment(&comment, commentReplyRequestBody.RepliedCommentId)
+	err = commentHandler.commentRepository.ReplyComment(&comment, commentReplyRequestBody.RepliedCommentId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return
@@ -176,7 +176,7 @@ func (commentHandler *CommentHandler) ReplyComment(c *gin.Context) {
 
 	if repliedComment.CommenterId != userId.(uint64) {
 		n := notification.ReplyComment{
-			CommentId: id,
+			CommentId: comment.Id,
 			Notification: notification.Notification{
 				ReceiverId: repliedComment.CommenterId,
 			},
