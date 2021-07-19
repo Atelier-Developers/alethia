@@ -1,6 +1,6 @@
 <template>
-  <div style="height: 100%;position: absolute;width: 100%; padding: 50px">
-    <v-row>
+  <div>
+    <v-row class="mx-5">
       <v-col cols="4">
         <v-row v-for="conv in conversations" :key="conv.conversation_id">
           <v-col cols="12"
@@ -11,45 +11,61 @@
           </v-col>
         </v-row>
       </v-col>
-      <v-col cols="8" style="height: 100%" class="px-10">
-        <v-row v-for="message in messages" :key="message.id" class="my-5">
-          <v-spacer v-if="+userId===+message.user_id"/>
-          <v-col cols="4" class="message" @click="selectMessage(message)">
-            <div v-if="message.reply_id > 0" class="mb-3 elevation-3" style="padding: 3px; border-radius: 3px">
-              <h6>reply: {{ message.replied_message_username }}</h6>
-              <span style="font-size: 12px">{{ message.replied_message_body }}</span>
-            </div>
-            <div>
-              {{ message.body }}
-            </div>
-            <span style="font-size: 12px">{{ isoToDate(message.created) }}</span>
+      <v-col cols="8" v-if="selectedConv !== null">
+        <v-row class="grey elevation-5" style="border-radius: 10px; overflow: hidden">
+          <v-col cols="12"
+                 style="max-height: 80vh; height:100%;overflow: scroll; overflow-x: hidden;"
+                 ref="char-box"
+                 class="grey">
+            <v-row dense v-for="message in messages" :key="message.id">
+              <v-spacer v-if="+userId===+message.user_id"/>
+              <v-col cols="10" md="4" @click="selectMessage(message)">
+                <v-card flat style="border-radius: 7px">
+                  <template v-if="message.reply_id > 0">
+                    <v-card-title class="grey lighten-2">
+                      <v-icon left style="transform: scaleX(-1)">
+                        mdi-reply
+                      </v-icon>
+                      {{ message.replied_message_username }}
+                    </v-card-title>
+                    <v-card-subtitle class="grey lighten-2">
+                      {{ message.replied_message_body }}
+                    </v-card-subtitle>
+                  </template>
+                  <v-card-title>
+                    {{ message.body }}
+                  </v-card-title>
+                  <v-card-subtitle>
+                    {{ isoToDate(message.created) }}
+                  </v-card-subtitle>
+                </v-card>
+              </v-col>
+            </v-row>
           </v-col>
-        </v-row>
-      </v-col>
-    </v-row>
-    <v-row v-if="selectedConv !== null">
-      <v-spacer/>
-      <v-col cols="8">
-        <v-row v-if="selectedMessage.id > 0" dense>
           <v-col cols="12">
-            <h6>Reply:</h6>
-            <div>
-              {{ selectedMessage.body }}
-            </div>
-          </v-col>
-        </v-row>
-        <v-row dense>
-          <v-col cols="10">
-            <v-text-field
-                label="message"
-                v-model="newMessage"
-            />
-          </v-col>
-          <v-col cols="2">
-            <v-btn @click="sendMessage" color="primary">Send</v-btn>
+            <v-form @submit.prevent="sendMessage">
+              <v-row v-if="selectedConv !== null">
+                <v-col v-if="selectedMessage.id > 0" class="white lighten-1" cols="12">
+                  <h6>Reply</h6>
+                  <div>
+                    {{ selectedMessage.body }}
+                  </div>
+                </v-col>
+                <v-text-field
+                    label="message"
+                    v-model="newMessage"
+                    hide-details
+                    background-color="white"
+                    style="border-radius: 0"
+                    solo
+                />
+                <v-btn type="submit" style="display: none;"/>
+              </v-row>
+            </v-form>
           </v-col>
         </v-row>
       </v-col>
+
     </v-row>
   </div>
 </template>
@@ -65,11 +81,11 @@ export default {
     selectedMessage: {
       id: -1,
       body: ''
-    }
+    },
   }),
   computed: {
     ...mapGetters("ConversationModules", ["conversations", "messages"]),
-    ...mapGetters('AuthModules', ['userId'])
+    ...mapGetters('AuthModules', ['userId']),
   },
   methods: {
     ...mapActions("ConversationModules", [
@@ -80,24 +96,29 @@ export default {
       "createConversation",
       "createMessage"
     ]),
-    sendConv(id) {
-      this.getMessages(id).then(() => {
-        this.selectedConv = id;
-      });
+    async sendConv(id) {
+      await this.getMessages(id)
+      this.selectedConv = id;
+      if (this.$refs["char-box"]) {
+        this.$refs["char-box"].scroll(0, this.$refs["char-box"].scrollHeight)
+      }
     },
-    sendMessage() {
+    async sendMessage() {
       if (this.selectedMessage.id === -1) {
-        this.createMessage({
+        await this.createMessage({
           conversation_id: +this.selectedConv,
           message_body: this.newMessage,
         })
       } else {
-        this.createMessage({
+        await this.createMessage({
           reply_id: +this.selectedMessage.id,
           conversation_id: +this.selectedConv,
           message_body: this.newMessage,
         })
       }
+      await this.getMessages(this.selectedConv)
+      this.newMessage = ''
+      this.$refs["char-box"].scroll(0, this.$refs["char-box"].scrollHeight)
     },
     isoToDate(iso) {
       let date = new Date(iso);
@@ -138,18 +159,27 @@ export default {
 </script>
 
 <style scoped>
-.conv {
-  background-color: white;
-  border-bottom: 1px solid black;
+
+/* Designing for scroll-bar */
+::-webkit-scrollbar {
+  width: 6px;
+
 }
 
-.conv.conv-active {
-  background-color: gray;
-  color: white;
+/* Track */
+::-webkit-scrollbar-track {
+  background: gainsboro;
+  border-radius: 5px;
 }
 
-.message {
-  background-color: white;
-  border-radius: 3px;
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #aca3a3;
+  border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 </style>
