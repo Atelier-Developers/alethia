@@ -16,7 +16,10 @@ const mutations = {
         state.user = item;
     },
     setUsers(state, item) {
-        state.users = item;
+        if (item === null)
+            state.users = []
+        else
+            state.users = item;
     },
     setSkills(state, item) {
         state.skills = item;
@@ -42,7 +45,7 @@ const actions = {
     },
     async getUsersByUsername(context, payload) {
         console.log("Get USERS BY USERNAME")
-        let res = await axios.get(API.getUser + '/' + payload);
+        let res = await axios.post(API.getUser + '/search', payload);
         console.log(res);
         context.commit('setUsers', res.data);
     },

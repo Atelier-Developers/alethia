@@ -10,6 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+	"fmt"
 )
 
 type NotificationHandler struct {
@@ -37,16 +38,19 @@ func (notificationHandler *NotificationHandler) GetUserNotifications(c *gin.Cont
 	if !exists {
 		log.Fatal("User Id does not exist!")
 	}
+	fmt.Println(userId)
 	result := map[string]interface{}{}
 	var res interface{}
 
 	res, err := notificationHandler.notificationRepository.GetBirthdayNotification(userId.(uint64))
-	if err != nil {
+	fmt.Println('A')
+    if err != nil {
 		log.Fatal(err)
 	}
 	if res == nil {
 		res = []notification.Birthday{}
 	}
+
 
 	var birthdayNotifs []bodyTemplates.NotificationBirthdayResponseBody
 	for _, n := range res.([]notification.Birthday) {
@@ -59,6 +63,7 @@ func (notificationHandler *NotificationHandler) GetUserNotifications(c *gin.Cont
 
 		var user entity.UserWithMutualConnectionAndFriendshipStatus
 		err = notificationHandler.userRepository.GetUserByID(userId.(uint64), n.UserId, &user)
+			fmt.Println('B')
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -80,6 +85,8 @@ func (notificationHandler *NotificationHandler) GetUserNotifications(c *gin.Cont
 	result["birthday"] = birthdayNotifs
 
 	res, err = notificationHandler.notificationRepository.GetChangeWorkNotification(userId.(uint64))
+				fmt.Println('C')
+
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -97,6 +104,7 @@ func (notificationHandler *NotificationHandler) GetUserNotifications(c *gin.Cont
 		changeWorkNotif.IsSeen = n.IsSeen
 
 		background, err := notificationHandler.backgroundHistoryRepository.GetBackgroundHistory(n.UserHistoryId)
+		fmt.Println('D')
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -105,6 +113,7 @@ func (notificationHandler *NotificationHandler) GetUserNotifications(c *gin.Cont
 
 		var user entity.UserWithMutualConnectionAndFriendshipStatus
 		err = notificationHandler.userRepository.GetUserByID(userId.(uint64), background.UserID, &user)
+		fmt.Println('E')
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -126,6 +135,7 @@ func (notificationHandler *NotificationHandler) GetUserNotifications(c *gin.Cont
 	result["change_work"] = changeWorkNotifs
 
 	res, err = notificationHandler.notificationRepository.GetCommentNotification(userId.(uint64))
+	fmt.Println('F')
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -144,6 +154,7 @@ func (notificationHandler *NotificationHandler) GetUserNotifications(c *gin.Cont
 
 		var comment Comment.Comment
 		err := notificationHandler.commentRepository.GetCommentByID(n.CommentId, &comment)
+		fmt.Println('G')
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -152,6 +163,7 @@ func (notificationHandler *NotificationHandler) GetUserNotifications(c *gin.Cont
 
 		var post Post.Post
 		err = notificationHandler.postRepository.GetPostById(comment.PostId, &post)
+		fmt.Println('H')
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -160,6 +172,7 @@ func (notificationHandler *NotificationHandler) GetUserNotifications(c *gin.Cont
 
 		var user entity.UserWithMutualConnectionAndFriendshipStatus
 		err = notificationHandler.userRepository.GetUserByID(userId.(uint64), comment.CommenterId, &user)
+		fmt.Println('I')
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -181,6 +194,7 @@ func (notificationHandler *NotificationHandler) GetUserNotifications(c *gin.Cont
 	result["comment"] = commentNotifs
 
 	res, err = notificationHandler.notificationRepository.GetEndorseSkillNotification(userId.(uint64))
+	fmt.Println('J')
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -203,6 +217,7 @@ func (notificationHandler *NotificationHandler) GetUserNotifications(c *gin.Cont
 
 		var user entity.UserWithMutualConnectionAndFriendshipStatus
 		err = notificationHandler.userRepository.GetUserByID(userId.(uint64), n.UserId, &user)
+		fmt.Println('K')
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -224,6 +239,7 @@ func (notificationHandler *NotificationHandler) GetUserNotifications(c *gin.Cont
 	result["endorse"] = endorseSkillNotifs
 
 	res, err = notificationHandler.notificationRepository.GetLikeCommentNotification(userId.(uint64))
+	fmt.Println('L')
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -242,6 +258,7 @@ func (notificationHandler *NotificationHandler) GetUserNotifications(c *gin.Cont
 
 		var comment Comment.Comment
 		err := notificationHandler.commentRepository.GetCommentByID(n.CommentId, &comment)
+		fmt.Println('M')
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -250,6 +267,7 @@ func (notificationHandler *NotificationHandler) GetUserNotifications(c *gin.Cont
 
 		var user entity.UserWithMutualConnectionAndFriendshipStatus
 		err = notificationHandler.userRepository.GetUserByID(userId.(uint64), n.UserId, &user)
+		fmt.Println('N')
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -271,6 +289,7 @@ func (notificationHandler *NotificationHandler) GetUserNotifications(c *gin.Cont
 	result["like_comment"] = likeCommentNotifs
 
 	res, err = notificationHandler.notificationRepository.GetLikePostNotification(userId.(uint64))
+	fmt.Println('O')
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -289,6 +308,7 @@ func (notificationHandler *NotificationHandler) GetUserNotifications(c *gin.Cont
 
 		var post Post.Post
 		err := notificationHandler.postRepository.GetPostById(n.PostId, &post)
+		fmt.Println('P')
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -297,6 +317,7 @@ func (notificationHandler *NotificationHandler) GetUserNotifications(c *gin.Cont
 
 		var user entity.UserWithMutualConnectionAndFriendshipStatus
 		err = notificationHandler.userRepository.GetUserByID(userId.(uint64), n.UserId, &user)
+		fmt.Println('Q')
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -318,6 +339,7 @@ func (notificationHandler *NotificationHandler) GetUserNotifications(c *gin.Cont
 	result["like_post"] = likePostNotifs
 
 	res, err = notificationHandler.notificationRepository.GetReplyCommentNotification(userId.(uint64))
+	fmt.Println('R')
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -336,6 +358,7 @@ func (notificationHandler *NotificationHandler) GetUserNotifications(c *gin.Cont
 
 		var comment Comment.Comment
 		err := notificationHandler.commentRepository.GetCommentByID(n.CommentId, &comment)
+		fmt.Println('S')
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -345,6 +368,7 @@ func (notificationHandler *NotificationHandler) GetUserNotifications(c *gin.Cont
 		var repliedComment Comment.Comment
 
 		err = notificationHandler.commentRepository.GetCommentByID(uint64(comment.RepliedCommentId.Int64), &repliedComment)
+		fmt.Println('T')
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -353,6 +377,7 @@ func (notificationHandler *NotificationHandler) GetUserNotifications(c *gin.Cont
 
 		var user entity.UserWithMutualConnectionAndFriendshipStatus
 		err = notificationHandler.userRepository.GetUserByID(userId.(uint64), comment.CommenterId, &user)
+		fmt.Println('U')
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -374,6 +399,7 @@ func (notificationHandler *NotificationHandler) GetUserNotifications(c *gin.Cont
 	result["reply_comment"] = replyCommentNotifs
 
 	res, err = notificationHandler.notificationRepository.GetViewProfileNotification(userId.(uint64))
+	fmt.Println('V')
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -392,6 +418,7 @@ func (notificationHandler *NotificationHandler) GetUserNotifications(c *gin.Cont
 
 		var user entity.UserWithMutualConnectionAndFriendshipStatus
 		err = notificationHandler.userRepository.GetUserByID(userId.(uint64), n.UserId, &user)
+		fmt.Println('W')
 		if err != nil {
 			log.Fatal(err)
 		}

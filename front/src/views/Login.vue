@@ -3,10 +3,10 @@
     <v-row justify="center">
       <v-col cols="12" sm="6" md="4">
         <v-card style="border-radius: 7px;" flat>
-          <v-card-title>
+          <v-card-title style="justify-content: center">
             Sign in to Linkedin
           </v-card-title>
-          <v-card-subtitle>
+          <v-card-subtitle style="text-align: center">
             See your growth and get consulting support
           </v-card-subtitle>
           <v-divider/>
@@ -35,17 +35,20 @@
                 </v-alert>
               </template>
               <v-row class="pa-3">
+                <v-col cols="4" class="mt-2" >
+                  <a @click="gotoSignup()">Register</a>
+                </v-col>
                 <v-spacer/>
-                <v-btn
-                    color="primary"
-                    dark
-                    type="submit"
-                >
-                  Sign in
-                </v-btn>
-              </v-row>
-              <v-row dense justify="center">
-                <a @click="gotoSignup()">create account</a>
+                <v-col cols="6" style="display: flex">
+                  <v-spacer/>
+                  <v-btn
+                      color="primary"
+                      dark
+                      type="submit"
+                  >
+                    Sign in
+                  </v-btn>
+                </v-col>
               </v-row>
             </v-form>
           </v-card-text>

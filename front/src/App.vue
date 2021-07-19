@@ -16,6 +16,51 @@
               />
             </v-col>
           </v-row>
+          <v-row align="center" dense>
+            <v-col cols="12" style="display: flex">
+              <v-checkbox
+                  v-model="searchOpt.language.use"
+                  hide-details
+                  class="shrink mr-2 mb-10"
+              ></v-checkbox>
+              <v-text-field
+                  :disabled="!searchOpt.language.use"
+                  label="Language"
+                  outlined
+                  v-model="searchOpt.language.text"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row align="center" dense>
+            <v-col cols="12" style="display: flex">
+              <v-checkbox
+                  v-model="searchOpt.location.use"
+                  hide-details
+                  class="shrink mr-2 mb-10"
+              ></v-checkbox>
+              <v-text-field
+                  :disabled="!searchOpt.location.use"
+                  label="Location"
+                  outlined
+                  v-model="searchOpt.location.text"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row align="center" dense>
+            <v-col cols="12" style="display: flex">
+              <v-checkbox
+                  v-model="searchOpt.company.use"
+                  hide-details
+                  class="shrink mr-2 mb-10"
+              ></v-checkbox>
+              <v-text-field
+                  :disabled="!searchOpt.company.use"
+                  label="Company"
+                  outlined
+                  v-model="searchOpt.company.text"
+              ></v-text-field>
+            </v-col>
+          </v-row>
           <v-row dense>
             <v-spacer/>
             <v-col cols="4">
@@ -26,12 +71,12 @@
             </v-col>
           </v-row>
         </v-container>
-        <v-divider/>
+        <v-divider v-if="users.length > 0"/>
         <v-container>
           <v-row
               v-for="user in users"
               :key="user.id"
-              @click="goto('user/'+user.id);dialogSearch=false;"
+              @click="goto('user/'+user.user_id);dialogSearch=false;"
               style="border-bottom: 1px solid rgba(0, 0, 0, 0.12); cursor: pointer"
           >
             <v-col cols="4">
@@ -41,7 +86,7 @@
               Your Friend
             </v-col>
             <v-col cols="4" v-else>
-              Connections: {{ user.mutual_connection.Int64 }}
+              Connections: {{ user.mutual_connection }}
             </v-col>
           </v-row>
         </v-container>
@@ -121,7 +166,21 @@ export default {
         path: 'profile'
       }
 
-    ]
+    ],
+    searchOpt: {
+      location: {
+        use: false,
+        text: '',
+      },
+      language: {
+        use: false,
+        text: '',
+      },
+      company: {
+        use: false,
+        text: '',
+      },
+    }
   }),
   computed: {
     ...mapGetters("AuthModules", ["isAuthenticated"]),
@@ -140,7 +199,12 @@ export default {
       this.goto('login');
     },
     doSearch() {
-      this.getUsersByUsername(this.username);
+      this.getUsersByUsername({
+        username: this.username,
+        location: this.searchOpt.location.use ? this.searchOpt.location.text : '',
+        company: this.searchOpt.company.use ? this.searchOpt.company.text : '',
+        language: this.searchOpt.language.use ? this.searchOpt.language.text : '',
+      });
     }
   }
 };

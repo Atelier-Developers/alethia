@@ -30,28 +30,28 @@
       </v-row>
       <v-row>
         <v-col cols="12">
-          <v-card>
-            <v-card-title>
-              <h4>
-                Comments:
-              </h4>
+            <v-row>
+              <v-col cols="4">
+                <h1>
+                  Comments:
+                </h1>
+              </v-col>
               <v-spacer/>
-              <v-btn @click="dialogComment=true" elevation="0" icon>
-                <v-icon>mdi-plus</v-icon>
-              </v-btn>
-            </v-card-title>
-            <v-divider/>
-            <v-container>
-              <v-row v-for="comment in comments" :key="comment.id">
-                <v-col cols="12" v-if="comment.replied_comment_id.Valid">
-                  <Comment :comment="comment" :other="getRepliedComment(comment.replied_comment_id.Int64)"/>
-                </v-col>
-                <v-col cols="12" v-else>
-                  <Comment :comment="comment"/>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-card>
+              <v-col cols="4" style="display: flex">
+                <v-spacer/>
+                <v-btn class="mt-2" @click="dialogComment=true" elevation="0" color="primary">
+                  Add Comment
+                </v-btn>
+              </v-col>
+            </v-row>
+            <v-row v-for="comment in comments" :key="comment.id">
+              <v-col cols="12" v-if="comment.replied_comment_id.Valid">
+                <Comment :comment="comment" :other="getRepliedComment(comment.replied_comment_id.Int64)"/>
+              </v-col>
+              <v-col cols="12" v-else>
+                <Comment :comment="comment"/>
+              </v-col>
+            </v-row>
         </v-col>
       </v-row>
     </v-container>
@@ -96,7 +96,7 @@ export default {
       await this.commentPost({
         text: this.newComment.text,
         post_id: id
-      }).then(()=>{
+      }).then(() => {
         this.dialogComment = false;
       })
       this.dialogComment = false;

@@ -11,8 +11,8 @@
     </v-card-title>
     <v-card-subtitle>
       From {{ isoToDate(back.start_date) }} to
-      <template v-if="back.end_date">
-        {{ isoToDate(back.end_date) }}
+      <template v-if="back.end_date.Valid">
+        {{ isoToDate(back.end_date.Time) }}
       </template>
       <template v-else>
         Present

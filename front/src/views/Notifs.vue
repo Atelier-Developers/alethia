@@ -2,26 +2,18 @@
   <v-container>
     <v-row>
       <v-col cols="12">
-        <v-card
-            class="notifs"
-            elevation="0"
-        >
-          <v-card-title>
-            <v-row>
-              <v-col cols="12">
-                <h1>Notifications</h1>
-              </v-col>
-            </v-row>
-          </v-card-title>
-          <v-divider/>
-          <v-container>
-            <v-row v-for="notif in notifs" :key="([notif.id, notif.type]).toString()">
-              <v-col cols="12">
-                <Notif :notif="notif"/>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-card>
+        <v-container>
+          <v-row>
+            <v-col cols="12">
+                  <h1>Notifications</h1>
+            </v-col>
+          </v-row>
+          <v-row v-for="notif in notifs" :key="([notif.id, notif.type]).toString()">
+            <v-col cols="12">
+              <Notif :notif="notif"/>
+            </v-col>
+          </v-row>
+        </v-container>
       </v-col>
     </v-row>
   </v-container>

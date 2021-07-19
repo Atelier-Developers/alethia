@@ -238,6 +238,13 @@
               <v-col cols="12">
                 <v-text-field
                     outlined
+                    v-model="newUser.location"
+                    label="Location"
+                />
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                    outlined
                     v-model="newUser.about"
                     label="About"
                 />
@@ -285,6 +292,9 @@
                 <v-icon>mdi-pencil</v-icon>
               </v-btn>
             </v-card-title>
+            <v-card-subtitle>
+              Lives in {{ user.location }}
+            </v-card-subtitle>
             <v-card-subtitle>
               {{ user.about }}
             </v-card-subtitle>

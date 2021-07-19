@@ -31,9 +31,9 @@
         <v-col cols="12">
           <v-card flat style="border-radius: 7px;">
             <v-card-title>
-              <h4>
+              <h3>
                 Invites
-              </h4>
+              </h3>
             </v-card-title>
             <v-divider/>
             <v-card-text>
@@ -80,11 +80,11 @@
       </v-row>
       <v-row>
         <v-col cols="12">
-          <v-card>
+          <v-card flat>
             <v-card-title>
-              <h2>
+              <h3>
                 People You May Know
-              </h2>
+              </h3>
             </v-card-title>
             <v-divider/>
             <v-container fluid>
@@ -95,7 +95,7 @@
                       <h3>
                         {{ m.username }}
                       </h3>
-                      Connections: {{ m.mutual_connection }}
+                      Mutual Connections: {{ m.mutual_connection }}
                     </v-col>
                   </v-row>
                 </v-col>
@@ -104,6 +104,7 @@
                   <v-btn
                       @click="dialogInvite=true; inviteReq.receiver_id=+m.user_id"
                       color="primary"
+                      class="mt-2"
                   >
                     Invite +
                   </v-btn>
@@ -164,7 +165,7 @@ export default {
     }
   }),
   computed: {
-    ...mapGetters("InviteFriendModules", ["friends", "invites"]),
+    ...mapGetters("InviteFriendModules", ["friends", "invites", "mutual"]),
     ...mapGetters('AuthModules', ['userId']),
     allInvites() {
       if (this.invites == null)
@@ -223,7 +224,8 @@ export default {
           "addFriend",
           "deleteFriend",
           "deleteInvite",
-          "createInvite"]),
+          "createInvite",
+          "getMutualConnections"]),
     async sendAcceptInvite(id) {
       await this.addFriend({user_id: id})
       await this.getFriends();

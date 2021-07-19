@@ -94,7 +94,7 @@
         {{ notif.creator.username }} has commented under ur post!
       </v-card-title>
       <v-card-subtitle>
-        {{isoToDate(notif.created)}}
+        {{ isoToDate(notif.created) }}
       </v-card-subtitle>
       <v-divider/>
       <v-container>
@@ -112,7 +112,7 @@
                 <v-card-subtitle>
                   <v-row>
                     <v-col cols="12">
-                      {{ notif.isoToDate(notif.post.created) }}
+                      {{ isoToDate(notif.post.created) }}
                     </v-col>
                   </v-row>
                 </v-card-subtitle>
@@ -132,7 +132,7 @@
               has been commented by {{ notif.creator.username }}:
             </div>
             <div class="notif-content">
-              <Comment :comment="notif.comment" :dense="true"/>
+              <LittleComment :comment="notif.comment" :dense="true"/>
             </div>
           </v-col>
         </v-row>
@@ -234,12 +234,11 @@
 </template>
 
 <script>
-import Comment from "./Comment";
 import LittleComment from "./LittleComment";
 
 export default {
   name: "Notif",
-  components: {LittleComment, Comment},
+  components: {LittleComment},
   props: ['notif'],
   methods: {
     isoToDate(iso) {

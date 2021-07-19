@@ -66,6 +66,8 @@ const getters = {
         all.sort(function (a, b) {
             return (a.created < b.created) ? 1 : ((a.created > b.created) ? -1 : 0);
         });
+        console.log("HELLO")
+        console.log(all)
         return all;
     },
 };

@@ -28,7 +28,9 @@ const actions = {
         await axios.put(API.conversation, payload);
     },
     async deleteConversation(context, payload) {
-        await axios.delete(API.conversation, payload);
+        await axios.delete(API.conversation, {
+            data: payload
+        });
     },
     async createConversation(context, payload) {
         await axios.post(API.conversation, payload);

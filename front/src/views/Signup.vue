@@ -39,6 +39,12 @@
               />
               <v-text-field
                   outlined
+                  prepend-icon="mdi-map-marker"
+                  label="Location"
+                  v-model="user.location"
+              />
+              <v-text-field
+                  outlined
                   prepend-icon="mdi-information-variant"
                   label="About"
                   v-model="user.about"
@@ -122,7 +128,8 @@ export default {
       intro: "",
       last_name: "",
       password: "",
-      username: ''
+      username: '',
+      location: '',
     },
     date: null,
     menu1: false,
