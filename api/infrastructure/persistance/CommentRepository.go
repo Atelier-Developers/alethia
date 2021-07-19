@@ -52,7 +52,7 @@ func (commentRepository *CommentRepository) LikeComment(comment *Comment.Comment
 	return nil
 }
 
-func (commentRepository *CommentRepository) ReplyComment(comment *Comment.Comment, ReplyId uint64) error {
+func (commentRepository *CommentRepository) ReplyComment(comment *Comment.Comment, ReplyId uint64) (uint64, error) {
 	db := commentRepository.dbClient.GetDB()
 	stmt, err := db.Prepare("INSERT INTO REPLY_COMMENT (comment_id, replied_comment_id) VALUES (?, ?) ")
 	if err != nil {
@@ -60,11 +60,17 @@ func (commentRepository *CommentRepository) ReplyComment(comment *Comment.Commen
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(comment.Id, ReplyId)
+	res, err := stmt.Exec(comment.Id, ReplyId)
 	if err != nil {
-		return err
+		return 0, err
 	}
-	return nil
+
+	id, err := res.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
+
+	return uint64(id), nil
 }
 
 func (commentRepository *CommentRepository) GetCommentLikes(commentId uint64) ([]Comment.CommentLike, error) {

@@ -168,14 +168,15 @@ func (commentHandler *CommentHandler) ReplyComment(c *gin.Context) {
 		return
 	}
 
-	err = commentHandler.commentRepository.ReplyComment(&comment, commentReplyRequestBody.RepliedCommentId)
+	id, err := commentHandler.commentRepository.ReplyComment(&comment, commentReplyRequestBody.RepliedCommentId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
+
 	if repliedComment.CommenterId != userId.(uint64) {
 		n := notification.ReplyComment{
-			CommentId: commentReplyRequestBody.RepliedCommentId,
+			CommentId: id,
 			Notification: notification.Notification{
 				ReceiverId: repliedComment.CommenterId,
 			},
