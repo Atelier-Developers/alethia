@@ -100,6 +100,7 @@ type UserGetRequestBody struct {
 }
 
 type UsersGetByUsernameRequestBody struct {
+	Username string `json:"username"`
 	Location string `json:"location"`
 	Language string `json:"language"`
 	Company  string `json:"company"`

@@ -187,7 +187,7 @@ func (userHandler *UserHandler) GetUsersWithSimilarUsername(c *gin.Context) {
 		return
 	}
 
-	username := c.Param("username")
+	username := userRequestBody.Username
 
 	userId, exists := c.Get("user_id")
 	if !exists {
