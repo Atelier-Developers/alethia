@@ -49,6 +49,7 @@ services:
       REDIS_HOST: redis_db
       REDIS_PORT: 6379
       REDIS_PASSWORD:
+      GRPC_PORT: 7000
     restart: on-failure
 
 networks:

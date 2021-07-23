@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"github.com/Atelier-Developers/alethia/Database"
+	"github.com/Atelier-Developers/alethia/RPC"
 	"github.com/Atelier-Developers/alethia/infrastructure/auth"
 	"github.com/Atelier-Developers/alethia/infrastructure/persistance"
 	"github.com/Atelier-Developers/alethia/interfaces"
@@ -23,6 +24,8 @@ func main() {
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
+
+	RPC.CreateGrpcServer()
 
 	inviteRepo := persistance.NewInviteRepository(&db)
 	friendRepo := persistance.NewFriendRepository(&db)

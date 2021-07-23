@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+option go_package = "github.com/Atelier-Developers/alethia/proto";
+
+package helloworld;
+
+service BirthdayUpdater {
+  rpc UpdateInfos (BirthdayUpdateRequest) returns (BirthdayUpdateResponse) {}
+}
+
+message BirthdayUpdateRequest {
+}
+
+message BirthdayUpdateResponse {
+  string status = 1;
+}
