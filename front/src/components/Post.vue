@@ -21,7 +21,7 @@
                     </h4>
                   </v-card-title>
                   <v-divider/>
-                  <v-card-text>
+                  <v-card-text style="white-space: pre-line;color: black">
                     {{ post.description }}
                   </v-card-text>
                 </v-card>
@@ -64,7 +64,7 @@
       <v-container>
         <v-row>
           <v-col cols="12">
-            <div class="post-content">
+            <div class="post-content" style="white-space: pre-line;color: black">
               {{ post.description }}
             </div>
           </v-col>
@@ -91,7 +91,7 @@
               <v-container>
                 <v-row class="my-3">
                   <v-col cols="12">
-                    <div class="post-content">
+                    <div class="post-content" style="white-space: pre-line;color: black">
                       {{ repost.description }}
                     </div>
                   </v-col>

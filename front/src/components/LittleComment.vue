@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card flat outlined>
     <v-card-title>
       {{ comment.commenter_username }}:
     </v-card-title>

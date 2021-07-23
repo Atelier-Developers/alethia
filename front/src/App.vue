@@ -95,7 +95,6 @@
     <div>
       <v-app-bar
           color="grey lighten-5"
-          dense
           flat
           fixed
       >
@@ -103,6 +102,9 @@
           <v-icon x-large left color="primary">mdi-linkedin</v-icon>
         </v-toolbar-title>
 
+        <div class="font-weight-bold" style="font-size: 30px">
+          {{ title }}
+        </div>
         <v-spacer></v-spacer>
         <div v-if="isAuthenticated" style="display: flex">
           <div>
@@ -129,7 +131,7 @@
       </v-app-bar>
     </div>
 
-    <v-main class="pt-16 grey lighten-3">
+    <v-main class="mt-8 pt-16 grey lighten-3">
       <router-view></router-view>
     </v-main>
   </v-app>
@@ -144,6 +146,7 @@ export default {
   data: () => ({
     dialogSearch: false,
     username: '',
+    title: "LinkedIn",
     appBarItems: [
       {
         icon: 'mdi-home',
@@ -206,6 +209,11 @@ export default {
         language: this.searchOpt.language.use ? this.searchOpt.language.text : '',
       });
     }
-  }
+  },
+  watch: {
+    '$route'(to) {
+      this.title = to.name;
+    }
+  },
 };
 </script>
