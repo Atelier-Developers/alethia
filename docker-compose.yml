@@ -37,6 +37,7 @@ services:
       context: ./api
     networks:
       - backend
+      - grpc
     depends_on:
       - db
       - redis_db
@@ -56,7 +57,7 @@ services:
     build:
       context: ./cron
     networks:
-      - backend
+      - grpc
     depends_on:
       - api
       - db
@@ -67,6 +68,8 @@ services:
 
 networks:
   backend:
+    driver: bridge
+  grpc:
     driver: bridge
 
 volumes:
