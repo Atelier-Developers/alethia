@@ -2,21 +2,27 @@ package impl
 
 import (
 	"context"
+	"github.com/Atelier-Developers/alethia/interfaces"
 	"github.com/Atelier-Developers/alethia/proto"
-	"log"
 )
 
 type BirthdayUpdaterServiceGrpcImpl struct {
+	notificationHandler interfaces.NotificationHandler
 	proto.UnimplementedBirthdayUpdaterServer
 }
 
 func (serviceImpl *BirthdayUpdaterServiceGrpcImpl) UpdateInfos(ctx context.Context, request *proto.BirthdayUpdateRequest) (*proto.BirthdayUpdateResponse, error) {
 
-	log.Println("Repository persisted to the storage")
+	err := serviceImpl.notificationHandler.UpdateBirthdayNotifications()
+	if err != nil {
+		return nil, err
+	}
 
 	return &proto.BirthdayUpdateResponse{Status: "Well done"}, nil
 }
 
-func NewBirthdayUpdaterServiceGrpcImpl() *BirthdayUpdaterServiceGrpcImpl {
-	return &BirthdayUpdaterServiceGrpcImpl{}
+func NewBirthdayUpdaterServiceGrpcImpl(notificationHandler interfaces.NotificationHandler) *BirthdayUpdaterServiceGrpcImpl {
+	return &BirthdayUpdaterServiceGrpcImpl{
+		notificationHandler: notificationHandler,
+	}
 }

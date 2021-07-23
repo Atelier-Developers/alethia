@@ -34,19 +34,17 @@ func NewNotificationHandler(friendRepository repository.FriendRepository, postRe
 	}
 }
 
-func (notificationHandler *NotificationHandler) UpdateBirthdayNotifications() {
+func (notificationHandler *NotificationHandler) UpdateBirthdayNotifications() error {
 
 	userIds, err := notificationHandler.userRepository.GetUsersBornToday()
 	if err != nil {
-		log.Fatal(err)
-		return
+		return err
 	}
 
 	for _, u := range userIds {
 		friends, err := notificationHandler.friendRepository.GetFriends(u)
 		if err != nil {
-			log.Fatal(err)
-			return
+			return err
 		}
 
 		for _, f := range friends {
@@ -68,11 +66,11 @@ func (notificationHandler *NotificationHandler) UpdateBirthdayNotifications() {
 
 			err = notificationHandler.notificationRepository.CreateBirthdayNotification(&n)
 			if err != nil {
-				log.Fatal(err)
-				return
+				return err
 			}
 		}
 	}
+	return nil
 }
 
 func (notificationHandler *NotificationHandler) GetUserNotifications(c *gin.Context) {

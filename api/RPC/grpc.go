@@ -3,6 +3,7 @@ package RPC
 import (
 	"fmt"
 	"github.com/Atelier-Developers/alethia/RPC/impl"
+	"github.com/Atelier-Developers/alethia/interfaces"
 	"github.com/Atelier-Developers/alethia/proto"
 	"google.golang.org/grpc"
 	"log"
@@ -21,7 +22,7 @@ func GetNetListener(port uint) net.Listener {
 	return lis
 }
 
-func CreateGrpcServer() {
+func CreateGrpcServer(notificationHandler interfaces.NotificationHandler) {
 	portEnv := os.Getenv("GRPC_PORT")
 	log.Println("Grpc is Starting...")
 	port, err := strconv.ParseUint(portEnv, 10, 64)
@@ -31,7 +32,7 @@ func CreateGrpcServer() {
 	lis := GetNetListener(uint(port))
 	var opts []grpc.ServerOption
 	grpcServer := grpc.NewServer(opts...)
-	newBirthdayUpdaterServiceGrpcImpl := impl.NewBirthdayUpdaterServiceGrpcImpl()
+	newBirthdayUpdaterServiceGrpcImpl := impl.NewBirthdayUpdaterServiceGrpcImpl(notificationHandler)
 	proto.RegisterBirthdayUpdaterServer(grpcServer, newBirthdayUpdaterServiceGrpcImpl)
 	go func() {
 		log.Println("Grpc is Running")

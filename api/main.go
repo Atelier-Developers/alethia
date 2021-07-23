@@ -25,8 +25,6 @@ func main() {
 		log.Fatalln(err.Error())
 	}
 
-	RPC.CreateGrpcServer()
-
 	inviteRepo := persistance.NewInviteRepository(&db)
 	friendRepo := persistance.NewFriendRepository(&db)
 	messageRepo := persistance.NewMessageRepository(&db)
@@ -61,6 +59,8 @@ func main() {
 	commentHandler := interfaces.NewCommentHandler(commentRepo, notificationRepo, postRepo)
 	skillHandler := interfaces.NewSkillHandler(skillRepo, notificationRepo)
 	conversationHandler := interfaces.NewConversationHandler(conversationRepo)
+
+	RPC.CreateGrpcServer(notificationHandler)
 
 	router := gin.Default()
 	router.Use(gin.Recovery())
