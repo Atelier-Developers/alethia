@@ -13,7 +13,8 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt
 
 # Run the application:
-COPY ./proto ./*.py /
+COPY ./*.py /
+COPY ./proto /proto
 
 COPY crontab /etc/crontabs/root
 

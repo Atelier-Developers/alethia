@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-import birthday_pb2 as birthday__pb2
+import proto.birthday_pb2 as birthday__pb2
 
 
 class BirthdayUpdaterStub(object):

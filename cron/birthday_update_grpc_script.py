@@ -1,6 +1,6 @@
 import grpc
-from birthday_pb2 import BirthdayUpdateRequest
-from birthday_pb2_grpc import BirthdayUpdaterStub
+from proto.birthday_pb2 import BirthdayUpdateRequest
+from proto.birthday_pb2_grpc import BirthdayUpdaterStub
 
 def run():
   channel = grpc.insecure_channel('api:7000')
