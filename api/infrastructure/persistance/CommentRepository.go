@@ -37,6 +37,25 @@ func (commentRepository *CommentRepository) SaveComment(comment *Comment.Comment
 	return nil
 }
 
+func (commentRepository *CommentRepository) IsCommentLikedByUser(commentId uint64, userId uint64) (bool, error) {
+	db := commentRepository.dbClient.GetDB()
+	stmt, err := db.Prepare("SELECT COUNT(*) FROM COMMENT_LIKE WHERE comment_id=? AND user_id=?")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	row := stmt.QueryRow(commentId, userId)
+
+	var count uint64
+	err = row.Scan(&count)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return count > 0, nil
+}
+
 func (commentRepository *CommentRepository) LikeComment(comment *Comment.Comment, UserId uint64) error {
 	db := commentRepository.dbClient.GetDB()
 	stmt, err := db.Prepare("INSERT INTO COMMENT_LIKE (comment_id, user_id) VALUES (?, ?) ")

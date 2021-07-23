@@ -131,6 +131,39 @@ func (userRepo *UserRepository) GetUsersWithMutualConnection(userId uint64) ([]e
 	return users, nil
 }
 
+
+func (userRepo *UserRepository) GetUsersBornToday() ([]uint64, error) {
+
+	db := userRepo.dbClient.GetDB()
+	stmt, err := db.Prepare("SELECT id FROM USER WHERE DAY(birthdate)=DAY(NOW()) AND MONTH(birthdate)=MONTH(NOW())")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var userIds []uint64
+	for rows.Next() {
+		var userId uint64
+		err := rows.Scan(&userId)
+
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		userIds = append(userIds, userId)
+
+	}
+
+	return userIds, nil
+}
+
+
 func (userRepo *UserRepository) GetUserByID(userId uint64, id uint64, user *entity.UserWithMutualConnectionAndFriendshipStatus) error {
 	db := userRepo.dbClient.GetDB()
 	stmt, err := db.Prepare("CALL GetUserWithMutualConnectionByUId(?, ?)")

@@ -76,7 +76,20 @@ func (backgroundHistoryRepo *BackgroundHistoryRepository) GetBackgroundHistory(i
 func (backgroundHistoryRepo *BackgroundHistoryRepository) DeleteBackgroundHistory(backgroundHistory *entity.BackgroundHistory) error {
 	db := backgroundHistoryRepo.dbClient.GetDB()
 
-	stmt, err := db.Prepare("DELETE FROM USER_HISTORY WHERE id=?")
+	stmt, err := db.Prepare("DELETE FROM NOTIFICATION_CHANGE_WORK WHERE user_history_id=?")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer stmt.Close()
+
+	_, err = stmt.Exec(backgroundHistory.ID)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	stmt, err = db.Prepare("DELETE FROM USER_HISTORY WHERE id=?")
 	if err != nil {
 		log.Fatal(err)
 	}

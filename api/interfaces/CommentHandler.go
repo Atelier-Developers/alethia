@@ -94,6 +94,16 @@ func (commentHandler *CommentHandler) LikeComment(c *gin.Context) {
 		return
 	}
 
+	exists, err = commentHandler.commentRepository.IsCommentLikedByUser(commentLikeRequestBody.CommentId, userId.(uint64))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if exists {
+		c.JSON(http.StatusConflict, nil)
+		return
+	}
+
 	err = commentHandler.commentRepository.LikeComment(&comment, userId.(uint64))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)

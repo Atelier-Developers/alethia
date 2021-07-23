@@ -19,16 +19,59 @@ type NotificationHandler struct {
 	backgroundHistoryRepository repository.BackgroundHistoryRepository
 	userRepository              repository.UserRepository
 	notificationRepository      repository.NotificationRepository
+	friendRepository            repository.FriendRepository
 }
 
-func NewNotificationHandler(postRepository repository.PostRepository, skillRepository repository.SkillRepository, commentRepository repository.CommentRepository, backgroundHistoryRepository repository.BackgroundHistoryRepository, userRepository repository.UserRepository, notificationRepository repository.NotificationRepository) NotificationHandler {
+func NewNotificationHandler(friendRepository repository.FriendRepository, postRepository repository.PostRepository, skillRepository repository.SkillRepository, commentRepository repository.CommentRepository, backgroundHistoryRepository repository.BackgroundHistoryRepository, userRepository repository.UserRepository, notificationRepository repository.NotificationRepository) NotificationHandler {
 	return NotificationHandler{
+		friendRepository:            friendRepository,
 		postRepository:              postRepository,
 		skillRepository:             skillRepository,
 		commentRepository:           commentRepository,
 		backgroundHistoryRepository: backgroundHistoryRepository,
 		userRepository:              userRepository,
 		notificationRepository:      notificationRepository,
+	}
+}
+
+func (notificationHandler *NotificationHandler) UpdateBirthdayNotifications() {
+
+	userIds, err := notificationHandler.userRepository.GetUsersBornToday()
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+
+	for _, u := range userIds {
+		friends, err := notificationHandler.friendRepository.GetFriends(u)
+		if err != nil {
+			log.Fatal(err)
+			return
+		}
+
+		for _, f := range friends {
+			var recieverId uint64
+
+			if f.UserId1 == u {
+				recieverId = f.UserId2
+			} else {
+				recieverId = f.UserId1
+			}
+
+			n := notification.Birthday{
+				UserId: u,
+				Notification: notification.Notification{
+					ReceiverId: recieverId,
+					IsSeen:     false,
+				},
+			}
+
+			err = notificationHandler.notificationRepository.CreateBirthdayNotification(&n)
+			if err != nil {
+				log.Fatal(err)
+				return
+			}
+		}
 	}
 }
 
@@ -41,13 +84,12 @@ func (notificationHandler *NotificationHandler) GetUserNotifications(c *gin.Cont
 	var res interface{}
 
 	res, err := notificationHandler.notificationRepository.GetBirthdayNotification(userId.(uint64))
-    if err != nil {
+	if err != nil {
 		log.Fatal(err)
 	}
 	if res == nil {
 		res = []notification.Birthday{}
 	}
-
 
 	var birthdayNotifs []bodyTemplates.NotificationBirthdayResponseBody
 	for _, n := range res.([]notification.Birthday) {
