@@ -42,8 +42,6 @@ func (userBackgroundHistoryHandler *UserBackgroundHistoryHandler) AddBackgroundH
 		log.Fatal("User Id does not exist!")
 	}
 
-	//fmt.Println(time.Time{})
-
 	backgroundHistory := entity.BackgroundHistory{
 		UserID:      userId.(uint64),
 		StartDate:   userRequestBody.StartDate,

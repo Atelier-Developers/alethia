@@ -1,1 +1,1 @@
-* * * * * /usr/local/bin/my_script
+0 1 * * * /usr/local/bin/my_script

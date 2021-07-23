@@ -48,7 +48,7 @@ func main() {
 
 	token := auth.NewToken()
 
-	notificationHandler := interfaces.NewNotificationHandler(postRepo, skillRepo, commentRepo, backgroundHistoryRepo, userRepo, notificationRepo)
+	notificationHandler := interfaces.NewNotificationHandler(friendRepo, postRepo, skillRepo, commentRepo, backgroundHistoryRepo, userRepo, notificationRepo)
 	friendHandler := interfaces.NewFriendHandler(friendRepo, inviteRepo)
 	messageHandler := interfaces.NewMessageHandler(conversationRepo, messageRepo)
 	userBackgroundHistoryHandler := interfaces.NewUserBackgroundHistoryHandler(backgroundHistoryRepo, notificationRepo, friendRepo)
