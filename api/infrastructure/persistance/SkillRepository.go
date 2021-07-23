@@ -111,8 +111,6 @@ func (skillRepository *SkillRepository) UserSkillExist(skillId uint64, userId ui
 	return count > 0, nil
 }
 
-//TODO Duplicate User skill
-
 func (skillRepository *SkillRepository) DeleteUserSkill(skillId uint64, userId uint64) error {
 	db := skillRepository.dbClient.GetDB()
 	stmt, err := db.Prepare("DELETE FROM USER_SKILL WHERE skill_id=? AND user_id=?")

@@ -10,4 +10,5 @@ type CommentRepository interface {
 	ReplyComment(comment *Comment.Comment, ReplyId uint64) error
 	GetCommentByID(id uint64, comment *Comment.Comment) error
 	GetCommentLikes(commentId uint64) ([]Comment.CommentLike, error)
+	IsCommentLikedByUser(commentId uint64, userId uint64) (bool, error)
 }
