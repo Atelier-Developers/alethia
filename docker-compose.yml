@@ -51,6 +51,19 @@ services:
       REDIS_PASSWORD:
       GRPC_PORT: 7000
     restart: on-failure
+  cron:
+    image: alethia_cron_bd:v0.01
+    build:
+      context: ./cron
+    networks:
+      - backend
+    depends_on:
+      - api
+      - db
+      - redis_db
+    restart: on-failure
+    
+    
 
 networks:
   backend:
