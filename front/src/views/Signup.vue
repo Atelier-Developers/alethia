@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row justify="center">
-      <v-col cols="12" sm="6" md="4">
+      <v-col cols="12" sm="8" md="8">
         <v-card style="border-radius: 7px;" flat>
           <v-card-title>
             Create new Linkedin account
@@ -12,88 +12,111 @@
           <v-divider/>
           <v-card-text>
             <v-form @submit.prevent="sendSignup">
-              <v-text-field
-                  outlined
-                  prepend-icon="mdi-account-circle-outline"
-                  label="Username"
-                  v-model="user.username"
-              />
-              <v-text-field
-                  label="Password"
-                  type="password"
-                  prepend-icon="mdi-lock-outline"
-                  outlined
-                  v-model="user.password"
-              />
-              <v-text-field
-                  outlined
-                  prepend-icon="mdi-rename-box"
-                  label="First Name"
-                  v-model="user.first_name"
-              />
-              <v-text-field
-                  outlined
-                  prepend-icon="mdi-rename-box"
-                  label="Last Name"
-                  v-model="user.last_name"
-              />
-              <v-text-field
-                  outlined
-                  prepend-icon="mdi-map-marker"
-                  label="Location"
-                  v-model="user.location"
-              />
-              <v-text-field
-                  outlined
-                  prepend-icon="mdi-information-variant"
-                  label="About"
-                  v-model="user.about"
-              />
-              <v-text-field
-                  outlined
-                  prepend-icon="mdi-trophy-outline"
-                  label="Accomplishments"
-                  v-model="user.accomplishments"
-              />
-              <v-text-field
-                  prepend-icon="mdi-file-outline"
-                  outlined
-                  label="Intro"
-                  v-model="user.intro"
-              />
-              <v-text-field
-                  prepend-icon="mdi-newspaper-variant-outline"
-                  outlined
-                  label="Additional Info"
-                  v-model="user.additional_info"
-              />
-              <v-menu
-                  ref="menu1"
-                  v-model="menu1"
-                  :close-on-content-click="false"
-                  transition="scale-transition"
-                  offset-y
-                  max-width="290px"
-                  min-width="auto"
-              >
-                <template v-slot:activator="{ on, attrs }">
+              <v-row dense>
+                <v-col cols="12" sm="6" class="px-3">
                   <v-text-field
-                      v-model="user.birth_date"
-                      label="Date"
                       outlined
-                      readonly
-                      prepend-icon="mdi-calendar"
-                      v-bind="attrs"
-                      @blur="date = parseDate(user.birth_date)"
-                      v-on="on"
-                  ></v-text-field>
-                </template>
-                <v-date-picker
-                    v-model="user.birth_date"
-                    color="primary"
-                    @input="menu1 = false"
-                ></v-date-picker>
-              </v-menu>
+                      prepend-icon="mdi-account-circle-outline"
+                      label="Username"
+                      v-model="user.username"
+                  />
+                </v-col>
+                <v-col cols="12" sm="6" class="px-3">
+                  <v-text-field
+                      label="Password"
+                      type="password"
+                      prepend-icon="mdi-lock-outline"
+                      outlined
+                      v-model="user.password"
+                  />
+                </v-col>
+                <v-col cols="12" sm="6" class="px-3">
+                  <v-text-field
+                      outlined
+                      prepend-icon="mdi-rename-box"
+                      label="First Name"
+                      v-model="user.first_name"
+                  />
+                </v-col>
+                <v-col cols="12" sm="6" class="px-3">
+                  <v-text-field
+                      outlined
+                      prepend-icon="mdi-rename-box"
+                      label="Last Name"
+                      v-model="user.last_name"
+                  />
+                </v-col>
+                <v-col cols="12" sm="6" class="px-3">
+                  <v-text-field
+                      outlined
+                      prepend-icon="mdi-map-marker"
+                      label="Location"
+                      v-model="user.location"
+                  />
+                </v-col>
+                <v-col cols="12" sm="6" class="px-3">
+                  <v-text-field
+                      outlined
+                      prepend-icon="mdi-information-variant"
+                      label="About"
+                      v-model="user.about"
+                  />
+                </v-col>
+                <v-col cols="12" sm="6" class="px-3">
+                  <v-text-field
+                      outlined
+                      prepend-icon="mdi-trophy-outline"
+                      label="Accomplishments"
+                      v-model="user.accomplishments"
+                  />
+                </v-col>
+                <v-col cols="12" sm="6" class="px-3">
+                  <v-text-field
+                      prepend-icon="mdi-file-outline"
+                      outlined
+                      label="Intro"
+                      v-model="user.intro"
+                  />
+                </v-col>
+                <v-col cols="12" sm="6" class="px-3">
+                  <v-text-field
+                      prepend-icon="mdi-newspaper-variant-outline"
+                      outlined
+                      label="Additional Info"
+                      v-model="user.additional_info"
+                  />
+                </v-col>
+                <v-col cols="12" sm="6" class="px-3">
+                  <v-menu
+                      ref="menu1"
+                      v-model="menu1"
+                      :close-on-content-click="false"
+                      transition="scale-transition"
+                      offset-y
+                      max-width="290px"
+                      min-width="auto"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                          v-model="user.birth_date"
+                          label="Date"
+                          outlined
+                          readonly
+                          prepend-icon="mdi-calendar"
+                          v-bind="attrs"
+                          @blur="date = parseDate(user.birth_date)"
+                          v-on="on"
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker
+                        v-model="user.birth_date"
+                        color="primary"
+                        @input="menu1 = false"
+                    ></v-date-picker>
+                  </v-menu>
+                </v-col>
+              </v-row>
+
               <v-row class="pa-3">
                 <v-spacer/>
                 <v-btn

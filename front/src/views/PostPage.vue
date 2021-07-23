@@ -138,7 +138,6 @@ export default {
       await this.getLikes(id)
       this.liked = this.checkAmILike()
       await this.getComments(id);
-      await this.getRepost(id);
       await this.getReposts(id)
     }
   },

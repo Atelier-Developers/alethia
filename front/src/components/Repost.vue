@@ -18,7 +18,7 @@
       <v-container>
         <v-row class="my-3">
           <v-col cols="12">
-            <div class="post-content">
+            <div class="post-content" style="white-space: pre-line;color: black">
               {{ post.description }}
             </div>
           </v-col>

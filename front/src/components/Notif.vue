@@ -1,7 +1,7 @@
 <template>
   <div>
     <!--        BD-->
-    <v-card v-if="notif.type === 'BD'">
+    <v-card v-if="notif.type === 'BD'" flat>
       <v-card-title class="notif-header">
         {{ notif.creator.username }}'s Birthday!
       </v-card-title>
@@ -21,7 +21,7 @@
     </v-card>
 
     <!--        VP-->
-    <v-card v-else-if="notif.type === 'VP'">
+    <v-card v-else-if="notif.type === 'VP'" flat>
       <v-card-title class="notif-header">
         {{ notif.creator.username }}'s viewed ur profile!
       </v-card-title>
@@ -41,7 +41,7 @@
     </v-card>
 
     <!--        LP-->
-    <v-card v-else-if="notif.type === 'LP'">
+    <v-card v-else-if="notif.type === 'LP'" flat>
       <v-card-title class="notif-header">
         {{ notif.creator.username }} has Liked ur post!
       </v-card-title>
@@ -53,7 +53,7 @@
         <v-row>
           <v-col cols="12">
             <div class="notif-content">
-              <v-card>
+              <v-card flat outlined>
                 <v-card-title class="notif-header">
                   <v-row>
                     <v-col cols="12">
@@ -89,7 +89,7 @@
     </v-card>
 
     <!--        CM-->
-    <v-card v-else-if="notif.type === 'CM'">
+    <v-card v-else-if="notif.type === 'CM'" flat>
       <v-card-title class="notif-header">
         {{ notif.creator.username }} has commented under ur post!
       </v-card-title>
@@ -101,7 +101,7 @@
         <v-row>
           <v-col cols="12">
             <div class="notif-content">
-              <v-card>
+              <v-card flat outlined>
                 <v-card-title class="notif-header">
                   <v-row>
                     <v-col cols="12">
@@ -140,7 +140,7 @@
     </v-card>
 
     <!--        LCM-->
-    <v-card v-else-if="notif.type === 'LCM'">
+    <v-card v-else-if="notif.type === 'LCM'" flat>
       <v-card-title class="notif-header">
         {{ notif.creator.username }} has Liked ur comment!
       </v-card-title>
@@ -164,7 +164,7 @@
     </v-card>
 
     <!--        RCM-->
-    <v-card v-else-if="notif.type === 'RCM'">
+    <v-card v-else-if="notif.type === 'RCM'" flat>
       <v-card-title class="notif-header">
         {{ notif.creator.username }} has replied ur comment!
       </v-card-title>
@@ -176,13 +176,13 @@
         <v-row>
           <v-col cols="12">
             <div class="notif-content">
-              <LittleComment :dense="true" :comment="notif.comment"/>
+              <LittleComment :dense="true" :comment="notif.replied_comment"/>
             </div>
             <div class="my-3">
               has been replied by {{ notif.creator.username }}:
             </div>
             <div class="notif-content">
-              <LittleComment :dense="true" :comment="notif.replied_comment"/>
+              <LittleComment :dense="true" :comment="notif.comment"/>
             </div>
           </v-col>
         </v-row>
@@ -190,7 +190,7 @@
     </v-card>
 
     <!--        END-->
-    <v-card v-else-if="notif.type === 'END'">
+    <v-card v-else-if="notif.type === 'END'" flat>
       <v-card-title class="notif-header">
         {{ notif.creator.username }} has endorsed ur skill!
       </v-card-title>
@@ -211,7 +211,7 @@
     </v-card>
 
     <!--        FCW-->
-    <v-card v-else-if="notif.type === 'FCW'">
+    <v-card v-else-if="notif.type === 'FCW'" flat>
       <v-card-title class="notif-header">
         {{ notif.creator.username }} has changed his company!
       </v-card-title>

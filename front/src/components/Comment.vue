@@ -12,12 +12,13 @@
               <v-textarea
                   label="your Reply"
                   v-model="newReply.text"
+                  outlined
               />
             </v-col>
           </v-row>
           <v-row>
             <v-col cols="12">
-              <v-btn @click="sendReply()">
+              <v-btn @click="sendReply()" color="primary">
                 Reply
               </v-btn>
             </v-col>
@@ -53,7 +54,7 @@
       <v-container>
         <v-row class="my-3">
           <v-col cols="12">
-            <div class="post-content">
+            <div class="post-content" style="white-space: pre-line;color: black">
               {{ comment.text }}
             </div>
           </v-col>
