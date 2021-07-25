@@ -5,3 +5,12 @@ services:
     build:
       context: ./front
       target: production-stage
+  cron:
+    build:
+      context: ./cron
+  api:
+    build:
+      context: ./api
+  reverse-proxy:
+    build:
+      context: ./reverse_proxy

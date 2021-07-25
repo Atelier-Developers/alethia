@@ -10,3 +10,14 @@ services:
       target: development-stage
     volumes:
       - ./front:/app
+  reverse-proxy:
+    build:
+      context: ./reverse_proxy
+    environment:
+      FRONTEND_PORT: 8080
+  cron:
+    build:
+      context: ./cron
+  api:
+    build:
+      context: ./api
