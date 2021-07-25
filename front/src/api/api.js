@@ -1,4 +1,4 @@
-const API_PERFIX = 'http://localhost:7000' + '/';
+const API_PERFIX = 'http://api.alethia.com' + '/';
 console.log(process)
 
 export const API = {

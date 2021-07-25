@@ -22,12 +22,28 @@ services:
       - redis_data:/data
     networks:
       - backend
+
+  reverse-proxy:
+    ports:
+      - "80:80"
+    image: alethia-reverse-proxy:v0.01
+    build:
+      context: ./reverse_proxy
+    networks:
+      - reverse-proxy
+    depends_on:
+      - api
+      - frontend
+    restart: on-failure
+
   frontend:
     image: alethia_frontend:v0.01
     volumes:
       - /app/node_modules
     depends_on:
       - api
+    networks:
+      - reverse-proxy
     environment:
       API_URL: api:3000
     restart: on-failure
@@ -38,6 +54,7 @@ services:
     networks:
       - backend
       - grpc
+      - reverse-proxy
     depends_on:
       - db
       - redis_db
@@ -63,10 +80,10 @@ services:
       - db
       - redis_db
     restart: on-failure
-    
-    
 
 networks:
+  reverse-proxy:
+    driver: bridge
   backend:
     driver: bridge
   grpc:
