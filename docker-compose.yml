@@ -26,7 +26,7 @@ services:
   reverse-proxy:
     ports:
       - "80:80"
-    image: alethia-reverse-proxy:v0.01
+    image: tavakkoliamirmohmmad/alethia-reverse-proxy:v1.0
     build:
       context: ./reverse_proxy
     networks:
@@ -37,18 +37,16 @@ services:
     restart: on-failure
 
   frontend:
-    image: alethia_frontend:v0.01
+    image: tavakkoliamirmohmmad/alethia-frontend:v1.0
     volumes:
       - /app/node_modules
     depends_on:
       - api
     networks:
       - reverse-proxy
-    environment:
-      API_URL: api:3000
     restart: on-failure
   api:
-    image: alethia_api:v0.01
+    image: tavakkoliamirmohmmad/alethia-api:v1.0
     build:
       context: ./api
     networks:
@@ -70,7 +68,7 @@ services:
       GRPC_PORT: 7000
     restart: on-failure
   cron:
-    image: alethia_cron_bd:v0.01
+    image: tavakkoliamirmohmmad/alethia-birthday-cron:v1.0
     build:
       context: ./cron
     networks:
