@@ -1,14 +1,12 @@
-FROM python:3.9-alpine3.14
+FROM python:3.9-slim-buster
 
 ENV VIRTUAL_ENV=/opt/venv
 RUN python3 -m venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
-# Install dependencies:
-RUN apk add build-base linux-headers
-RUN pip install --upgrade pip
-RUN pip install setuptools==49.6.0 
-RUN pip install wheel
+RUN apt-get update && apt-get install -y cron --no-install-recommends
+
+RUN /opt/venv/bin/python3 -m pip install --upgrade pip
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
@@ -16,8 +14,8 @@ RUN pip install -r requirements.txt
 COPY ./*.py /
 COPY ./proto /proto
 
-COPY crontab /etc/crontabs/root
+COPY crontab /etc/cron.d/default-cron
 
-RUN crontab -l
+RUN crontab /etc/cron.d/default-cron
 
-CMD ["crond", "-l", "2", "-f"]
+CMD ["cron", "-f"]

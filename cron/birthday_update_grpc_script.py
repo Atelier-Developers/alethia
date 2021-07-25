@@ -6,6 +6,6 @@ def run():
   channel = grpc.insecure_channel('api:7000')
   stub = BirthdayUpdaterStub(channel)
   response = stub.UpdateInfos(BirthdayUpdateRequest())
-  print("Greeter client received: " + response.status)
+  print("Client received: " + response.status)
   
 run()

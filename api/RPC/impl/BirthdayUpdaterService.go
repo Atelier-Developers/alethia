@@ -18,7 +18,7 @@ func (serviceImpl *BirthdayUpdaterServiceGrpcImpl) UpdateInfos(ctx context.Conte
 		return nil, err
 	}
 
-	return &proto.BirthdayUpdateResponse{Status: "Well done"}, nil
+	return &proto.BirthdayUpdateResponse{Status: "Updated Successfully"}, nil
 }
 
 func NewBirthdayUpdaterServiceGrpcImpl(notificationHandler interfaces.NotificationHandler) *BirthdayUpdaterServiceGrpcImpl {
