@@ -14,14 +14,14 @@
             />
             <v-row>
               <v-col cols="12">
-                <v-card flat color="grey lighten-4">
+                <v-card flat outlined>
                   <v-card-title>
                     <h4>
                       {{ post.poster_username }}
                     </h4>
                   </v-card-title>
                   <v-divider/>
-                  <v-card-text style="white-space: pre-line;color: black">
+                  <v-card-text style="white-space: pre-line;">
                     {{ post.description }}
                   </v-card-text>
                 </v-card>
@@ -37,7 +37,7 @@
         </v-card-text>
       </v-card>
     </v-dialog>
-    <v-card>
+    <v-card flat>
       <v-card-title>
         <h4>
           {{ post.poster_username }}
@@ -64,7 +64,7 @@
       <v-container>
         <v-row>
           <v-col cols="12">
-            <div class="post-content" style="white-space: pre-line;color: black">
+            <div class="post-content" style="white-space: pre-line;">
               {{ post.description }}
             </div>
           </v-col>
@@ -91,7 +91,7 @@
               <v-container>
                 <v-row class="my-3">
                   <v-col cols="12">
-                    <div class="post-content" style="white-space: pre-line;color: black">
+                    <div class="post-content" style="white-space: pre-line;">
                       {{ repost.description }}
                     </div>
                   </v-col>
@@ -113,7 +113,7 @@ export default {
   name: "Post",
   props: {
     post: Object,
-    reposts: Object,
+    reposts: {},
     repost: Object,
     liked: Boolean,
     likes: Array

@@ -22,7 +22,7 @@
     <v-container>
       <v-row>
         <v-col cols="12">
-          <div @click="gotoPost(repost.id)" style="cursor: pointer">
+          <div  >
             <Post @updatePost="getAllPostDetail" :post="post" :reposts="reposts" :repost="repost" :liked="liked"
                   :likes="likes"/>
           </div>
@@ -49,7 +49,7 @@
                 <Comment :comment="comment" :other="getRepliedComment(comment.replied_comment_id.Int64)"/>
               </v-col>
               <v-col cols="12" v-else>
-                <Comment :comment="comment"/>
+                <Comment @sendReply="getAllPostDetail" :comment="comment"/>
               </v-col>
             </v-row>
         </v-col>
@@ -139,6 +139,8 @@ export default {
       this.liked = this.checkAmILike()
       await this.getComments(id);
       await this.getReposts(id)
+      console.log('this.reposts')
+      console.log(this.reposts)
     }
   },
   async mounted() {

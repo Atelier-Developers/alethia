@@ -33,7 +33,7 @@
         <v-row>
           <v-col cols="12">
             <div class="notif-content">
-              {{ notif.creator.username }}'s viewed ur profile at {{ notif.date }}
+              {{ notif.creator.username }}'s viewed ur profile at {{ isoToDate(notif.created) }}
             </div>
           </v-col>
         </v-row>
@@ -203,7 +203,7 @@
           <v-col cols="12">
             <div class="notif-content">
               ur {{ notif.user_skill.title }} has been
-              endorsed by {{ notif.creator.username }}:
+              endorsed by {{ notif.creator.username }}
             </div>
           </v-col>
         </v-row>

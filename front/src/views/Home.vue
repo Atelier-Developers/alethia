@@ -48,7 +48,7 @@
             {{ isoToDate(post.created) }}
           </v-card-subtitle>
           <v-divider/>
-          <v-card-text style="white-space: pre-line;color: black" >
+          <v-card-text style="white-space: pre-line" >
             {{ post.description }}
           </v-card-text>
           <v-container v-if="+post.repost_id!== 0">
@@ -95,7 +95,7 @@ export default {
   components: {Repost},
   data: () => ({
     newPost: {
-      text: '',
+      description: '',
     }
   }),
   computed: {
@@ -106,7 +106,7 @@ export default {
     ...mapActions('PostModules', ["likePost"]),
     async sendPost() {
       await this.addPost(this.newPost);
-      this.newPost.text = '';
+      this.newPost.description = '';
       await this.getPosts();
     },
     async sendLike(post) {

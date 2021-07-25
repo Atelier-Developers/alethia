@@ -1,7 +1,18 @@
 <template>
   <div>
     <v-row class="mx-5">
-      <v-col cols="4" style="border-radius:10px 0 0 10px;overflow-y: scroll;overflow-x:hidden;" class="white">
+      <v-col cols="4" style="border-radius:10px 0 0 10px;overflow-y: scroll;overflow-x:hidden;"
+             v-bind:class="$vuetify.theme.dark ? 'black white--text' : 'white black--text'">
+        <v-row>
+          <v-col cols="12">
+            <v-text-field
+                outlined
+                label="Search"
+                dense
+                v-model="search"
+            />
+          </v-col>
+        </v-row>
         <v-row>
           <v-col cols="12"
                  class="pt-6"
@@ -41,9 +52,10 @@
             </v-row>
           </v-col>
         </v-row>
-        <v-row v-for="conv in convs" :key="conv.conversation_id" class=" white">
+        <v-row v-for="conv in convs" :key="conv.conversation_id"
+               v-bind:class="$vuetify.theme.dark ? 'black white--text' : 'white black--text'">
           <v-col cols="12"
-                 v-bind:class="+selectedConv === +conv.conversation_id ? 'conv py-10 grey conv-active':'conv py-10 white '"
+                 v-bind:class="(+selectedConv === +conv.conversation_id ? 'conv py-10 grey conv-active ':'conv py-10 ') + ($vuetify.theme.dark ? 'black white--text' : 'white black--text')"
                  @click="sendConv(conv.conversation_id, conv)"
                  style="border-bottom: 1px solid gray!important">
             <v-row>
@@ -100,7 +112,8 @@
         </v-row>
       </v-col>
       <v-col cols="8" v-if="selectedConv !== null">
-        <v-row class="grey elevation-5" style="border-radius: 0 10px 10px 0 ; overflow: hidden">
+        <v-row class="grey elevation-5" style="border-radius: 0 10px 10px 0 ; overflow: hidden"
+               v-bind:class="this.$vuetify.theme.dark ? 'black white--text' : 'grey elevation-5'">
           <v-col cols="12"
                  style="max-height: 80vh; min-height: 80vh; height:100%;overflow: scroll; overflow-x: hidden;"
                  ref="char-box"
@@ -110,13 +123,13 @@
               <v-col cols="10" md="4" @click="selectMessage(message)">
                 <v-card flat style="border-radius: 7px">
                   <template v-if="message.reply_id > 0">
-                    <v-card-title class="grey lighten-2">
+                    <v-card-title v-bind:class="$vuetify.theme.dark ? 'grey darken-2' : 'grey lighten-2'">
                       <v-icon left style="transform: scaleX(-1)">
                         mdi-reply
                       </v-icon>
                       {{ message.replied_message_username }}
                     </v-card-title>
-                    <v-card-subtitle class="grey lighten-2">
+                    <v-card-subtitle v-bind:class="$vuetify.theme.dark ? 'grey darken-2' : 'grey lighten-2'">
                       {{ message.replied_message_body }}
                     </v-card-subtitle>
                   </template>
@@ -133,7 +146,7 @@
           <v-col cols="12">
             <v-form @submit.prevent="sendMessage">
               <v-row v-if="selectedConv !== null">
-                <v-col v-if="selectedMessage.id > 0" class="white lighten-1" cols="12">
+                <v-col v-if="selectedMessage.id > 0" v-bind:class="$vuetify.theme.dark ? 'black white--text' : 'white black--text'" cols="12">
                   <h6>Reply</h6>
                   <div>
                     {{ selectedMessage.body }}
@@ -143,7 +156,6 @@
                     label="message"
                     v-model="newMessage"
                     hide-details
-                    background-color="white"
                     style="border-radius: 0"
                     solo
                 />
@@ -165,6 +177,7 @@ export default {
   name: "Conversation",
   data: () => ({
     newMessage: '',
+    theme: '',
     selectedConv: null,
     selectedMessage: {
       id: -1,
@@ -173,7 +186,8 @@ export default {
     filter: {
       read: false,
       archived: false
-    }
+    },
+    search: ''
   }),
   computed: {
     ...mapGetters("ConversationModules", ["conversations", "messages"]),
@@ -185,7 +199,8 @@ export default {
             || (this.filter.read && this.filter.archived && !conv.is_read && conv.is_archived)
             || (!this.filter.read && this.filter.archived && conv.is_archived)
             || (!this.filter.read && !this.filter.archived))
-          all.push(conv);
+          if (conv.username.search(this.search) >= 0)
+            all.push(conv);
       }
       return all;
     }
@@ -286,6 +301,7 @@ export default {
   },
   mounted() {
     this.getConversations();
+    this.theme = this.$vuetify.theme.dark ? 'black white--text' : 'white black--text';
   }
 }
 </script>

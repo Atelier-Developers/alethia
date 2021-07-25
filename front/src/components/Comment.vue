@@ -26,7 +26,7 @@
         </v-container>
       </v-card>
     </v-dialog>
-    <v-card>
+    <v-card flat>
       <v-card-title>
         {{ comment.commenter_username }}:
       </v-card-title>
@@ -54,7 +54,7 @@
       <v-container>
         <v-row class="my-3">
           <v-col cols="12">
-            <div class="post-content" style="white-space: pre-line;color: black">
+            <div class="post-content" style="white-space: pre-line">
               {{ comment.text }}
             </div>
           </v-col>
@@ -67,12 +67,12 @@
             <v-btn @click="dialogReply=true" elevation="0" icon>
               <v-icon>mdi-reply</v-icon>
             </v-btn>
-            {{comment.reply_count}}
+            {{ comment.reply_count }}
             <v-btn @click="sendLikeComment()" elevation="0" icon>
               <v-icon v-if="comment.is_liked_by_this_user" color="red">mdi-heart</v-icon>
               <v-icon v-else>mdi-heart-outline</v-icon>
             </v-btn>
-            {{comment.like_count}}
+            {{ comment.like_count }}
 
           </v-col>
         </v-row>
@@ -117,14 +117,14 @@ export default {
 
       return year + '-' + month + '-' + dt + ' ' + h + ":" + m;
     },
-    sendReply() {
-      this.replyComment({
+    async sendReply() {
+      await this.replyComment({
         text: this.newReply.text,
         post_id: this.comment.post_id,
         replied_comment_id: this.comment.id
-      }).then(() => {
-        this.dialogReply = false;
-      });
+      })
+      this.dialogReply = false;
+      this.$emit('sendReply')
     },
     sendLikeComment() {
       if (this.comment.is_liked_by_this_user) {

@@ -1,9 +1,12 @@
 <template>
-  <v-card>
+  <v-card flat outlined>
     <div @click="gotoPost()" style="cursor: pointer">
       <v-card-title>
-        <h4>
-          {{ post.poster_username }}
+        <h4 class="pr-2">
+          {{ post.poster_firstname }} {{ post.poster_lastname }}
+        </h4>
+        <h4 class="font-weight-light">
+          @{{ post.poster_username }}
         </h4>
         <v-spacer/>
       </v-card-title>
@@ -15,15 +18,11 @@
         </v-row>
       </v-card-subtitle>
       <v-divider/>
-      <v-container>
-        <v-row class="my-3">
-          <v-col cols="12">
-            <div class="post-content" style="white-space: pre-line;color: black">
-              {{ post.description }}
-            </div>
-          </v-col>
-        </v-row>
-      </v-container>
+      <v-card-text>
+              <div class="post-content" style="white-space: pre-line;">
+                {{ post.description }}
+              </div>
+      </v-card-text>
     </div>
   </v-card>
 </template>

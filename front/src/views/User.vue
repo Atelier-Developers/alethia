@@ -40,13 +40,13 @@
                 @{{ user.username }}
               </h4>
               <v-spacer/>
-              <v-btn class="mr-5" @click="dialogInvite=true" color="primary">
+              <v-btn v-if="!user.is_invited_by_this_user && this.is_friends_with_this_user === 0" class="mr-5" @click="dialogInvite=true" color="primary">
                 INVITE
                 <v-icon right>
                   mdi-plus
                 </v-icon>
               </v-btn>
-              <v-btn @click="startConversation()" color="secondary">
+              <v-btn @click="startConversation()" color="secondary" v-if="!user.has_conversation_with_this_user">
                 Message
                 <v-icon right>
                   mdi-message
@@ -160,40 +160,6 @@
             </v-container>
           </v-card>
         </v-col>
-        <v-col cols="12">
-          <v-card color="grey lighten-2">
-            <v-card-title style="background-color: white">
-              <h2>
-                Featured Posts
-              </h2>
-            </v-card-title>
-            <v-divider/>
-            <v-container>
-              <v-row v-for="post in user.posts" :key="post.id">
-                <v-col cols="12">
-                  <Post :post="post" :username="user.username"/>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-card>
-        </v-col>
-        <v-col cols="12">
-          <v-card color="grey lighten-2">
-            <v-card-title style="background-color: white">
-              <h2>
-                Featured Posts
-              </h2>
-            </v-card-title>
-            <v-divider/>
-            <v-container>
-              <v-row v-for="post in user.posts" :key="post.id">
-                <v-col cols="12">
-                  <Post :post="post" :username="user.username"/>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-card>
-        </v-col>
       </v-row>
     </v-container>
   </div>
@@ -203,11 +169,10 @@
 import {mapActions, mapGetters} from "vuex";
 import Skill from "../components/Skill";
 import Background from "../components/Background";
-import Post from "@/components/Post";
 
 export default {
   name: "User",
-  components: {Post, Background, Skill},
+  components: {Background, Skill},
   data: () => ({
     inviteReq: {
       receiver_id: 0,
@@ -237,6 +202,7 @@ export default {
     async sendCreateInvite() {
       this.inviteReq.receiver_id = +this.$route.params.id;
       await this.createInvite(this.inviteReq);
+      await this.getUserById(+this.$route.params.id)
       this.dialogInvite = false
     },
     async startConversation() {

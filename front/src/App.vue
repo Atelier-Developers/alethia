@@ -94,7 +94,6 @@
     </v-dialog>
     <div>
       <v-app-bar
-          color="grey lighten-5"
           flat
           fixed
       >
@@ -106,6 +105,11 @@
           {{ title }}
         </div>
         <v-spacer></v-spacer>
+        <div>
+          <v-btn @click="$vuetify.theme.dark = !($vuetify.theme.dark)" icon>
+            <v-icon>mdi-theme-light-dark</v-icon>
+          </v-btn>
+        </div>
         <div v-if="isAuthenticated" style="display: flex">
           <div>
             <v-btn icon @click="dialogSearch=true; clearUsers()">
@@ -131,7 +135,7 @@
       </v-app-bar>
     </div>
 
-    <v-main class="mt-8 pt-16 grey lighten-3">
+    <v-main class="mt-8 pt-16" v-bind:class="!$vuetify.theme.dark ? 'mt-8 pt-16 grey lighten-3' : 'mt-8 pt-16' ">
       <router-view></router-view>
     </v-main>
   </v-app>

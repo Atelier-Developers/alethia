@@ -217,6 +217,7 @@
                         label="Start Date"
                         outlined
                         readonly
+                        @blur="date = parseDate(newUser.birth_date)"
                         prepend-icon="mdi-calendar"
                         v-bind="attrs"
                         v-on="on"
@@ -409,23 +410,6 @@
             </v-container>
           </v-card>
         </v-col>
-        <v-col cols="12">
-          <v-card color="grey lighten-2">
-            <v-card-title style="background-color: white">
-              <h2>
-                Featured Posts
-              </h2>
-            </v-card-title>
-            <v-divider/>
-            <v-container>
-              <v-row v-for="post in user.posts" :key="post.id">
-                <v-col cols="12">
-                  <Post :post="post" :username="user.username"/>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-card>
-        </v-col>
       </v-row>
     </v-container>
   </div>
@@ -434,12 +418,11 @@
 <script>
 import Skill from "../components/Skill";
 import {mapActions, mapGetters} from "vuex";
-import Post from "../components/Post";
 import Background from "../components/Background";
 
 export default {
   name: "Profile",
-  components: {Background, Post, Skill},
+  components: {Background, Skill},
   data: () => ({
     items: [
       {
@@ -533,22 +516,28 @@ export default {
       await this.getBackgrounds(this.user.user_id)
     },
     parseDate(date) {
+      let x = new Date(date)
+      console.log(x.toUTCString())
+      console.log(x.toISOString())
       return date;
     },
-    sendEditUser() {
-      this.editUser({
+    async sendEditUser() {
+      await this.editUser({
         about: this.newUser.about,
         accomplishments: this.newUser.accomplishments,
         additional_info: this.newUser.additional_info,
-        birth_date: this.newUser.birth_date,
+        birth_date: (this.newUser.birth_date === '' ? this.user.birth_date : (new Date(this.newUser.birth_date)).toISOString()),
         intro: this.newUser.intro,
+        location: this.newUser.location
       });
       this.dialogUser = false;
+      await this.getUser();
     }
   },
   async mounted() {
     await this.getUser()
-    this.newUser = this.user;
+    this.newUser = {...this.user};
+    this.newUser.birth_date = '';
     await this.getBackgrounds(this.user.user_id)
     await this.getSkills(this.user.user_id)
     if (this.selectedSkills.length > 0)
