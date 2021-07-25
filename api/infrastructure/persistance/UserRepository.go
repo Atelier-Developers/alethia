@@ -211,7 +211,7 @@ func (userRepo *UserRepository) UpdateUser(user *entity.User) error {
 
 	defer stmt.Close()
 
-	_, err = stmt.Exec(user.Intro, user.Intro, user.About, user.About, user.Accomplishments, user.Accomplishments, user.AdditionalInfo, user.AdditionalInfo, user.BirthDate, user.BirthDate, user.Location, user.ID)
+	_, err = stmt.Exec(user.Intro, user.Intro, user.About, user.About, user.Accomplishments, user.Accomplishments, user.AdditionalInfo, user.AdditionalInfo, user.BirthDate, user.BirthDate, user.Location, user.Location, user.ID)
 
 	if err != nil {
 		log.Fatal(err)
