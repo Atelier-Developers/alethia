@@ -40,7 +40,8 @@
                 @{{ user.username }}
               </h4>
               <v-spacer/>
-              <v-btn v-if="!user.is_invited_by_this_user && this.is_friends_with_this_user === 0" class="mr-5" @click="dialogInvite=true" color="primary">
+              <v-btn v-if="!user.is_invited_by_this_user && user.is_friends_with_this_user === 0" class="mr-5"
+                     @click="dialogInvite=true" color="primary">
                 INVITE
                 <v-icon right>
                   mdi-plus
@@ -202,7 +203,9 @@ export default {
     async sendCreateInvite() {
       this.inviteReq.receiver_id = +this.$route.params.id;
       await this.createInvite(this.inviteReq);
-      await this.getUserById(+this.$route.params.id)
+      await this.getUserById({
+        id: +this.$route.params.id
+      })
       this.dialogInvite = false
     },
     async startConversation() {

@@ -66,7 +66,7 @@
             <v-col cols="4">
               <v-btn @click="doSearch()" color="primary">
                 Search
-                <v-icon>mdi-magnify</v-icon>
+                <v-icon right>mdi-magnify</v-icon>
               </v-btn>
             </v-col>
           </v-row>
