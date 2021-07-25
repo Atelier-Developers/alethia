@@ -27,8 +27,8 @@ export default {
         skill_id: this.skill.id,
         user_id: this.user_id
       }).then(() => {
-        this.skill.is_endorsed_by_this_user = !this.skill.liked;
-        this.skill.endorse_count += 1;
+        this.skill.endorse_count += this.skill.is_endorsed_by_this_user ? -1 : 1;
+        this.skill.is_endorsed_by_this_user = !this.skill.is_endorsed_by_this_user;
       })
     }
   }

@@ -40,7 +40,7 @@ services:
     restart: on-failure
 
   frontend:
-    image: tavakkoliamirmohmmad/alethia-frontend:v1.0.1
+    image: tavakkoliamirmohmmad/alethia-frontend:v1.0.2
     volumes:
       - /app/node_modules
     depends_on:
