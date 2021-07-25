@@ -13,18 +13,31 @@ We tried to incorporate as much features of the original website as possible int
 we tried to integrate newer and more novel technologies such as Docker and gRPC into the project as well to offer a faster, more secure, and much more convenient experience overall. Using such technologies allows further development of our web app while being compatible
 and up to date with the methods currently used. As for educational purposes, learning and incorporating the mentioned services allowed us, as developers, to learn valuable and fresh concepts and tools which we could use in future projects.
 
-<br>
+## How to Run the Web App
+Download [Docker Desktop](https://www.docker.com/products/docker-desktop) for Mac or Windows. [Docker Compose](https://docs.docker.com/compose) will be automatically installed. On Linux, make sure you have the latest version of [Compose](https://docs.docker.com/compose/install/).
+
+To run the application enter:
+
+```
+docker-compose up
+```
+
+And to stop the whole application:
+
+```
+docker-compose down
+```
+<br/>
+
 
 ## Main Parts and Features of the Website
 
-<br>
 
 ### User Management
 As LinkedIn and all the other websites offer, our web app supports user management services, which includes: registration, logging in, including personal descriptions in their user profile and editing them when needed.
 The personal description provided for each user in their profile is subdivided into following categories: Introduction, About, Featured Posts, Background Skills, Accomplishments, Additional Information, and Supported Languages.
 Each user can fill and edit each of these subcategories on their profile to further describe and present themselves to the website's social space. Also users can endorse each other's skills and the number of skill endorsements appear on the user's skills.
 
-<br>
 
 ### Post Management
 Posts are an important part of LinkedIn's social environment. Therefore, our web app supports post management, as well as including the services that the original website provides regarding posts. Each user can post or share a post and star them as a featured post of their own,
@@ -32,13 +45,11 @@ which in turn will show up in their user profile, in the featured posts section.
 As LinkedIn provides, as a user with a network, posts related to your friends are shown in your main feed (which we call the Home page), based on certain criteria; posts shown in a user's feed are either liked, commented on, or simply posted by one of their friends.
 So a user can see the content that their network is currently sharing.
 
-<br>
 
 ### User Search
 User and individual search is a prominent part of a website that is based on employment, social network, and business. Our web app supports searching users based on specific factors to provide the most related results. By default, searching for a user (by their username) is based on the number of mutual connections
 that users with similar username have with the current user, so the search results are sorted by the number of mutual connections. As well as filtering by mutual connections, users can filter their search by location, languages that the user speaks, their current company or all three.
 
-<br> 
 
 ### Notifications 
 Notifications for certain events are supported to inform users of certain occasions. Notifications are supported for:
@@ -53,9 +64,6 @@ Notifications for certain events are supported to inform users of certain occasi
 There is a specific page for seeing all notifications in one place, which is accessible by a button in the app bar. 
 
 
-<br>
-
-
 ### My Network
 Users can add friends and create a network for themselves by doing so. For adding someone as a friend, a user should first 
 send an invite to that user (invites can include a message). Then the invite can be accepted or rejected. If accepted, the users
@@ -65,15 +73,12 @@ In the web app, there is a page called My Network, which is accessible by a butt
 page, a user can see their pending incoming/outgoing invites, their friends, and people they may know, who are sorted by the number of
 mutual connections.
 
-<br>
-
 ### Conversations
 As in LinkedIn, users can have conversations with each other. Conversations are only allowed with people in the user's network (user's friends).
 Users can also mark their conversations with individuals as unread or archive them. As a result, conversations can be filtered by being unread or archived.
 User conversations can also be deleted. A user can also search for a certain conversation. Replying is supported for messages in conversations.
 A Conversations page is accessible by a button in the app bar, in which the mentioned features are available to the user.
 
-<br>
 
 ## Used Technologies
 
@@ -111,23 +116,5 @@ and Python for the client side application.
 ### Cron
 To create user birthday notifications, we needed a daily scheduler to carry out the task by connecting to the gRPC server using the Python client. In order
 to schedule this program, we defined a Cron-job that runs every 24 hours. 
-
-<br>
-
-## How to Run the Web App
-Download [Docker Desktop](https://www.docker.com/products/docker-desktop) for Mac or Windows. [Docker Compose](https://docs.docker.com/compose) will be automatically installed. On Linux, make sure you have the latest version of [Compose](https://docs.docker.com/compose/install/).
-
-To run the application enter:
-
-```
-docker-compose up
-```
-
-And to stop the whole application:
-
-```
-docker-compose down
-```
-
 
 
