@@ -1,7 +1,10 @@
 # Alethia: an *Atelier* project
-### Project Developers: Amir Mohammad Tavakkoli, Aref Sayareh, and Amir Masoud Baghi
+### Project Developers: 
+ - Amir Mohammad Tavakkoli 
+ - Aref Sayareh
+ - Amir Masoud Baghi
 
-<br>
+
 
 ## Overview
 Alethia is an Atelier project, done as the final project of "Database Design" course. The goal of this project was to implement a web application, emulating the famous website "LinkedIn".
