@@ -551,7 +551,7 @@ func (postRepo *PostRepository) GetPostById(postId uint64, post *Post.Post) erro
 
 	row := stmt.QueryRow(postId)
 
-	err = row.Scan(&post.Id, &post.IsFeatured, &post.Description, &post.Created, &post.PosterId, &post.PosterUsername, &post.PosterUsername, &post.PosterLastname)
+	err = row.Scan(&post.Id, &post.IsFeatured, &post.Description, &post.Created, &post.PosterId, &post.PosterUsername, &post.PosterFirstname, &post.PosterLastname)
 	if err != nil {
 		return err
 	}
