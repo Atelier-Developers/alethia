@@ -27,8 +27,6 @@ services:
     ports:
       - "80:80"
     image: tavakkoliamirmohmmad/alethia-reverse-proxy:v1.0
-    build:
-      context: ./reverse_proxy
     networks:
       - reverse-proxy
     depends_on:

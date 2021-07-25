@@ -1,0 +1,37 @@
+upstream panel {
+    server ${FRONTEND_NAME}:${FRONTEND_PORT};
+}
+
+upstream backend {
+    server ${API_NAME}:${API_PORT};
+}
+
+server {
+    listen 80;
+    server_name api.alethia.com;
+
+    location / {
+        proxy_pass         http://backend;
+        proxy_redirect     off;
+        proxy_set_header   Host $host;
+        proxy_set_header   X-Real-IP $remote_addr;
+        proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header   X-Forwarded-Host $server_name;
+        proxy_set_header  Authorization $http_authorization;
+        proxy_pass_header Authorization;
+    }
+}
+
+server {
+    listen 80;
+    server_name panel.alethia.com;
+
+    location / {
+        proxy_pass         http://panel;
+        proxy_redirect     off;
+        proxy_set_header   Host $host;
+        proxy_set_header   X-Real-IP $remote_addr;
+        proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header   X-Forwarded-Host $server_name;
+    }
+}
